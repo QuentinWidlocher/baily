@@ -2774,6 +2774,16 @@ html {
   margin-right: -1.25rem;
 }
 
+.mx-5 {
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+
 .mb-5 {
   margin-bottom: 1.25rem;
 }
@@ -2812,6 +2822,10 @@ html {
 
 .flex-1 {
   flex: 1 1 0%;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {
@@ -2853,6 +2867,10 @@ html {
   padding: 0.5rem;
 }
 
+.p-1 {
+  padding: 0.25rem;
+}
+
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -2873,9 +2891,29 @@ html {
   line-height: 1.75rem;
 }
 
+.font-bold {
+  font-weight: 700;
+}
+
+.leading-tight {
+  line-height: 1.25;
+}
+
 .text-error {
   --tw-text-opacity: 1;
   color: hsl(var(--er) / var(--tw-text-opacity));
+}
+
+.hover\:cursor-default:hover {
+  cursor: default;
+}
+
+.hover\:bg-transparent:hover {
+  background-color: transparent;
+}
+
+.hover\:bg-none:hover {
+  background-image: none;
 }
 
 @media (min-width: 768px) {

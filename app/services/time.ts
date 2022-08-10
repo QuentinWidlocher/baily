@@ -4,6 +4,7 @@ import {
   formatDuration,
   formatRelative,
   intervalToDuration,
+  isAfter,
   isBefore,
   isSameDay,
   isSameMinute,
@@ -12,7 +13,7 @@ import { fr } from "date-fns/locale";
 import type { Bottle } from "./firebase.server";
 
 export function groupByTime(bottles: Bottle[]) {
-  return bottles.reduce((acc, bottle) => {
+  let grouped = bottles.reduce((acc, bottle) => {
     const key = format(bottle.time, "yyyy-MM-dd");
     if (!acc[key]) {
       acc[key] = [];
@@ -20,6 +21,16 @@ export function groupByTime(bottles: Bottle[]) {
     acc[key].push(bottle);
     return acc;
   }, {} as { [key: string]: Bottle[] });
+
+  return Object.keys(grouped).reduce((acc, key) => {
+    return {
+      ...acc,
+      [key]: {
+        bottles: grouped[key],
+        total: grouped[key].reduce((acc, bottle) => acc + bottle.quantity, 0),
+      }
+    }
+  }, {} as { [key: string]: { bottles: Bottle[], total: number } });
 }
 
 export function getDistanceFromNow(date: Date) {
@@ -44,13 +55,28 @@ export function getDistanceFromNow(date: Date) {
         }
       )
     );
+  } else if (isSameDay(date, now) && isAfter(date, now)) {
+    return (
+      "dans " +
+      formatDuration(
+        intervalToDuration({
+          start: now,
+          end: date,
+        }),
+        {
+          locale: fr,
+          format: ["hours", "minutes"],
+          delimiter: " et ",
+        }
+      )
+    );
   } else {
     return formatRelative(date, now, { locale: fr });
   }
 }
 
 export function dateToISOLikeButLocal(date: Date) {
-  let offsetMs = date.getTimezoneOffset() * 60 * 1000;
+  let offsetMs = (process.env.NODE_ENV == "production" ? 0 : date.getTimezoneOffset()) * 60 * 1000;
   let msLocal = date.getTime() - offsetMs;
   let dateLocal = new Date(msLocal);
   let iso = dateLocal.toISOString();
@@ -62,4 +88,8 @@ export function getRelativeDate(date: Date) {
   let relative = formatRelative(date, new Date(), { locale: fr }).split("à")[0];
   let [firstLetter, ...rest] = relative;
   return firstLetter.toUpperCase() + rest.join("");
+}
+
+export function getDuration(duration: number) {
+  return formatDuration({ seconds: duration }, { format: ["hours", "minutes"], locale: fr, delimiter: " et " });
 }

@@ -5,11 +5,12 @@ import { Link } from '@remix-run/react'
 import invariant from 'tiny-invariant'
 import {
   getDistanceFromNow,
+  getDuration,
   getRelativeDate,
   groupByTime,
 } from '~/services/time'
 import { Fragment } from 'react'
-import { parse } from 'date-fns'
+import { format, isSameDay, parse } from 'date-fns'
 import { Plus } from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {
@@ -34,28 +35,30 @@ export default function Index() {
           <ul className="menu -mx-5 p-2 overflow-y-auto">
             {Object.keys(groupedBottles).map((day) => (
               <Fragment key={day}>
-                <li className="menu-title mt-10">
-                  <span>
+                <li className="mt-10 flex mx-3 flex-row justify-between">
+                  <span className="hover:bg-transparent hover:cursor-default p-1">
                     {getRelativeDate(parse(day, 'yyyy-MM-dd', new Date()))}
                   </span>
+                  <span className="hover:bg-transparent hover:cursor-default p-1 font-bold">
+                    Total : {groupedBottles[day].total}ml
+                  </span>
                 </li>
-                {groupedBottles[day].map((bottle) => {
-                  let distanceToNow = getDistanceFromNow(bottle.time)
-
-                  return (
-                    <li key={bottle.id}>
-                      <Link
-                        className="stat"
-                        to={`/baby/${babyId}/bottle/${bottle.id}`}
-                      >
-                        <span className="stat-value">{bottle.quantity}ml</span>
-                        <span className="stat-desc text-lg">
-                          {distanceToNow}
-                        </span>
-                      </Link>
-                    </li>
-                  )
-                })}
+                {groupedBottles[day].bottles.map((bottle) => (
+                  <li key={bottle.id}>
+                    <Link
+                      className="stat"
+                      to={`/baby/${babyId}/bottle/${bottle.id}`}
+                    >
+                      <span className="stat-value">{bottle.quantity}ml</span>
+                      <span className="stat-desc text-lg leading-tight flex justify-between">
+                        {getDistanceFromNow(bottle.time)}
+                        {isSameDay(bottle.time, new Date()) ? (
+                          <span>{format(bottle.time, 'HH:mm')}</span>
+                        ) : null}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
               </Fragment>
             ))}
           </ul>
