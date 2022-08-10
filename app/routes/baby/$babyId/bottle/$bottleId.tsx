@@ -102,6 +102,7 @@ export async function action({ request, params }: ActionArgs) {
 export default function BottlePage() {
   let { bottle } = useSuperLoaderData<typeof loader>()
   let [confirm, setConfirm] = useState(false)
+  let [sliderQuantity, setSliderQuantity] = useState(bottle.quantity ?? 140)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
     if (!confirm) {
@@ -112,100 +113,105 @@ export default function BottlePage() {
   }
 
   return (
-    <section className="card md:my-auto mt-auto bg-base-200 w-full md:w-96">
-      <div className="card-body">
-        <div className="flex justify-between">
-          <Link
-            to="./../.."
-            className="btn btn-square btn-ghost mb-5"
-            title="Retour"
-          >
-            <NavArrowLeft />
-          </Link>
-          {bottle.id ? (
-            <Form schema={schema} onSubmit={onDelete}>
-              {({ Field, Button }) => (
-                <>
-                  <Field hidden name="_action" value="delete" />
-                  <Button
-                    className={`btn ${
-                      confirm ? 'btn-error' : 'btn-square btn-ghost text-error'
-                    }`}
-                    title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
-                  >
-                    {confirm ? <span className="mr-1">Confirmer</span> : ''}
-                    <Bin />
-                  </Button>
-                </>
-              )}
-            </Form>
-          ) : null}
-        </div>
-        <Form schema={schema} method="post" className="flex flex-col">
-          {({ Field, Errors, Button, register }) => (
-            <>
-              <Field name="_action" hidden value="update" />
-              <Field name="quantity">
-                {({ Label, Errors, SmartInput }) => (
-                  <div className="form-control">
-                    <Label className="label">
-                      <span className="label-text text-lg">
-                        Quantité donnée
-                      </span>
-                    </Label>
-                    <label className="input-group">
-                      <SmartInput
-                        type="number"
-                        value={bottle.quantity}
-                        className="input w-full"
-                      />
-                      <span>ml</span>
-                    </label>
-                    <label className="label">
-                      <span className="label-text-alt text-error">
-                        <Errors />
-                      </span>
-                    </label>
-                  </div>
+    <>
+      <input
+        type="range"
+        min="40"
+        max="240"
+        value={sliderQuantity}
+        onChange={(e) => setSliderQuantity(e.target.valueAsNumber)}
+        className="range"
+        step="5"
+      />
+      <div className="w-full flex justify-between text-xs px-2">
+        <span>40</span>
+        <span>65</span>
+        <span>90</span>
+        <span>115</span>
+        <span>140</span>
+        <span>165</span>
+        <span>190</span>
+        <span>115</span>
+        <span>240</span>
+      </div>
+      <span className="my-auto text-6xl">{sliderQuantity} ml</span>
+      <section className="card md:mb-auto bg-base-200 w-full md:w-96">
+        <div className="card-body">
+          <div className="flex justify-between">
+            <Link
+              to="./../.."
+              className="btn btn-ghost mb-5 space-x-2"
+              title="Retour"
+            >
+              <NavArrowLeft />
+              <span>Retour</span>
+            </Link>
+            {bottle.id ? (
+              <Form schema={schema} onSubmit={onDelete}>
+                {({ Field, Button }) => (
+                  <>
+                    <Field hidden name="_action" value="delete" />
+                    <Button
+                      className={`btn ${
+                        confirm
+                          ? 'btn-error'
+                          : 'btn-square btn-ghost text-error'
+                      }`}
+                      title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
+                    >
+                      {confirm ? <span className="mr-1">Confirmer</span> : ''}
+                      <Bin />
+                    </Button>
+                  </>
                 )}
-              </Field>
-              <Field name="date">
-                {({ Label, Errors, SmartInput }) => (
-                  <div className="form-control w-full">
-                    <Label className="label">
-                      <span className="label-text text-lg">Date</span>
-                    </Label>
-                    <SmartInput
-                      type="date"
-                      value={
-                        dateToISOLikeButLocal(bottle.time ?? new Date()).split(
-                          'T',
-                        )[0]
-                      }
-                      className="input w-full"
-                    />
-                    <label className="label">
-                      <span className="label-text-alt text-error">
-                        <Errors />
-                      </span>
-                    </label>
-                  </div>
-                )}
-              </Field>
-              <Field name="time">
-                {({ Label, Errors, SmartInput }) => {
-                  let [hours, minutes] = (bottle.time ?? new Date())
-                    .toLocaleTimeString()
-                    .split(':')
-
-                  return (
+              </Form>
+            ) : null}
+          </div>
+          <Form schema={schema} method="post" className="flex flex-col">
+            {({ Field, Errors, Button, register }) => (
+              <>
+                <Field name="_action" hidden value="update" />
+                <Field name="quantity">
+                  {({ Label, Errors, SmartInput }) => (
+                    <div className="form-control">
+                      <Label className="label">
+                        <span className="label-text text-lg">
+                          Quantité donnée
+                        </span>
+                      </Label>
+                      <label className="input-group">
+                        <input
+                          {...register('quantity')}
+                          type="number"
+                          value={sliderQuantity}
+                          onChange={(e) => {
+                            setSliderQuantity(e.target.valueAsNumber)
+                          }}
+                          className="input w-full"
+                        />
+                        <span>ml</span>
+                      </label>
+                      <label className="label">
+                        <span className="label-text-alt text-error">
+                          <Errors />
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                </Field>
+                <Field name="date">
+                  {({ Label, Errors, SmartInput }) => (
                     <div className="form-control w-full">
                       <Label className="label">
-                        <span className="label-text text-lg">Heure</span>
+                        <span className="label-text text-lg">Date</span>
                       </Label>
                       <SmartInput
-                        type="time"
-                        value={`${hours}:${minutes}`}
+                        type="date"
+                        value={
+                          dateToISOLikeButLocal(
+                            bottle.time ?? new Date(),
+                          ).split('T')[0]
+                        }
                         className="input w-full"
                       />
                       <label className="label">
@@ -214,17 +220,42 @@ export default function BottlePage() {
                         </span>
                       </label>
                     </div>
-                  )
-                }}
-              </Field>
-              <Button className="btn btn-primary w-full mt-10 space-x-2">
-                <SaveFloppyDisk />
-                <span>{bottle.id ? 'Modifier' : 'Ajouter'} ce biberon</span>
-              </Button>
-            </>
-          )}
-        </Form>
-      </div>
-    </section>
+                  )}
+                </Field>
+                <Field name="time">
+                  {({ Label, Errors, SmartInput }) => {
+                    let [hours, minutes] = (bottle.time ?? new Date())
+                      .toLocaleTimeString()
+                      .split(':')
+
+                    return (
+                      <div className="form-control w-full">
+                        <Label className="label">
+                          <span className="label-text text-lg">Heure</span>
+                        </Label>
+                        <SmartInput
+                          type="time"
+                          value={`${hours}:${minutes}`}
+                          className="input w-full"
+                        />
+                        <label className="label">
+                          <span className="label-text-alt text-error">
+                            <Errors />
+                          </span>
+                        </label>
+                      </div>
+                    )
+                  }}
+                </Field>
+                <Button className="btn btn-primary w-full mt-10 space-x-2">
+                  <SaveFloppyDisk />
+                  <span>{bottle.id ? 'Modifier' : 'Ajouter'} ce biberon</span>
+                </Button>
+              </>
+            )}
+          </Form>
+        </div>
+      </section>
+    </>
   )
 }
