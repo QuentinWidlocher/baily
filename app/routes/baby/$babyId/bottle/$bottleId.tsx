@@ -17,7 +17,7 @@ import { z } from 'zod'
 import { Form, formAction } from 'remix-forms'
 import { makeDomainFunction } from 'remix-domains'
 import { dateToISOLikeButLocal } from '~/services/time'
-import { isBefore, subHours } from 'date-fns'
+import { isBefore } from 'date-fns'
 import { SaveFloppyDisk } from 'iconoir-react'
 
 const schema = z.object({
@@ -46,8 +46,6 @@ export async function loader({ params }: LoaderArgs) {
     params.bottleId === 'new'
       ? ({} as Bottle)
       : await getBottle(params.bottleId)
-
-  bottle.time = subHours(bottle.time, 2)
 
   return superjson({
     bottle,

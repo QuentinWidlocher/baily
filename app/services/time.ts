@@ -8,9 +8,7 @@ import {
   isBefore,
   isSameDay,
   isSameMinute,
-  subHours,
 } from "date-fns";
-import { format as tzFormat } from "date-fns-tz";
 import { fr } from "date-fns/locale";
 import type { Bottle } from "./firebase.server";
 
@@ -20,10 +18,7 @@ export function groupByTime(bottles: Bottle[]) {
     if (!acc[key]) {
       acc[key] = [];
     }
-    acc[key].push({
-      ...bottle,
-      time: subHours(bottle.time, 2)
-    });
+    acc[key].push(bottle);
     return acc;
   }, {} as { [key: string]: Bottle[] });
 
@@ -100,5 +95,5 @@ export function getDuration(duration: number) {
 }
 
 export function displayTime(time: Date) {
-  return tzFormat(time, 'HH:mm', { locale: fr })
+  return format(time, 'HH:mm', { locale: fr })
 }
