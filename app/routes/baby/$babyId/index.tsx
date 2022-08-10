@@ -4,6 +4,7 @@ import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { Link } from '@remix-run/react'
 import invariant from 'tiny-invariant'
 import {
+  displayTime,
   getDistanceFromNow,
   getDuration,
   getRelativeDate,
@@ -53,7 +54,7 @@ export default function Index() {
                       <span className="stat-desc text-lg leading-tight flex justify-between">
                         {getDistanceFromNow(bottle.time)}
                         {isSameDay(bottle.time, new Date()) ? (
-                          <span>{format(bottle.time, 'HH:mm')}</span>
+                          <span>{displayTime(bottle.time)}</span>
                         ) : null}
                       </span>
                     </Link>

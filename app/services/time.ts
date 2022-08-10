@@ -93,3 +93,7 @@ export function getRelativeDate(date: Date) {
 export function getDuration(duration: number) {
   return formatDuration({ seconds: duration }, { format: ["hours", "minutes"], locale: fr, delimiter: " et " });
 }
+
+export function displayTime(time: Date) {
+  return format(time, 'HH:mm', { locale: fr })
+}
