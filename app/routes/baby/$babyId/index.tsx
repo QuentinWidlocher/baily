@@ -6,12 +6,11 @@ import invariant from 'tiny-invariant'
 import {
   displayTime,
   getDistanceFromNow,
-  getDuration,
   getRelativeDate,
   groupByTime,
 } from '~/services/time'
 import { Fragment } from 'react'
-import { format, isSameDay, parse } from 'date-fns'
+import { isSameDay, parse } from 'date-fns'
 import { Plus } from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {

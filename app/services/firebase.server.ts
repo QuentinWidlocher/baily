@@ -10,6 +10,7 @@ import {
   Timestamp,
   FieldValue,
 } from "firebase-admin/firestore";
+import { addHours } from "date-fns";
 
 let firebaseApp: App;
 export let firestore: FirebaseFirestore.Firestore;
@@ -149,7 +150,7 @@ export async function deleteBottle(bottleId: string, babyId: string) {
 
 export async function createBottle(babyId: string, bottle: Omit<Bottle, "id">) {
   let createdBottle = await firestore.collection("bottles").add({
-    time: Timestamp.fromDate(bottle.time),
+    time: Timestamp.fromDate(addHours(bottle.time, 2)),
     quantity: bottle.quantity,
   });
 
@@ -166,7 +167,7 @@ export function updateBottle(bottle: Bottle) {
     .collection("bottles")
     .doc(bottle.id)
     .update({
-      time: Timestamp.fromDate(bottle.time),
+      time: Timestamp.fromDate(addHours(bottle.time, 2)),
       quantity: bottle.quantity,
     });
 }
