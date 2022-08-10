@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react'
+import styleSheetUrl from './style.css'
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
@@ -16,7 +17,7 @@ export const meta: MetaFunction = () => ({
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: '/tailwindcss' },
+    { rel: 'stylesheet', href: styleSheetUrl },
     { rel: 'manifest', href: '/manifest.json' },
   ]
 }
