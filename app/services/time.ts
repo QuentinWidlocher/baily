@@ -76,7 +76,7 @@ export function getDistanceFromNow(date: Date) {
 }
 
 export function dateToISOLikeButLocal(date: Date) {
-  let offsetMs = (process.env.NODE_ENV == "production" ? 0 : date.getTimezoneOffset()) * 60 * 1000;
+  let offsetMs = (process.env.NODE_ENV == "production" ? -120 : date.getTimezoneOffset()) * 60 * 1000;
   let msLocal = date.getTime() - offsetMs;
   let dateLocal = new Date(msLocal);
   let iso = dateLocal.toISOString();
