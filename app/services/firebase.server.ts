@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
     credential: credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\n/gm, "\n"),
+      privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\_/gm, "\n"),
     }),
   });
 
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === "production") {
       credential: credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/gm, "\n"),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\_/gm, "\n"),
       }),
       databaseURL: process.env.FIREBASE_DATABASE_URL,
     });
