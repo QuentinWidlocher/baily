@@ -10,23 +10,26 @@ import {
 } from '~/services/time'
 import { Fragment } from 'react'
 import { parse } from 'date-fns'
+import { Plus } from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
-  return superjson({ baby: await getBaby(params.babyId) })
+
+  let baby = await getBaby(params.babyId)
+  let groupedBottles = groupByTime(baby.bottles)
+
+  return superjson({ babyName: baby.name, babyId: baby.id, groupedBottles })
 }
 
 export default function Index() {
-  let { baby } = useSuperLoaderData<typeof loader>()
-
-  let groupedBottles = groupByTime(baby.bottles)
+  let { babyId, babyName, groupedBottles } = useSuperLoaderData<typeof loader>()
 
   return (
     <>
       <section className="card flex-1 bg-base-200 w-full md:w-96">
-        <div className="card-body overflow-y-auto">
+        <div className="card-body overflow-y-auto overflow-x-hidden">
           <h1 className="card-title text-xl mx-auto mb-5">
-            Les biberons de {baby.name}
+            Les biberons de {babyName}
           </h1>
           <ul className="menu -mx-5 p-2 overflow-y-auto">
             {Object.keys(groupedBottles).map((day) => (
@@ -43,7 +46,7 @@ export default function Index() {
                     <li key={bottle.id}>
                       <Link
                         className="stat"
-                        to={`/baby/${baby.id}/bottle/${bottle.id}`}
+                        to={`/baby/${babyId}/bottle/${bottle.id}`}
                       >
                         <span className="stat-value">{bottle.quantity}ml</span>
                         <span className="stat-desc text-lg">
@@ -57,10 +60,11 @@ export default function Index() {
             ))}
           </ul>
           <Link
-            to={`/baby/${baby.id}/bottle/new`}
-            className="btn btn-primary mt-5 w-full md:w-96"
+            to={`/baby/${babyId}/bottle/new`}
+            className="btn btn-primary mt-5 w-full space-x-2"
           >
-            Ajouter un biberon
+            <Plus />
+            <span>Ajouter un biberon</span>
           </Link>
         </div>
       </section>

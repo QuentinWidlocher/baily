@@ -1,8 +1,9 @@
-import { ActionArgs, LoaderArgs, redirect } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { Form as BasicForm, Link } from '@remix-run/react'
 import invariant from 'tiny-invariant'
+import type { Bottle } from '~/services/firebase.server'
 import {
-  Bottle,
   createBottle,
   deleteBottle,
   getBottle,
@@ -10,12 +11,14 @@ import {
 } from '~/services/firebase.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { Bin, NavArrowLeft } from 'iconoir-react'
-import { FormEvent, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
 import { Form, formAction } from 'remix-forms'
 import { makeDomainFunction } from 'remix-domains'
 import { dateToISOLikeButLocal } from '~/services/time'
 import { isBefore } from 'date-fns'
+import { SaveFloppyDisk } from 'iconoir-react'
 
 const schema = z.object({
   _action: z.enum(['delete', 'update']),
@@ -179,7 +182,7 @@ export default function BottlePage() {
                           'T',
                         )[0]
                       }
-                      className="input"
+                      className="input w-full"
                     />
                     <label className="label">
                       <span className="label-text-alt text-error">
@@ -203,7 +206,7 @@ export default function BottlePage() {
                       <SmartInput
                         type="time"
                         value={`${hours}:${minutes}`}
-                        className="input"
+                        className="input w-full"
                       />
                       <label className="label">
                         <span className="label-text-alt text-error">
@@ -214,8 +217,9 @@ export default function BottlePage() {
                   )
                 }}
               </Field>
-              <Button className="btn btn-primary w-full mt-10">
-                {bottle.id ? 'Modifier' : 'Ajouter'} ce biberon
+              <Button className="btn btn-primary w-full mt-10 space-x-2">
+                <SaveFloppyDisk />
+                <span>{bottle.id ? 'Modifier' : 'Ajouter'} ce biberon</span>
               </Button>
             </>
           )}
