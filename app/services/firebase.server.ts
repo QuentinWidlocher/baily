@@ -116,6 +116,10 @@ export async function getBaby(id: string) {
           (bottles ?? []).sort((a, b) => b.time.seconds - a.time.seconds)
         );
 
+        bottles.forEach((b) => {
+          console.log("Bottle", b.id, "timezone offset", b.time.toDate().getTimezoneOffset());
+        })
+
         return {
           ...babyFromFb,
           bottles,
