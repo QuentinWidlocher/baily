@@ -20,6 +20,12 @@ export async function loader({ params }: LoaderArgs) {
   let baby = await getBaby(params.babyId)
   let groupedBottles = groupByTime(baby.bottles)
 
+  console.log(
+    'Server timezone',
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  )
+  console.log('Server timezone offset', new Date().getTimezoneOffset())
+
   return superjson({ babyName: baby.name, babyId: baby.id, groupedBottles })
 }
 
