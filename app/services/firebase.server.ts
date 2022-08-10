@@ -1,14 +1,15 @@
-import { initializeApp, App } from "firebase-admin/app";
+import type { App } from "firebase-admin/app";
+import { initializeApp } from "firebase-admin/app";
 import { credential } from "firebase-admin";
-import {
+import type {
   DocumentReference,
-  DocumentSnapshot,
+  DocumentSnapshot
+} from "firebase-admin/firestore";
+import {
   getFirestore,
   Timestamp,
   FieldValue,
 } from "firebase-admin/firestore";
-import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
-import { utcToZonedTimeWithOptions } from "date-fns-tz/fp";
 
 let firebaseApp: App;
 export let firestore: FirebaseFirestore.Firestore;
@@ -26,7 +27,7 @@ if (process.env.NODE_ENV === "production") {
     credential: credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\_/gm, "\n"),
+      privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/_/gm, "\n"),
     }),
   });
 
@@ -37,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
       credential: credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\_/gm, "\n"),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/_/gm, "\n"),
       }),
       databaseURL: process.env.FIREBASE_DATABASE_URL,
     });
@@ -89,7 +90,7 @@ function parseBabyFromFirebase(baby: BabyFromFirebase): Baby {
   };
 }
 
-function getDataAndId<T>(doc: DocumentSnapshot): T {
+function getDataAndId<T extends { id: string }>(doc: DocumentSnapshot): T {
   return {
     id: doc.id,
     ...doc.data(),
