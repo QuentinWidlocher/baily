@@ -47,7 +47,7 @@ export default function Index() {
           <h1 className="card-title text-xl mx-auto mb-5">
             Les biberons de {babyName}
           </h1>
-          <ul className="menu -mx-5 p-2 overflow-y-auto">
+          <ul className="menu -mx-5 p-2 flex-1 overflow-y-auto">
             {Object.keys(groupedBottles).map((day) => (
               <Fragment key={day}>
                 <li className="mt-10 flex mx-3 flex-row justify-between">

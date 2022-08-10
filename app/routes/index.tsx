@@ -1,6 +1,5 @@
-import { LoaderArgs } from "@remix-run/node";
-import { redirect } from "~/services/superjson";
+import { redirect } from '~/services/superjson'
 
-export async function loader({}: LoaderArgs) {
-  return redirect("/baby/jfLdOvMT5o73TZigbFOG");
+export async function loader() {
+  return redirect(`/baby/${process.env.DEFAULT_BABY_ID}`)
 }
