@@ -2,11 +2,6 @@
   command = "remix build"
   publish = "public"
 
-[[plugins]]
-package = 'netlify-plugin-contextual-env'
-  [plugins.inputs]
-  mode = 'prefix'
-
 [dev]
   command = "remix watch"
   port = 3000
