@@ -25,18 +25,19 @@ export function groupByTime(bottles: Bottle[]) {
 }
 
 export function getDistanceFromNow(date: Date) {
-  if (isSameMinute(date, new Date())) {
+  let now = new Date()
+  if (isSameMinute(date, now)) {
     return (
       "il y a " +
       formatDistanceToNow(date, { locale: fr, includeSeconds: true })
     );
-  } else if (isSameDay(date, new Date())) {
+  } else if (isSameDay(date, now) && isBefore(date, now)) {
     return (
       "il y a " +
       formatDuration(
         intervalToDuration({
           start: date,
-          end: new Date(),
+          end: now,
         }),
         {
           locale: fr,
@@ -46,7 +47,7 @@ export function getDistanceFromNow(date: Date) {
       )
     );
   } else {
-    return formatRelative(date, new Date(), { locale: fr });
+    return formatRelative(date, now, { locale: fr });
   }
 }
 
