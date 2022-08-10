@@ -44,8 +44,6 @@ export async function loader({ params }: LoaderArgs) {
       ? ({} as Bottle)
       : await getBottle(params.bottleId)
 
-  console.log(bottle.time)
-
   return superjson({
     bottle,
   })
@@ -196,12 +194,6 @@ export default function BottlePage() {
                   let [hours, minutes] = (bottle.time ?? new Date())
                     .toLocaleTimeString()
                     .split(':')
-
-                  console.log(
-                    dateToISOLikeButLocal(bottle.time ?? new Date()).split(
-                      'T',
-                    )[0],
-                  )
 
                   return (
                     <div className="form-control w-full">

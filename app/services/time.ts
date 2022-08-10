@@ -4,14 +4,12 @@ import {
   formatDuration,
   formatRelative,
   intervalToDuration,
-  intlFormat,
   isBefore,
   isSameDay,
   isSameMinute,
-  subDays,
 } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Bottle } from "./firebase.server";
+import type { Bottle } from "./firebase.server";
 
 export function groupByTime(bottles: Bottle[]) {
   return bottles.reduce((acc, bottle) => {

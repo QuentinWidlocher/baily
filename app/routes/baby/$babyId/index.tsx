@@ -1,25 +1,25 @@
-import { LoaderArgs } from "@remix-run/node";
-import { getBaby } from "~/services/firebase.server";
-import { superjson, useSuperLoaderData } from "~/services/superjson";
-import { Link } from "@remix-run/react";
-import invariant from "tiny-invariant";
+import { LoaderArgs } from '@remix-run/node'
+import { getBaby } from '~/services/firebase.server'
+import { superjson, useSuperLoaderData } from '~/services/superjson'
+import { Link } from '@remix-run/react'
+import invariant from 'tiny-invariant'
 import {
   getDistanceFromNow,
   getRelativeDate,
   groupByTime,
-} from "~/services/time";
-import { Fragment } from "react";
-import { formatRelative, parse } from "date-fns";
+} from '~/services/time'
+import { Fragment } from 'react'
+import { parse } from 'date-fns'
 
 export async function loader({ params }: LoaderArgs) {
-  invariant(params.babyId, "params.id is required");
-  return superjson({ baby: await getBaby(params.babyId) });
+  invariant(params.babyId, 'params.id is required')
+  return superjson({ baby: await getBaby(params.babyId) })
 }
 
 export default function Index() {
-  let { baby } = useSuperLoaderData<typeof loader>();
+  let { baby } = useSuperLoaderData<typeof loader>()
 
-  let groupedBottles = groupByTime(baby.bottles);
+  let groupedBottles = groupByTime(baby.bottles)
 
   return (
     <>
@@ -33,11 +33,11 @@ export default function Index() {
               <Fragment key={day}>
                 <li className="menu-title mt-10">
                   <span>
-                    {getRelativeDate(parse(day, "yyyy-MM-dd", new Date()))}
+                    {getRelativeDate(parse(day, 'yyyy-MM-dd', new Date()))}
                   </span>
                 </li>
                 {groupedBottles[day].map((bottle) => {
-                  let distanceToNow = getDistanceFromNow(bottle.time);
+                  let distanceToNow = getDistanceFromNow(bottle.time)
 
                   return (
                     <li key={bottle.id}>
@@ -51,7 +51,7 @@ export default function Index() {
                         </span>
                       </Link>
                     </li>
-                  );
+                  )
                 })}
               </Fragment>
             ))}
@@ -65,5 +65,5 @@ export default function Index() {
         </div>
       </section>
     </>
-  );
+  )
 }
