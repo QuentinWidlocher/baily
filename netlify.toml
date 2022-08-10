@@ -2,10 +2,10 @@
   command = "remix build"
   publish = "public"
 
-[build.environment]
-  DEFAULT_BABY_ID = "jfLdOvMT5o73TZigbFOG"
-[context.deploy-preview.environment]
-  DEFAULT_BABY_ID = "RPNkAF7syRNliNfrgUED"
+[[plugins]]
+package = 'netlify-plugin-contextual-env'
+  [plugins.inputs]
+  mode = 'prefix'
 
 [dev]
   command = "remix watch"
