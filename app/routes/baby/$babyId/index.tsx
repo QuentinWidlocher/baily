@@ -9,9 +9,9 @@ import {
   getRelativeDate,
   groupByTime,
 } from '~/services/time'
-import { Fragment, useEffect } from 'react'
+import { Fragment } from 'react'
 import { isSameDay, parse } from 'date-fns'
-import { Plus, MoreHoriz, RefreshDouble } from 'iconoir-react'
+import { Plus, MoreHoriz, RefreshDouble, StatsSquareUp } from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
@@ -53,6 +53,15 @@ export default function Index() {
                     <RefreshDouble />
                     <span>Rafraîchir la page</span>
                   </button>
+                </li>
+                <li>
+                  <Link
+                    className="space-x-2 text-left"
+                    to={`/baby/${babyId}/stats`}
+                  >
+                    <StatsSquareUp />
+                    <span>Voir l'évolution</span>
+                  </Link>
                 </li>
               </ul>
             </div>
