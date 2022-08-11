@@ -11,11 +11,7 @@ import styleSheetUrl from './style.css'
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title:
-    process?.env.NODE_ENV == 'production' &&
-    process?.env.CONTEXT == 'production'
-      ? 'B++'
-      : 'B++ - DEPLOY PREVIEW',
+  title: 'B++',
   viewport: 'width=device-width,initial-scale=1',
 })
 
