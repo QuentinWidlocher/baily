@@ -2121,6 +2121,20 @@ html {
   outline: none;
 }
 
+.stats {
+  display: inline-grid;
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: hsl(var(--bc) / var(--tw-text-opacity));
+  border-radius: var(--rounded-box, 1rem);
+}
+
+:where(.stats) {
+  grid-auto-flow: column;
+  overflow-x: auto;
+}
+
 .stat {
   display: inline-grid;
   width: 100%;
@@ -2133,6 +2147,12 @@ html {
   padding-right: 1.5rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.stat-title {
+  grid-column-start: 1;
+  white-space: nowrap;
+  opacity: 0.6;
 }
 
 .stat-value {
@@ -2847,6 +2867,15 @@ html {
   }
 }
 
+:where(.stats) > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-x-reverse: 0;
+  border-right-width: calc(1px * var(--tw-divide-x-reverse));
+  border-left-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+  --tw-divide-y-reverse: 0;
+  border-top-width: calc(0px * calc(1 - var(--tw-divide-y-reverse)));
+  border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
+}
+
 .steps .step:before {
   top: 0px;
   grid-column-start: 1;
@@ -3035,16 +3064,16 @@ html {
   margin-bottom: auto;
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
 .mt-16 {
   margin-top: 4rem;
 }
 
 .mt-5 {
   margin-top: 1.25rem;
-}
-
-.mb-5 {
-  margin-bottom: 1.25rem;
 }
 
 .mr-1 {
@@ -3069,14 +3098,6 @@ html {
 
 .w-full {
   width: 100%;
-}
-
-.w-52 {
-  width: 13rem;
-}
-
-.w-96 {
-  width: 24rem;
 }
 
 .w-72 {
@@ -3111,6 +3132,12 @@ html {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.5rem * var(--tw-space-x-reverse));
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
 .overflow-hidden {
@@ -3157,6 +3184,10 @@ html {
   text-align: left;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .text-right {
   text-align: right;
 }
@@ -3181,6 +3212,11 @@ html {
   line-height: 1;
 }
 
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -3192,6 +3228,11 @@ html {
 .text-error {
   --tw-text-opacity: 1;
   color: hsl(var(--er) / var(--tw-text-opacity));
+}
+
+.text-success {
+  --tw-text-opacity: 1;
+  color: hsl(var(--su) / var(--tw-text-opacity));
 }
 
 .shadow {
@@ -3213,18 +3254,6 @@ html {
 }
 
 @media (min-width: 768px) {
-  .md\:dropdown-right .dropdown-content {
-    left: 100%;
-    top: 0px;
-    bottom: auto;
-    transform-origin: left;
-  }
-
-  .dropdown-end.md\:dropdown-right .dropdown-content {
-    bottom: 0px;
-    top: auto;
-  }
-
   .md\:mb-auto {
     margin-bottom: auto;
   }

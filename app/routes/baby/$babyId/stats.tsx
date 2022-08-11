@@ -27,7 +27,7 @@ export default function StatsPage() {
           <span>Retour</span>
         </Link>
         <ul className="space-y-2">
-          {keys.reverse().map((week, i) => (
+          {keys.map((week, i) => (
             <li key={week}>
               <div className="stats w-full shadow">
                 <div className="stat">
@@ -41,20 +41,9 @@ export default function StatsPage() {
 
                 <div className="stat">
                   <div className="stat-title">Total</div>
-                  <div className="stat-value">{bottles[week].total} ml</div>
+                  <div className="stat-value">{bottles[week].total}ml</div>
                   <div className="stat-desc text-base flex justify-between">
-                    <span>{bottles[week].bottles.length} bibs</span>
-                    {i < keys.length - 1 ? (
-                      <span
-                        className={
-                          bottles[week].evolution > 1
-                            ? 'text-success'
-                            : 'text-error'
-                        }
-                      >
-                        {Math.round(bottles[week].evolution * 100)} %
-                      </span>
-                    ) : null}
+                    <span>{bottles[week].bottles.length} biberons</span>
                   </div>
                 </div>
               </div>

@@ -49,21 +49,19 @@ export function groupByWeeks(bottles: Bottle[]) {
 
   let keys = Object.keys(grouped).sort(
     (a, b) =>
-      parse(a, 'yyyy-MM-dd', new Date()).getTime() -
-      parse(b, 'yyyy-MM-dd', new Date()).getTime()
+      parse(b, 'yyyy-MM-dd', new Date()).getTime() -
+      parse(a, 'yyyy-MM-dd', new Date()).getTime()
   )
   console.log('keys', keys)
 
   let formatted = keys.reduce(
-    (acc, key, i) => {
+    (acc, key) => {
       let parsedDate = parse(key, 'yyyy-MM-dd', new Date())
-      let previousKey = keys[i - 1]
       let total = grouped[key].reduce((acc, bottle) => acc + bottle.quantity, 0)
 
       return {
         ...acc,
         [key]: {
-          evolution: previousKey ? total / acc[previousKey].total : 1,
           week: getWeek(parsedDate, { locale: fr }),
           start: parsedDate,
           end: lastDayOfWeek(parsedDate, { locale: fr }),
@@ -74,7 +72,6 @@ export function groupByWeeks(bottles: Bottle[]) {
     },
     {} as {
       [key: string]: {
-        evolution: number
         bottles: Bottle[]
         total: number
         week: number
