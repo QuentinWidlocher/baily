@@ -19,5 +19,8 @@
 [context.production.environment]
   DEFAULT_BABY_ID = "jfLdOvMT5o73TZigbFOG"
 
-[context.branch-deploy.environment]
+[context.develop]
+  command = "remix build && echo develop"
+
+[context.develop.environment]
   DEFAULT_BABY_ID = "RPNkAF7syRNliNfrgUED"
