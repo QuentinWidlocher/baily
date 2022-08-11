@@ -79,7 +79,7 @@ export async function action({ request, params }: ActionArgs) {
           Number(hours),
           Number(minutes),
           new Date().getSeconds(),
-          0,
+          0
         )
 
         if (params.bottleId == 'new') {
@@ -118,7 +118,7 @@ export default function BottlePage() {
         type="range"
         min="40"
         max="240"
-        value={sliderQuantity}
+        value={sliderQuantity || 0}
         onChange={(e) => setSliderQuantity(e.target.valueAsNumber)}
         className="range"
         step="5"
@@ -134,7 +134,7 @@ export default function BottlePage() {
         <span>115</span>
         <span>240</span>
       </div>
-      <span className="my-auto text-6xl">{sliderQuantity} ml</span>
+      <span className="my-auto text-6xl">{sliderQuantity || 0} ml</span>
       <section className="card md:mb-auto bg-base-200 w-full md:w-96">
         <div className="card-body">
           <div className="flex justify-between">
@@ -209,7 +209,7 @@ export default function BottlePage() {
                         type="date"
                         value={
                           dateToISOLikeButLocal(
-                            bottle.time ?? new Date(),
+                            bottle.time ?? new Date()
                           ).split('T')[0]
                         }
                         className="input w-full"

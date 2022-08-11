@@ -6,7 +6,6 @@ import invariant from 'tiny-invariant'
 import {
   displayTime,
   getDistanceFromNow,
-  getDuration,
   getRelativeDate,
   groupByTime,
 } from '~/services/time'
@@ -22,7 +21,7 @@ export async function loader({ params }: LoaderArgs) {
 
   console.log(
     'Server timezone',
-    Intl.DateTimeFormat().resolvedOptions().timeZone,
+    Intl.DateTimeFormat().resolvedOptions().timeZone
   )
   console.log('Server timezone offset', new Date().getTimezoneOffset())
 
@@ -35,7 +34,7 @@ export default function Index() {
   useEffect(() => {
     console.log(
       'Client timezone',
-      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      Intl.DateTimeFormat().resolvedOptions().timeZone
     )
     console.log('Client timezone offset', new Date().getTimezoneOffset())
   }, [])
@@ -50,7 +49,7 @@ export default function Index() {
           <ul className="menu -mx-5 p-2 flex-1 overflow-y-auto">
             {Object.keys(groupedBottles).map((day) => (
               <Fragment key={day}>
-                <li className="mt-10 flex mx-3 flex-row justify-between">
+                <li className="mt-16 first-of-type:mt-0 flex mx-3 flex-row justify-between">
                   <span className="hover:bg-transparent hover:cursor-default p-1">
                     {getRelativeDate(parse(day, 'yyyy-MM-dd', new Date()))}
                   </span>
@@ -58,22 +57,31 @@ export default function Index() {
                     Total : {groupedBottles[day].total}ml
                   </span>
                 </li>
-                {groupedBottles[day].bottles.map((bottle) => (
-                  <li key={bottle.id}>
-                    <Link
-                      className="stat"
-                      to={`/baby/${babyId}/bottle/${bottle.id}`}
-                    >
-                      <span className="stat-value">{bottle.quantity}ml</span>
-                      <span className="stat-desc text-lg leading-tight flex justify-between">
-                        {getDistanceFromNow(bottle.time)}
-                        {isSameDay(bottle.time, new Date()) ? (
+                {groupedBottles[day].bottles.map((bottle) => {
+                  let sameDay = isSameDay(bottle.time, new Date())
+                  return (
+                    <li key={bottle.id}>
+                      <Link
+                        className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
+                        to={`/baby/${babyId}/bottle/${bottle.id}`}
+                      >
+                        <span className="stat-value">{bottle.quantity}ml</span>
+                        <span
+                          className={`stat-desc text-lg leading-tight ${
+                            sameDay
+                              ? 'flex justify-between'
+                              : 'col-start-2 text-right'
+                          }`}
+                        >
+                          {isSameDay(bottle.time, new Date()) ? (
+                            <span>{getDistanceFromNow(bottle.time)}</span>
+                          ) : null}
                           <span>{displayTime(bottle.time)}</span>
-                        ) : null}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
+                        </span>
+                      </Link>
+                    </li>
+                  )
+                })}
               </Fragment>
             ))}
           </ul>
