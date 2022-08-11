@@ -15,3 +15,9 @@
   for = "/build/*"
   [headers.values]
     "Cache-Control" = "public, max-age=31536000, s-maxage=31536000"
+
+[context.production.environment]
+  DEFAULT_BABY_ID = "jfLdOvMT5o73TZigbFOG"
+
+[context.deploy-preview.environment]
+  DEFAULT_BABY_ID = "RPNkAF7syRNliNfrgUED"
