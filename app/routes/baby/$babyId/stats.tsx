@@ -9,7 +9,7 @@ import { groupByWeeks } from '~/services/time'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
-  let baby = await getBaby(params.babyId)
+  let baby = await getBaby(params.babyId, true)
 
   return superjson({ data: groupByWeeks(baby.bottles) })
 }
