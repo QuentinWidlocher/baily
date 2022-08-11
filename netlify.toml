@@ -19,5 +19,5 @@
 [context.production.environment]
   DEFAULT_BABY_ID = "jfLdOvMT5o73TZigbFOG"
 
-[context.deploy-preview.environment]
+[context.branch-deploy.environment]
   DEFAULT_BABY_ID = "RPNkAF7syRNliNfrgUED"
