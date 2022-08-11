@@ -10,7 +10,7 @@ import {
   groupByTime,
 } from '~/services/time'
 import { Fragment, useEffect } from 'react'
-import { format, isSameDay, parse } from 'date-fns'
+import { isSameDay, parse } from 'date-fns'
 import { Plus } from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {
@@ -30,14 +30,6 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function Index() {
   let { babyId, babyName, groupedBottles } = useSuperLoaderData<typeof loader>()
-
-  useEffect(() => {
-    console.log(
-      'Client timezone',
-      Intl.DateTimeFormat().resolvedOptions().timeZone
-    )
-    console.log('Client timezone offset', new Date().getTimezoneOffset())
-  }, [])
 
   return (
     <>
