@@ -11,7 +11,7 @@ import {
 } from '~/services/time'
 import { Fragment, useEffect } from 'react'
 import { isSameDay, parse } from 'date-fns'
-import { Plus } from 'iconoir-react'
+import { Plus, MoreHoriz, RefreshDouble } from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
@@ -35,9 +35,28 @@ export default function Index() {
     <>
       <section className="card flex-1 bg-base-200 w-full md:w-96">
         <div className="card-body overflow-y-auto overflow-x-hidden">
-          <h1 className="card-title text-xl mx-auto mb-5">
-            Les biberons de {babyName}
-          </h1>
+          <div className="card-title flex justify-between mb-5">
+            <h1 className="text-xl">Les biberons de {babyName}</h1>
+            <div className="dropdown dropdown-end">
+              <label tabIndex={0} className="btn btn-square btn-ghost m-1">
+                <MoreHoriz />
+              </label>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-72"
+              >
+                <li>
+                  <button
+                    className="space-x-2 text-left"
+                    onClick={() => window.location.reload()}
+                  >
+                    <RefreshDouble />
+                    <span>Rafraîchir la page</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
           <ul className="menu -mx-5 p-2 flex-1 overflow-y-auto">
             {Object.keys(groupedBottles).map((day) => (
               <Fragment key={day}>
