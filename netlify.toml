@@ -20,7 +20,7 @@
   DEFAULT_BABY_ID = "jfLdOvMT5o73TZigbFOG"
 
 [context.develop]
-  command = "npm build && echo \"built on develop, default baby id is $DEFAULT_BABY_ID \""
+  command = "npm build && echo built on develop, default baby id is $DEFAULT_BABY_ID"
 
 [context.develop.environment]
   DEFAULT_BABY_ID = "RPNkAF7syRNliNfrgUED"
