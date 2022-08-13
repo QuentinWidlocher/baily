@@ -5,3 +5,4 @@ node_modules
 /.netlify
 .env
 firebase-private-key.json
+/app/style.css
