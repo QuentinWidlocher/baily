@@ -26,10 +26,10 @@ export default function StatsPage() {
           <NavArrowLeft />
           <span>Retour</span>
         </Link>
-        <ul className="space-y-2">
+        <ul className="space-y-2 -mx-2">
           {keys.map((week, i) => (
             <li key={week}>
-              <div className="stats w-full shadow">
+              <div className="stats w-full shadow overflow-x-hidden">
                 <div className="stat">
                   <div className="stat-title">Semaine</div>
                   <div className="stat-value">{bottles[week].week}</div>
