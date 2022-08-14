@@ -1,9 +1,10 @@
 import { createRequestHandler } from "@remix-run/netlify";
 import * as build from "@remix-run/dev/server-build";
 import { register } from 'timezone-mock'
+import { config } from 'dotenv'
 import { expand } from 'dotenv-expand'
 
-expand()
+expand(config())
 
 register('Etc/GMT-2')
 

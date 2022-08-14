@@ -17,6 +17,7 @@ specifiers:
   daisyui: ^2.22.0
   date-fns: ^2.29.1
   date-fns-tz: ^1.3.6
+  dotenv: ^16.0.1
   dotenv-expand: ^8.0.3
   eslint: ^8.20.0
   firebase-admin: ^11.0.1
@@ -51,6 +52,7 @@ dependencies:
   daisyui: 2.22.0_25hquoklqeoqwmt7fwvvcyxm5e
   date-fns: 2.29.1
   date-fns-tz: 1.3.6_date-fns@2.29.1
+  dotenv: 16.0.1
   dotenv-expand: 8.0.3
   eslint: 8.21.0
   firebase-admin: 11.0.1_@firebase+app-types@0.7.0
