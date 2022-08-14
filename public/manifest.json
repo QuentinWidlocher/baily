@@ -22,7 +22,14 @@
         {
             "name": "Ajouter un biberon",
             "description": "Accéder directement à la page d'ajout d'un biberon",
-            "url": "/quick-add-bottle"
+            "url": "/quick-add-bottle",
+            "icons": [
+                {
+                    "src": "/quick-add-bottle-icon.svg",
+                    "type": "image/svg+xml",
+                    "purpose": "any"
+                }
+            ]
         }
     ]
 }

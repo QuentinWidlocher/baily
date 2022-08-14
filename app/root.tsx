@@ -58,7 +58,7 @@ export default function App() {
         <Scripts />
         {process.env.NODE_ENV != 'development' ? (
           <>
-            <script src="/sw-launcher.js" />
+            <script async src="/sw-launcher.js" />
           </>
         ) : (
           <LiveReload />
