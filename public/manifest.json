@@ -17,5 +17,12 @@
     ],
     "theme_color": "#641ae6",
     "background_color": "#ffffff",
-    "display": "standalone"
+    "display": "standalone",
+    "shortcuts": [
+        {
+            "name": "Ajouter un biberon",
+            "description": "Accéder directement à la page d'ajout d'un biberon",
+            "url": "/quick-add-bottle"
+        }
+    ]
 }
