@@ -1,5 +1,5 @@
 [build]
-  command = "tailwindcss --output ./app/style.css --config tailwind.config.js --minify && remix build"
+  command = "tailwindcss --output ./app/style.css --config tailwind.config.js --minify && DEFAULT_BABY=jfLdOvMT5o73TZigbFOG remix build"
   publish = "public"
 
 [dev]
@@ -20,7 +20,7 @@
   DEFAULT_BABY = "jfLdOvMT5o73TZigbFOG"
 
 [context.develop]
-  command = "echo $DEFAULT_BABY; tailwindcss --output ./app/style.css --config tailwind.config.js --minify && remix build"
+  command = "tailwindcss --output ./app/style.css --config tailwind.config.js --minify && DEFAULT_BABY=RPNkAF7syRNliNfrgUED remix build"
 
 [context.develop.environment]
   DEFAULT_BABY = "RPNkAF7syRNliNfrgUED"
