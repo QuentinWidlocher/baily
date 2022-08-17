@@ -108,7 +108,7 @@ export async function getBaby(id: string, allBottles = false) {
           babyFromFb.bottles ?? []
 
         if (!allBottles) {
-          bottleRefs = bottleRefs.slice(0, 30)
+          bottleRefs = bottleRefs.slice(-30)
         }
 
         let bottles = await Promise.all(
