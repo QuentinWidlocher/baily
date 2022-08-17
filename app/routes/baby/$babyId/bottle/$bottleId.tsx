@@ -79,7 +79,7 @@ export async function action({ request, params }: ActionArgs) {
           Number(hours),
           Number(minutes),
           new Date().getSeconds(),
-          0
+          0,
         )
 
         if (params.bottleId == 'new') {
@@ -114,33 +114,37 @@ export default function BottlePage() {
 
   return (
     <>
-      <input
-        type="range"
-        min="40"
-        max="240"
-        value={sliderQuantity || 0}
-        onChange={(e) => setSliderQuantity(e.target.valueAsNumber)}
-        className="range"
-        step="5"
-      />
-      <div className="w-full flex justify-between text-xs px-2">
-        <span>40</span>
-        <span>65</span>
-        <span>90</span>
-        <span>115</span>
-        <span>140</span>
-        <span>165</span>
-        <span>190</span>
-        <span>115</span>
-        <span>240</span>
+      <div className="flex flex-col-reverse flex-1 w-full mb-5 align-middle md:mb-0 md:flex-col">
+        <input
+          type="range"
+          min="40"
+          max="240"
+          value={sliderQuantity || 0}
+          onChange={(e) => setSliderQuantity(e.target.valueAsNumber)}
+          className="range"
+          step="5"
+        />
+        <div className="flex justify-between w-full px-2 text-xs">
+          <span>40</span>
+          <span>65</span>
+          <span>90</span>
+          <span>115</span>
+          <span>140</span>
+          <span>165</span>
+          <span>190</span>
+          <span>115</span>
+          <span>240</span>
+        </div>
+        <span className="my-auto text-6xl text-center">
+          {sliderQuantity || 0} ml
+        </span>
       </div>
-      <span className="my-auto text-6xl">{sliderQuantity || 0} ml</span>
-      <section className="card md:mb-auto bg-base-200 w-full md:w-96">
+      <section className="w-full card md:mb-auto bg-base-200 md:w-96">
         <div className="card-body">
           <div className="flex justify-between">
             <Link
               to="./../.."
-              className="btn btn-ghost mb-5 space-x-2"
+              className="mb-5 space-x-2 btn btn-ghost"
               title="Retour"
             >
               <NavArrowLeft />
@@ -175,7 +179,7 @@ export default function BottlePage() {
                   {({ Label, Errors, SmartInput }) => (
                     <div className="form-control">
                       <Label className="label">
-                        <span className="label-text text-lg">
+                        <span className="text-lg label-text">
                           Quantité donnée
                         </span>
                       </Label>
@@ -187,7 +191,7 @@ export default function BottlePage() {
                           onChange={(e) => {
                             setSliderQuantity(e.target.valueAsNumber)
                           }}
-                          className="input w-full"
+                          className="w-full input"
                         />
                         <span>ml</span>
                       </label>
@@ -201,18 +205,18 @@ export default function BottlePage() {
                 </Field>
                 <Field name="date">
                   {({ Label, Errors, SmartInput }) => (
-                    <div className="form-control w-full">
+                    <div className="w-full form-control">
                       <Label className="label">
-                        <span className="label-text text-lg">Date</span>
+                        <span className="text-lg label-text">Date</span>
                       </Label>
                       <SmartInput
                         type="date"
                         value={
                           dateToISOLikeButLocal(
-                            bottle.time ?? new Date()
+                            bottle.time ?? new Date(),
                           ).split('T')[0]
                         }
-                        className="input w-full"
+                        className="w-full input"
                       />
                       <label className="label">
                         <span className="label-text-alt text-error">
@@ -229,14 +233,14 @@ export default function BottlePage() {
                       .split(':')
 
                     return (
-                      <div className="form-control w-full">
+                      <div className="w-full form-control">
                         <Label className="label">
-                          <span className="label-text text-lg">Heure</span>
+                          <span className="text-lg label-text">Heure</span>
                         </Label>
                         <SmartInput
                           type="time"
                           value={`${hours}:${minutes}`}
-                          className="input w-full"
+                          className="w-full input"
                         />
                         <label className="label">
                           <span className="label-text-alt text-error">
@@ -247,7 +251,7 @@ export default function BottlePage() {
                     )
                   }}
                 </Field>
-                <Button className="btn btn-primary w-full mt-10 space-x-2">
+                <Button className="w-full mt-10 space-x-2 btn btn-primary">
                   <SaveFloppyDisk />
                   <span>{bottle.id ? 'Modifier' : 'Ajouter'} ce biberon</span>
                 </Button>

@@ -9,9 +9,15 @@ import {
   getRelativeDate,
   groupByTime,
 } from '~/services/time'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { isSameDay, parse } from 'date-fns'
-import { Plus, MoreHoriz, RefreshDouble, StatsSquareUp } from 'iconoir-react'
+import {
+  Plus,
+  MoreHoriz,
+  RefreshDouble,
+  StatsSquareUp,
+  RefreshCircular,
+} from 'iconoir-react'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
@@ -21,7 +27,7 @@ export async function loader({ params }: LoaderArgs) {
 
   console.log(
     'Server timezone',
-    Intl.DateTimeFormat().resolvedOptions().timeZone
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
   )
   console.log('Server timezone offset', new Date().getTimezoneOffset())
 
@@ -30,50 +36,69 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function Index() {
   let { babyId, babyName, groupedBottles } = useSuperLoaderData<typeof loader>()
+  let [reloading, setReloading] = useState(false)
+  let [navToStats, setNavToStats] = useState(false)
 
   return (
     <>
-      <section className="card flex-1 bg-base-200 w-full md:w-96">
-        <div className="card-body overflow-y-auto overflow-x-hidden">
-          <div className="card-title flex justify-between mb-5">
+      <section className="flex-1 w-full card bg-base-200 md:w-96">
+        <div className="overflow-x-hidden overflow-y-auto card-body">
+          <div className="flex justify-between mb-5 card-title">
             <h1 className="text-xl">Les biberons de {babyName}</h1>
             <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn btn-square btn-ghost m-1">
+              <label tabIndex={0} className="m-1 btn btn-square btn-ghost">
                 <MoreHoriz />
               </label>
               <ul
                 tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-72"
+                className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-72"
               >
                 <li>
                   <button
-                    className="space-x-2 text-left"
-                    onClick={() => window.location.reload()}
+                    className={`space-x-2 text-left ${
+                      reloading ? 'animate-pulse' : ''
+                    }`}
+                    onClick={() => {
+                      setReloading(true)
+                      window.location.reload()
+                    }}
+                    disabled={reloading}
                   >
-                    <RefreshDouble />
+                    {reloading ? (
+                      <RefreshCircular className="animate-spin" />
+                    ) : (
+                      <RefreshDouble />
+                    )}
                     <span>Rafraîchir la page</span>
                   </button>
                 </li>
                 <li>
                   <Link
-                    className="space-x-2 text-left"
+                    className={`space-x-2 text-left ${
+                      navToStats ? 'animate-pulse' : ''
+                    }`}
                     to={`/baby/${babyId}/stats`}
+                    onClick={() => setNavToStats(true)}
                   >
-                    <StatsSquareUp />
+                    {navToStats ? (
+                      <RefreshCircular className="animate-spin" />
+                    ) : (
+                      <StatsSquareUp />
+                    )}
                     <span>Voir l'évolution</span>
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
-          <ul className="menu -mx-5 p-2 flex-1 overflow-y-auto">
+          <ul className="flex-1 p-2 -mx-5 overflow-y-auto menu">
             {Object.keys(groupedBottles).map((day) => (
               <Fragment key={day}>
-                <li className="mt-16 first-of-type:mt-0 flex mx-3 flex-row justify-between">
-                  <span className="hover:bg-transparent hover:cursor-default p-1">
+                <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">
+                  <span className="p-1 hover:bg-transparent hover:cursor-default">
                     {getRelativeDate(parse(day, 'yyyy-MM-dd', new Date()))}
                   </span>
-                  <span className="hover:bg-transparent hover:cursor-default p-1 font-bold">
+                  <span className="p-1 font-bold hover:bg-transparent hover:cursor-default">
                     Total : {groupedBottles[day].total}ml
                   </span>
                 </li>
@@ -107,7 +132,7 @@ export default function Index() {
           </ul>
           <Link
             to={`/baby/${babyId}/bottle/new`}
-            className="btn btn-primary mt-5 w-full space-x-2"
+            className="w-full mt-5 space-x-2 btn btn-primary"
           >
             <Plus />
             <span>Ajouter un biberon</span>
