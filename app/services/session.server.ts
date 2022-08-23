@@ -33,7 +33,7 @@ export async function getUserSession(request: Request) {
   return storage.getSession(request.headers.get('Cookie'))
 }
 
-export async function requireUserId(request: Request) {
+export async function getUserId(request: Request) {
   try {
     const sessionCookie = (await getUserSession(request)) ?? ''
     let { uid } = await firebaseAdminAuth.verifySessionCookie(
@@ -42,8 +42,16 @@ export async function requireUserId(request: Request) {
     )
     return uid
   } catch (err) {
-    console.error(err)
+    return null
+  }
+}
+
+export async function requireUserId(request: Request) {
+  let uid = getUserId(request)
+  if (!uid) {
     throw redirect('/login')
+  } else {
+    return uid
   }
 }
 
