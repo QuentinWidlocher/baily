@@ -28,6 +28,7 @@
     "dotenv": "^16.0.1",
     "dotenv-expand": "^8.0.3",
     "eslint": "^8.20.0",
+    "firebase": "^9.9.3",
     "firebase-admin": "^11.0.1",
     "iconoir-react": "^5.1.4",
     "postcss": "^8.4.16",

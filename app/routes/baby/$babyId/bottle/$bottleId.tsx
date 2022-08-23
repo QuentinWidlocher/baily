@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { Form as BasicForm, Link } from '@remix-run/react'
+import { Link } from '@remix-run/react'
 import invariant from 'tiny-invariant'
 import type { Bottle } from '~/services/firebase.server'
 import {
@@ -79,7 +79,7 @@ export async function action({ request, params }: ActionArgs) {
           Number(hours),
           Number(minutes),
           new Date().getSeconds(),
-          0,
+          0
         )
 
         if (params.bottleId == 'new') {
@@ -213,7 +213,7 @@ export default function BottlePage() {
                         type="date"
                         value={
                           dateToISOLikeButLocal(
-                            bottle.time ?? new Date(),
+                            bottle.time ?? new Date()
                           ).split('T')[0]
                         }
                         className="w-full input"

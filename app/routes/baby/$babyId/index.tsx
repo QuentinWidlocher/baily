@@ -1,5 +1,5 @@
 import type { LoaderArgs } from '@remix-run/node'
-import { getBaby } from '~/services/firebase.server'
+import { getBabies, getBaby } from '~/services/firebase.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { Link } from '@remix-run/react'
 import invariant from 'tiny-invariant'
@@ -17,34 +17,62 @@ import {
   RefreshDouble,
   StatsSquareUp,
   RefreshCircular,
+  NavArrowDown,
+  LogOut,
 } from 'iconoir-react'
+import { requireUserId } from '~/services/session.server'
 
-export async function loader({ params }: LoaderArgs) {
-  invariant(params.babyId, 'params.id is required')
+export async function loader({ params, request }: LoaderArgs) {
+  invariant(params.babyId, 'params.babyId is required')
+
+  let uid = await requireUserId(request)
 
   let baby = await getBaby(params.babyId)
   let groupedBottles = groupByTime(baby.bottles)
 
-  console.log(
-    'Server timezone',
-    Intl.DateTimeFormat().resolvedOptions().timeZone,
-  )
-  console.log('Server timezone offset', new Date().getTimezoneOffset())
+  let babies = (await getBabies(uid)).filter((b) => b.id !== baby.id)
 
-  return superjson({ babyName: baby.name, babyId: baby.id, groupedBottles })
+  return superjson({
+    babyName: baby.name,
+    babyId: baby.id,
+    groupedBottles,
+    babies,
+  })
 }
 
 export default function Index() {
-  let { babyId, babyName, groupedBottles } = useSuperLoaderData<typeof loader>()
+  let { babyId, babyName, groupedBottles, babies } =
+    useSuperLoaderData<typeof loader>()
   let [reloading, setReloading] = useState(false)
   let [navToStats, setNavToStats] = useState(false)
+  let [loggingOut, setLoggingOut] = useState(false)
 
   return (
     <>
-      <section className="flex-1 w-full card bg-base-200 md:w-96">
+      <section className="flex-1 w-full card bg-base-200 md:w-1/4">
         <div className="overflow-x-hidden overflow-y-auto card-body">
           <div className="flex justify-between mb-5 card-title">
-            <h1 className="text-xl">Les biberons de {babyName}</h1>
+            <div className="flex space-x-2">
+              <h1 className="text-xl hidden md:block">Les biberons de </h1>
+              <div className="dropdown">
+                <label className="flex items-center" tabIndex={0}>
+                  <span>{babyName}</span> <NavArrowDown className="text-sm" />
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-72"
+                >
+                  {babies.map((baby) => (
+                    <li key={baby.id}>
+                      <Link to={`../${baby.id}`}>{baby.name}</Link>
+                    </li>
+                  ))}
+                  <li>
+                    <Link to={`../new`}>Nouveau bébé 🥳</Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
             <div className="dropdown dropdown-end">
               <label tabIndex={0} className="m-1 btn btn-square btn-ghost">
                 <MoreHoriz />
@@ -86,6 +114,22 @@ export default function Index() {
                       <StatsSquareUp />
                     )}
                     <span>Voir l'évolution</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className={`space-x-2 text-left ${
+                      loggingOut ? 'animate-pulse' : ''
+                    }`}
+                    to={`/logout`}
+                    onClick={() => setLoggingOut(true)}
+                  >
+                    {loggingOut ? (
+                      <RefreshCircular className="animate-spin" />
+                    ) : (
+                      <LogOut />
+                    )}
+                    <span>Déconnexion</span>
                   </Link>
                 </li>
               </ul>

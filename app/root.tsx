@@ -1,5 +1,6 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -63,6 +64,26 @@ export default function App() {
         ) : (
           <LiveReload />
         )}
+      </body>
+    </html>
+  )
+}
+
+export function ErrorBoundary() {
+  return (
+    <html>
+      <head>
+        <Links />
+      </head>
+      <body>
+        <div className="flex flex-col items-center justify-center h-screen">
+          <div className="text-center text-xl">
+            <p>Une erreur est survenue</p>
+            <p>
+              <Link to="/">Retour à l'accueil</Link>
+            </p>
+          </div>
+        </div>
       </body>
     </html>
   )

@@ -1,17 +1,29 @@
-import type { App } from 'firebase-admin/app'
-import { initializeApp } from 'firebase-admin/app'
+import type { App as AdminApp } from 'firebase-admin/app'
+import { initializeApp as initializeAdmin } from 'firebase-admin/app'
 import { credential } from 'firebase-admin'
 import type {
   DocumentReference,
   DocumentSnapshot,
 } from 'firebase-admin/firestore'
+import { Auth, getAuth as getAdminAuth } from 'firebase-admin/auth'
 import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore'
+import { initializeApp, FirebaseApp } from 'firebase/app'
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  UserCredential,
+} from 'firebase/auth'
 
-let firebaseApp: App
-export let firestore: FirebaseFirestore.Firestore
+let firebaseAdmin: AdminApp
+let firebaseApp: FirebaseApp
+export let firebaseAdminAuth: Auth
+let firestore: FirebaseFirestore.Firestore
 
 declare global {
-  var _firebaseApp: App | undefined
+  var _firebaseAdmin: AdminApp | undefined
+  var _firebaseApp: FirebaseApp | undefined
+  var _firebaseAdminAuth: Auth | undefined
   var _firestore: FirebaseFirestore.Firestore | undefined
 }
 
@@ -19,7 +31,7 @@ declare global {
 // the server with every change, but we want to make sure we don't
 // create a new connection to the DB with every change either.
 if (process.env.NODE_ENV === 'production') {
-  firebaseApp = initializeApp({
+  firebaseAdmin = initializeAdmin({
     credential: credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -27,10 +39,25 @@ if (process.env.NODE_ENV === 'production') {
     }),
   })
 
-  firestore = getFirestore(firebaseApp)
+  firebaseApp = initializeApp({
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+  })
+
+  firebaseAdminAuth = getAdminAuth(firebaseAdmin)
+  firestore = getFirestore(firebaseAdmin)
 } else {
-  if (!global._firebaseApp) {
-    global._firebaseApp = initializeApp({
+  if (
+    !global._firebaseAdmin ||
+    !global._firebaseApp ||
+    !global._firebaseAdminAuth ||
+    !global._firestore
+  ) {
+    global._firebaseAdmin = initializeAdmin({
       credential: credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -39,10 +66,23 @@ if (process.env.NODE_ENV === 'production') {
       databaseURL: process.env.FIREBASE_DATABASE_URL,
     })
 
-    global._firestore = getFirestore(global._firebaseApp)
+    global._firebaseApp = initializeApp({
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+    })
+
+    global._firebaseAdminAuth = getAdminAuth(global._firebaseAdmin)
+    global._firestore = getFirestore(global._firebaseAdmin)
   }
+
+  firebaseAdmin = global._firebaseAdmin
   firebaseApp = global._firebaseApp
-  firestore = global._firestore!
+  firebaseAdminAuth = global._firebaseAdminAuth
+  firestore = global._firestore
 }
 
 type BottleFromFirebase = {
@@ -93,6 +133,19 @@ function getDataAndId<T extends { id: string }>(doc: DocumentSnapshot): T {
   } as T
 }
 
+export async function getBabies(userId: string) {
+  console.log(
+    '🚀 ~ file: firebase.server.ts ~ line 132 ~ getBabies ~ userId',
+    userId
+  )
+  const snapshot = await firestore
+    .collection('babies')
+    .where('userId', '==', userId)
+    .get()
+  console.log(snapshot.docs)
+  return snapshot.docs.map(getDataAndId) as Baby[]
+}
+
 export async function getBaby(id: string, allBottles = false) {
   return parseBabyFromFirebase(
     (await firestore
@@ -136,6 +189,15 @@ export async function getBaby(id: string, allBottles = false) {
   )
 }
 
+export async function createBaby(userId: string, name: string) {
+  const baby = await firestore.collection('babies').add({
+    name,
+    userId,
+  })
+
+  return baby.id
+}
+
 export async function getBottle(id: string) {
   return parseBottleFromFirebase(
     (await firestore
@@ -163,6 +225,7 @@ export async function createBottle(babyId: string, bottle: Omit<Bottle, 'id'>) {
   let createdBottle = await firestore.collection('bottles').add({
     time: Timestamp.fromDate(bottle.time),
     quantity: bottle.quantity,
+    babyId,
   })
 
   return firestore
@@ -181,4 +244,19 @@ export function updateBottle(bottle: Bottle) {
       time: Timestamp.fromDate(bottle.time),
       quantity: bottle.quantity,
     })
+}
+
+export async function authenticate(email: string, password: string) {
+  let { user } = await signInWithEmailAndPassword(getAuth(), email, password)
+  let result = await user.getIdTokenResult()
+  return result.token
+}
+
+export async function createUser(
+  email: string,
+  password: string
+) {
+  let {user} = await createUserWithEmailAndPassword(getAuth(), email, password)
+
+  return user
 }
