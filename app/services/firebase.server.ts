@@ -134,15 +134,11 @@ function getDataAndId<T extends { id: string }>(doc: DocumentSnapshot): T {
 }
 
 export async function getBabies(userId: string) {
-  console.log(
-    '🚀 ~ file: firebase.server.ts ~ line 132 ~ getBabies ~ userId',
-    userId
-  )
   const snapshot = await firestore
     .collection('babies')
     .where('userId', '==', userId)
     .get()
-  console.log(snapshot.docs)
+
   return snapshot.docs.map(getDataAndId) as Baby[]
 }
 
@@ -196,6 +192,10 @@ export async function createBaby(userId: string, name: string) {
   })
 
   return baby.id
+}
+
+export async function deleteBaby(id: string) {
+  await firestore.collection('babies').doc(id).delete()
 }
 
 export async function getBottle(id: string) {
@@ -252,11 +252,12 @@ export async function authenticate(email: string, password: string) {
   return result.token
 }
 
-export async function createUser(
-  email: string,
-  password: string
-) {
-  let {user} = await createUserWithEmailAndPassword(getAuth(), email, password)
+export async function createUser(email: string, password: string) {
+  let { user } = await createUserWithEmailAndPassword(
+    getAuth(),
+    email,
+    password
+  )
 
   return user
 }

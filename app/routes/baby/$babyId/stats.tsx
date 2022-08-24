@@ -20,7 +20,7 @@ export default function StatsPage() {
   } = useSuperLoaderData<typeof loader>()
 
   return (
-    <section className="card flex-1 bg-base-200 w-full md:w-96">
+    <section className="card flex-1 bg-base-200 w-full md:w-1/2 xl:w-1/4">
       <div className="card-body overflow-y-auto overflow-x-hidden">
         <Link to="./.." className="btn btn-ghost mb-5 space-x-2" title="Retour">
           <NavArrowLeft />
@@ -29,7 +29,7 @@ export default function StatsPage() {
         <ul className="space-y-2 -mx-2">
           {keys.map((week, i) => (
             <li key={week}>
-              <div className="stats w-full shadow overflow-x-hidden">
+              <div className="stats grid grid-cols-2 w-full shadow overflow-x-hidden">
                 <div className="stat">
                   <div className="stat-title">Semaine</div>
                   <div className="stat-value">{bottles[week].week}</div>

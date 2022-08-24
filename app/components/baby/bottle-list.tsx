@@ -22,7 +22,6 @@ export default function BottleList({
   babyId,
   groupedBottles,
 }: BottleListProps) {
-  console.log('BottleList render')
   return (
     <ul className="flex-1 p-2 -mx-5 overflow-y-auto menu">
       {Object.keys(groupedBottles).map((day) => (

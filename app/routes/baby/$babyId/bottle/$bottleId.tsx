@@ -139,7 +139,7 @@ export default function BottlePage() {
           {sliderQuantity || 0} ml
         </span>
       </div>
-      <section className="w-full card md:mb-auto bg-base-200 md:w-96">
+      <section className="card md:mb-auto bg-base-200 w-full md:w-1/2 xl:w-1/4">
         <div className="card-body">
           <div className="flex justify-between">
             <Link

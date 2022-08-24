@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import { ActionArgs, json } from '@remix-run/server-runtime'
+import { ActionArgs, json, LoaderArgs } from '@remix-run/server-runtime'
 import { FirebaseError } from 'firebase/app'
 import { makeDomainFunction } from 'remix-domains'
 import { Form, formAction, performMutation } from 'remix-forms'
