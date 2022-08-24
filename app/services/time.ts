@@ -7,7 +7,7 @@ import {
   isAfter,
   isBefore,
   isSameDay,
-  isSameMinute,
+  differenceInMinutes,
   lastDayOfWeek,
   getWeek,
   startOfWeek,
@@ -86,41 +86,41 @@ export function groupByWeeks(bottles: Bottle[]) {
 
 export function getDistanceFromNow(date: Date) {
   let now = new Date()
-  if (isSameMinute(date, now)) {
+  if (Math.abs(differenceInMinutes(date, now)) <= 1) {
     return (
       'il y a ' +
       formatDistanceToNow(date, { locale: fr, includeSeconds: true })
     )
-  } else if (isSameDay(date, now) && isBefore(date, now)) {
-    return (
-      'il y a ' +
-      formatDuration(
-        intervalToDuration({
-          start: date,
-          end: now,
-        }),
-        {
-          locale: fr,
-          format: ['hours', 'minutes'],
-          delimiter: ' et ',
-        }
+  } else if (isSameDay(date, now)) {
+    let options = {
+      locale: fr,
+      format: ['hours', 'minutes'],
+      delimiter: ' et ',
+    }
+
+    if (isBefore(date, now)) {
+      return (
+        'il y a ' +
+        formatDuration(
+          intervalToDuration({
+            start: date,
+            end: now,
+          }),
+          options
+        )
       )
-    )
-  } else if (isSameDay(date, now) && isAfter(date, now)) {
-    return (
-      'dans ' +
-      formatDuration(
-        intervalToDuration({
-          start: now,
-          end: date,
-        }),
-        {
-          locale: fr,
-          format: ['hours', 'minutes'],
-          delimiter: ' et ',
-        }
+    } else {
+      return (
+        'dans ' +
+        formatDuration(
+          intervalToDuration({
+            start: now,
+            end: date,
+          }),
+          options
+        )
       )
-    )
+    }
   }
 }
 

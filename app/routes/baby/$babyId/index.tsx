@@ -23,6 +23,7 @@ export async function loader({ params, request }: LoaderArgs) {
   return superjson({
     babyName: baby.name,
     babyId: baby.id,
+    empty: baby.bottles.length <= 0,
     groupedBottles,
     babies,
   })
@@ -35,15 +36,24 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function Index() {
-  let { babyId, babyName, groupedBottles, babies } =
+  let { babyId, babyName, groupedBottles, babies, empty } =
     useSuperLoaderData<typeof loader>()
 
   return (
     <section className="flex-1 card bg-base-200 w-full md:w-1/2 xl:w-1/4">
       <div className="overflow-x-hidden overflow-y-auto card-body">
         <TitleBar babyId={babyId} babyName={babyName} babies={babies} />
-        <BottleList babyId={babyId} groupedBottles={groupedBottles} />
+        {empty ? (
+          <img
+            className="md:p-20 my-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+            src="/undraw_add_notes_re_ln36.svg"
+            alt="Illustration of a person adding notes on a wall"
+          />
+        ) : (
+          <BottleList babyId={babyId} groupedBottles={groupedBottles} />
+        )}
         <Link
+          prefetch="render"
           to={`/baby/${babyId}/bottle/new`}
           className="w-full mt-5 space-x-2 btn btn-primary"
         >

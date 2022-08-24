@@ -79,6 +79,7 @@ export default function TitleBar({ babyId, babyName, babies }: TitleBarProps) {
           >
             <li>
               <button
+                type="button"
                 className={`space-x-2 text-left ${
                   loading.reloading ? 'animate-pulse' : ''
                 }`}

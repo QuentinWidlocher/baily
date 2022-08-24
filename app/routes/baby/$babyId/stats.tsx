@@ -11,12 +11,13 @@ export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
   let baby = await getBaby(params.babyId, true)
 
-  return superjson({ data: groupByWeeks(baby.bottles) })
+  return superjson({ data: groupByWeeks(baby.bottles), babyName: baby.name })
 }
 
 export default function StatsPage() {
   let {
     data: [keys, bottles],
+    babyName,
   } = useSuperLoaderData<typeof loader>()
 
   return (
@@ -26,30 +27,43 @@ export default function StatsPage() {
           <NavArrowLeft />
           <span>Retour</span>
         </Link>
-        <ul className="space-y-2 -mx-2">
-          {keys.map((week, i) => (
-            <li key={week}>
-              <div className="stats grid grid-cols-2 w-full shadow overflow-x-hidden">
-                <div className="stat">
-                  <div className="stat-title">Semaine</div>
-                  <div className="stat-value">{bottles[week].week}</div>
-                  <div className="stat-desc text-base">
-                    {format(bottles[week].start, 'dd/MM')} -{' '}
-                    {format(bottles[week].end, 'dd/MM')}
+        {keys.length > 0 ? (
+          <ul className="space-y-2 -mx-2">
+            {keys.map((week, i) => (
+              <li key={week}>
+                <div className="stats grid grid-cols-2 w-full shadow overflow-x-hidden">
+                  <div className="stat">
+                    <div className="stat-title">Semaine</div>
+                    <div className="stat-value">{bottles[week].week}</div>
+                    <div className="stat-desc text-base">
+                      {format(bottles[week].start, 'dd/MM')} -{' '}
+                      {format(bottles[week].end, 'dd/MM')}
+                    </div>
                   </div>
-                </div>
 
-                <div className="stat">
-                  <div className="stat-title">Total</div>
-                  <div className="stat-value">{bottles[week].total}ml</div>
-                  <div className="stat-desc text-base flex justify-between">
-                    <span>{bottles[week].bottles.length} biberons</span>
+                  <div className="stat">
+                    <div className="stat-title">Total</div>
+                    <div className="stat-value">{bottles[week].total}ml</div>
+                    <div className="stat-desc text-base flex justify-between">
+                      <span>{bottles[week].bottles.length} biberons</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="my-auto space-y-5">
+            <p className="text-center">
+              Aucune donnée n'est disponible pour {babyName}
+            </p>
+            <img
+              className="md:p-20 dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+              src="/undraw_add_notes_re_ln36.svg"
+              alt="Illustration of a person adding notes on a wall"
+            />
+          </div>
+        )}
       </div>
     </section>
   )

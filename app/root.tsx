@@ -80,7 +80,9 @@ export function ErrorBoundary() {
           <div className="text-center text-xl">
             <p>Une erreur est survenue</p>
             <p>
-              <Link to="/">Retour à l'accueil</Link>
+              <Link className="link" to="/">
+                Retour à l'accueil
+              </Link>
             </p>
           </div>
         </div>
