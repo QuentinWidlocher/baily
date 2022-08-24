@@ -195,7 +195,16 @@ export async function createBaby(userId: string, name: string) {
 }
 
 export async function deleteBaby(id: string) {
-  await firestore.collection('babies').doc(id).delete()
+  await Promise.all([
+    firestore.collection('babies').doc(id).delete(),
+    firestore
+      .collection('bottles')
+      .where('babyId', '==', id)
+      .get()
+      .then(async (snapshot) => {
+        await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()))
+      }),
+  ])
 }
 
 export async function getBottle(id: string) {
