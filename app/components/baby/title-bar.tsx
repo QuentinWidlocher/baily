@@ -11,6 +11,7 @@ import {
 } from 'iconoir-react'
 import { FormEvent, useRef, useState } from 'react'
 import { Baby } from '~/services/firebase.server'
+import LoadingMenuItem from '../loading-menu-item'
 
 export type TitleBarProps = {
   babyId: string
@@ -19,13 +20,6 @@ export type TitleBarProps = {
 }
 
 export default function TitleBar({ babyId, babyName, babies }: TitleBarProps) {
-  let [loading, setLoading] = useState({
-    reloading: false,
-    navToStats: false,
-    loggingOut: false,
-    removing: false,
-  })
-
   let [confirm, setConfirm] = useState(false)
 
   function onDeleteClick(e: FormEvent<HTMLFormElement>) {
@@ -77,58 +71,24 @@ export default function TitleBar({ babyId, babyName, babies }: TitleBarProps) {
             tabIndex={0}
             className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-72"
           >
-            <li>
-              <button
-                type="button"
-                className={`space-x-2 text-left ${
-                  loading.reloading ? 'animate-pulse' : ''
-                }`}
-                onClick={() => {
-                  setLoading({ ...loading, reloading: true })
-                  window.location.reload()
-                }}
-                disabled={loading.reloading}
-              >
-                {loading.reloading ? (
-                  <RefreshCircular className="animate-spin" />
-                ) : (
-                  <RefreshDouble />
-                )}
-                <span>Rafraîchir la page</span>
-              </button>
-            </li>
-            <li>
-              <Link
-                className={`space-x-2 text-left ${
-                  loading.navToStats ? 'animate-pulse' : ''
-                }`}
-                to={`/baby/${babyId}/stats`}
-                onClick={() => setLoading({ ...loading, navToStats: true })}
-              >
-                {loading.navToStats ? (
-                  <RefreshCircular className="animate-spin" />
-                ) : (
-                  <StatsSquareUp />
-                )}
-                <span>Voir l'évolution</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={`space-x-2 text-left ${
-                  loading.loggingOut ? 'animate-pulse' : ''
-                }`}
-                to={`/logout`}
-                onClick={() => setLoading({ ...loading, loggingOut: true })}
-              >
-                {loading.loggingOut ? (
-                  <RefreshCircular className="animate-spin" />
-                ) : (
-                  <LogOut />
-                )}
-                <span>Déconnexion</span>
-              </Link>
-            </li>
+            <LoadingMenuItem
+              type="button"
+              onClick={() => window.location.reload()}
+              label="Rafraîchir la page"
+              icon={<RefreshDouble />}
+            />
+            <LoadingMenuItem
+              type="link"
+              to={`/baby/${babyId}/stats`}
+              label="Voir l'évolution"
+              icon={<StatsSquareUp />}
+            />
+            <LoadingMenuItem
+              type="link"
+              to={`/logout`}
+              label="Déconnexion"
+              icon={<LogOut />}
+            />
             <li></li>
             <li
               className={`tooltip tooltip-error ${
