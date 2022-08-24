@@ -2,6 +2,8 @@ import { Link } from '@remix-run/react'
 import { ActionArgs, json } from '@remix-run/server-runtime'
 import { FirebaseError } from 'firebase/app'
 import { UserCredential } from 'firebase/auth'
+import { EyeAlt, EyeClose, EyeEmpty } from 'iconoir-react'
+import { useState } from 'react'
 import { makeDomainFunction } from 'remix-domains'
 import { Form, performMutation } from 'remix-forms'
 import { z } from 'zod'
@@ -48,6 +50,8 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function LoginRoute() {
+  let [showPassword, setShowPassword] = useState(false)
+
   return (
     <main className="py-2 md:py-5 px-2 flex flex-col h-screen overflow-hidden items-center">
       <section className="mt-auto md:my-auto w-full card bg-base-200 md:w-96">
@@ -62,7 +66,7 @@ export default function LoginRoute() {
           </p>
 
           <Form schema={schema}>
-            {({ Button, Field, Errors }) => (
+            {({ Button, Field, Errors, register }) => (
               <>
                 <Field name="email">
                   {({ SmartInput, Label, Errors }) => (
@@ -80,7 +84,7 @@ export default function LoginRoute() {
                   )}
                 </Field>
                 <Field name="password">
-                  {({ SmartInput, Label, Errors }) => (
+                  {({ Label, Errors }) => (
                     <div className="form-control w-full">
                       <Label className="label">
                         <span className="label-text">Mot de passe</span>
@@ -88,7 +92,26 @@ export default function LoginRoute() {
                           Au moins 8 caractères
                         </span>
                       </Label>
-                      <SmartInput type="password" className="input w-full" />
+                      <div className="input-group">
+                        <input
+                          {...register('password')}
+                          type={showPassword ? 'text' : 'password'}
+                          className="input w-full"
+                        />
+                        <div
+                          onClick={() => setShowPassword((x) => !x)}
+                          className={`bg-base-300 swap px-2 ${
+                            showPassword ? 'swap-active' : ''
+                          }`}
+                        >
+                          <div className="swap-on">
+                            <EyeClose />
+                          </div>
+                          <div className="swap-off">
+                            <EyeEmpty />
+                          </div>
+                        </div>
+                      </div>
                       <label className="label">
                         <span className="label-text-alt text-error">
                           <Errors />
