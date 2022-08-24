@@ -1,6 +1,5 @@
 import { Link, useLoaderData } from '@remix-run/react'
 import { LoaderArgs, redirect } from '@remix-run/server-runtime'
-import { unstable_batchedUpdates } from 'react-dom'
 import { getBabies } from '~/services/firebase.server'
 import { requireUserId } from '~/services/session.server'
 

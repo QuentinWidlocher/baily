@@ -47,7 +47,7 @@ export async function getUserId(request: Request) {
 }
 
 export async function requireUserId(request: Request) {
-  let uid = getUserId(request)
+  let uid = await getUserId(request)
   if (!uid) {
     throw redirect('/login')
   } else {
