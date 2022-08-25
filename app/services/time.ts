@@ -14,27 +14,30 @@ import {
   parse,
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import type { Bottle } from './firebase.server'
+import { Bottle } from './bottles.server'
 
-export function groupByTime(bottles: Bottle[]) {
-  let grouped = bottles.reduce((acc, bottle) => {
-    const key = format(bottle.time, 'yyyy-MM-dd')
+export function groupByDay<T extends { time: Date }, U extends {}>(
+  items: T[],
+  calculateByDay: (items: T[]) => U = (items) => ({} as U)
+) {
+  let grouped = items.reduce((acc, item) => {
+    const key = format(item.time, 'yyyy-MM-dd')
     if (!acc[key]) {
       acc[key] = []
     }
-    acc[key].push(bottle)
+    acc[key].push(item)
     return acc
-  }, {} as { [key: string]: Bottle[] })
+  }, {} as { [key: string]: T[] })
 
   return Object.keys(grouped).reduce((acc, key) => {
     return {
       ...acc,
       [key]: {
-        bottles: grouped[key],
-        total: grouped[key].reduce((acc, bottle) => acc + bottle.quantity, 0),
+        items: grouped[key],
+        ...calculateByDay(grouped[key]),
       },
     }
-  }, {} as { [key: string]: { bottles: Bottle[]; total: number } })
+  }, {} as { [key: string]: { items: T[] } & U })
 }
 
 export function groupByWeeks(bottles: Bottle[]) {

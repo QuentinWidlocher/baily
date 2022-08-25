@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from '@remix-run/react'
 import { LoaderArgs, redirect } from '@remix-run/server-runtime'
 import LoadingMenuItem from '~/components/loading-menu-item'
-import { getBabies } from '~/services/firebase.server'
+import { getBabies } from '~/services/babies.server'
 import { requireUserId } from '~/services/session.server'
 
 export async function loader({ request }: LoaderArgs) {

@@ -1,5 +1,5 @@
 import { LoaderArgs } from '@remix-run/server-runtime'
-import { getBabies } from '~/services/firebase.server'
+import { getBabies } from '~/services/babies.server'
 import { requireUserId } from '~/services/session.server'
 import { redirect } from '~/services/superjson'
 

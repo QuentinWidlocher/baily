@@ -1,48 +1,46 @@
 import { Link } from '@remix-run/react'
 import { parse, isSameDay } from 'date-fns'
 import { Fragment } from 'react'
-import { Bottle } from '~/services/bottles.server'
+import { Diaper } from '~/services/diapers.server'
 import {
   getRelativeDate,
   getDistanceFromNow,
   displayTime,
 } from '~/services/time'
 
-export type BottleListProps = {
+export type DiaperListProps = {
   babyId: string
-  groupedBottles: {
+  groupedDiapers: {
     [key: string]: {
-      items: Bottle[]
-      total: number
+      items: Diaper[]
     }
   }
 }
 
-export default function BottleList({
+export default function DiaperList({
   babyId,
-  groupedBottles,
-}: BottleListProps) {
+  groupedDiapers,
+}: DiaperListProps) {
   return (
     <ul className="flex-1 p-2 -mx-5 overflow-y-auto menu">
-      {Object.keys(groupedBottles).map((day) => (
+      {Object.keys(groupedDiapers).map((day) => (
         <Fragment key={day}>
           <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">
             <span className="p-1 hover:bg-transparent hover:cursor-default">
               {getRelativeDate(parse(day, 'yyyy-MM-dd', new Date()))}
             </span>
-            <span className="p-1 font-bold hover:bg-transparent hover:cursor-default">
-              Total : {groupedBottles[day].total}ml
-            </span>
           </li>
-          {groupedBottles[day].items.map((bottle) => {
-            let sameDay = isSameDay(bottle.time, new Date())
+          {groupedDiapers[day].items.map((diaper) => {
+            let sameDay = isSameDay(diaper.time, new Date())
             return (
-              <li key={bottle.id}>
+              <li key={diaper.id}>
                 <Link
                   className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
-                  to={`/baby/${babyId}/bottle/${bottle.id}`}
+                  to={`/baby/${babyId}/diaper/${diaper.id}`}
                 >
-                  <span className="stat-value">{bottle.quantity}ml</span>
+                  <span className="stat-value text-lg text-ellipsis">
+                    {diaper.description || 'Couche'}
+                  </span>
                   <span
                     className={`stat-desc text-lg leading-tight ${
                       sameDay
@@ -50,10 +48,10 @@ export default function BottleList({
                         : 'col-start-2 text-right'
                     }`}
                   >
-                    {isSameDay(bottle.time, new Date()) ? (
-                      <span>{getDistanceFromNow(bottle.time)}</span>
+                    {isSameDay(diaper.time, new Date()) ? (
+                      <span>{getDistanceFromNow(diaper.time)}</span>
                     ) : null}
-                    <span>{displayTime(bottle.time)}</span>
+                    <span>{displayTime(diaper.time)}</span>
                   </span>
                 </Link>
               </li>

@@ -3,7 +3,7 @@ import { LoaderArgs } from '@remix-run/server-runtime'
 import { format } from 'date-fns'
 import { NavArrowLeft } from 'iconoir-react'
 import invariant from 'tiny-invariant'
-import { getBaby } from '~/services/firebase.server'
+import { getBaby } from '~/services/babies.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { groupByWeeks } from '~/services/time'
 

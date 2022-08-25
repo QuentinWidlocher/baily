@@ -1,11 +1,10 @@
 import { Link } from '@remix-run/react'
-import { ActionArgs, json, LoaderArgs } from '@remix-run/server-runtime'
-import { FirebaseError } from 'firebase/app'
+import { ActionArgs } from '@remix-run/server-runtime'
 import { makeDomainFunction } from 'remix-domains'
-import { Form, formAction, performMutation } from 'remix-forms'
+import { Form, formAction } from 'remix-forms'
 import { z } from 'zod'
-import { authenticate, createBaby } from '~/services/firebase.server'
-import { createUserSession, requireUserId } from '~/services/session.server'
+import { createBaby } from '~/services/babies.server'
+import { requireUserId } from '~/services/session.server'
 
 const schema = z.object({
   name: z.string().min(1, 'Le nom est requis'),
