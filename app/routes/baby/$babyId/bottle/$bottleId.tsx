@@ -114,7 +114,7 @@ export default function BottlePage() {
 
   return (
     <>
-      <div className="flex flex-col-reverse flex-1 w-full mb-5 align-middle md:mb-0 md:flex-col">
+      <div className="flex px-5 flex-col-reverse flex-1 w-full mb-5 align-middle md:mb-0 md:flex-col">
         <input
           type="range"
           min="40"

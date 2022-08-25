@@ -48,7 +48,7 @@ export default function TitleBar({
 
   return (
     <Form method="post" onSubmit={(e) => onDeleteClick(e)}>
-      <div className="flex justify-between mb-5 card-title">
+      <div className="flex justify-between mb-2 card-title">
         <div className="flex space-x-2">
           <h1 className="text-xl hidden md:block">Les {getTabName(tab)} de </h1>
           <div className="dropdown">

@@ -38,7 +38,7 @@ export default function DiaperList({
                   className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
                   to={`/baby/${babyId}/diaper/${diaper.id}`}
                 >
-                  <span className="stat-value text-lg text-ellipsis">
+                  <span className="stat-value text-ellipsis">
                     {diaper.description || 'Couche'}
                   </span>
                   <span

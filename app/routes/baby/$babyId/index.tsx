@@ -88,7 +88,7 @@ export default function Index() {
       <Link
         prefetch="render"
         to={`/baby/${babyId}/bottle/new`}
-        className="w-full -mt-8 space-x-2 btn btn-primary rounded-none"
+        className="w-full space-x-2 btn btn-primary rounded-none"
       >
         <Plus />
         <span>Ajouter un biberon</span>
@@ -103,7 +103,7 @@ export default function Index() {
       <Link
         prefetch="render"
         to={`/baby/${babyId}/diaper/new`}
-        className="w-full -mt-8 space-x-2 btn btn-primary rounded-none"
+        className="w-full space-x-2 btn btn-primary rounded-none"
       >
         <Plus />
         <span>Ajouter une couche</span>
@@ -122,9 +122,9 @@ export default function Index() {
         />
         {body}
       </div>
-      <div className="card-actions">
+      <div className="card-actions -mt-5">
         {action}
-        <div className="btm-nav md:btm-nav-sm relative bg-base-200">
+        <div className="btm-nav md:btm-nav-sm mt-1 relative bg-base-200">
           <Link
             className={data.tab == 'bottles' ? 'active bg-base-300' : ''}
             to="?tab=bottles"
