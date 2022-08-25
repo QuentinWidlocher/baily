@@ -175,34 +175,6 @@ export default function BottlePage() {
             {({ Field, Errors, Button, register }) => (
               <>
                 <Field name="_action" hidden value="update" />
-                <Field name="quantity">
-                  {({ Label, Errors, SmartInput }) => (
-                    <div className="form-control">
-                      <Label className="label">
-                        <span className="text-lg label-text">
-                          Quantité donnée
-                        </span>
-                      </Label>
-                      <label className="input-group">
-                        <input
-                          {...register('quantity')}
-                          type="number"
-                          value={sliderQuantity}
-                          onChange={(e) => {
-                            setSliderQuantity(e.target.valueAsNumber)
-                          }}
-                          className="w-full input"
-                        />
-                        <span>ml</span>
-                      </label>
-                      <label className="label">
-                        <span className="label-text-alt text-error">
-                          <Errors />
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                </Field>
                 <Field name="date">
                   {({ Label, Errors, SmartInput }) => (
                     <div className="w-full form-control">
@@ -250,6 +222,34 @@ export default function BottlePage() {
                       </div>
                     )
                   }}
+                </Field>
+                <Field name="quantity">
+                  {({ Label, Errors, SmartInput }) => (
+                    <div className="form-control">
+                      <Label className="label">
+                        <span className="text-lg label-text">
+                          Quantité donnée
+                        </span>
+                      </Label>
+                      <label className="input-group">
+                        <input
+                          {...register('quantity')}
+                          type="number"
+                          value={sliderQuantity}
+                          onChange={(e) => {
+                            setSliderQuantity(e.target.valueAsNumber)
+                          }}
+                          className="w-full input"
+                        />
+                        <span>ml</span>
+                      </label>
+                      <label className="label">
+                        <span className="label-text-alt text-error">
+                          <Errors />
+                        </span>
+                      </label>
+                    </div>
+                  )}
                 </Field>
                 <Button className="w-full mt-10 space-x-2 btn btn-primary">
                   <SaveFloppyDisk />

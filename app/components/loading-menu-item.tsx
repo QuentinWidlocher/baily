@@ -6,6 +6,7 @@ export type LoadingMenuItemProps = {
   label: string
   icon?: JSX.Element
   className?: string
+  onClick?: () => void
 } & ({ type: 'link'; to: string } | { type: 'button'; onClick: () => void })
 
 export default function LoadingMenuItem(props: LoadingMenuItemProps) {
@@ -19,7 +20,10 @@ export default function LoadingMenuItem(props: LoadingMenuItemProps) {
             props.className ?? ''
           }`}
           to={props.to}
-          onClick={() => setLoading(true)}
+          onClick={() => {
+            setLoading(true)
+            props.onClick?.()
+          }}
         >
           {loading && props.icon ? (
             <RefreshCircular className="animate-spin" />

@@ -67,70 +67,72 @@ export default function Index() {
   let data = useSuperLoaderData<typeof loader>()
   let { babyId, babyName, babies, empty } = data
 
-  let body = <></>
+  let emptyList = (
+    <div className="flex-1 flex -mx-8 p-20 shadow-inner bg-base-300">
+      <img
+        className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+        src="/undraw_add_notes_re_ln36.svg"
+        alt="Illustration of a person adding notes on a wall"
+      />
+    </div>
+  )
+  let body = emptyList
+  let action = <></>
 
   if (data.tab == 'bottles') {
-    body = (
-      <>
-        {empty ? (
-          <img
-            className="md:p-20 my-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
-            src="/undraw_add_notes_re_ln36.svg"
-            alt="Illustration of a person adding notes on a wall"
-          />
-        ) : (
-          <BottleList babyId={babyId} groupedBottles={data.groupedBottles} />
-        )}
-        <Link
-          prefetch="render"
-          to={`/baby/${babyId}/bottle/new`}
-          className="w-full mt-5 space-x-2 btn btn-primary"
-        >
-          <Plus />
-          <span>Ajouter un biberon</span>
-        </Link>
-      </>
+    if (!empty) {
+      body = <BottleList babyId={babyId} groupedBottles={data.groupedBottles} />
+    }
+
+    action = (
+      <Link
+        prefetch="render"
+        to={`/baby/${babyId}/bottle/new`}
+        className="w-full -mt-8 space-x-2 btn btn-primary rounded-none"
+      >
+        <Plus />
+        <span>Ajouter un biberon</span>
+      </Link>
     )
   } else {
-    body = (
-      <>
-        {empty ? (
-          <img
-            className="md:p-20 my-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
-            src="/undraw_add_notes_re_ln36.svg"
-            alt="Illustration of a person adding notes on a wall"
-          />
-        ) : (
-          <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
-        )}
-        <Link
-          prefetch="render"
-          to={`/baby/${babyId}/diaper/new`}
-          className="w-full mt-5 space-x-2 btn btn-primary"
-        >
-          <Plus />
-          <span>Ajouter une couche</span>
-        </Link>
-      </>
+    if (!empty) {
+      body = <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
+    }
+
+    action = (
+      <Link
+        prefetch="render"
+        to={`/baby/${babyId}/diaper/new`}
+        className="w-full -mt-8 space-x-2 btn btn-primary rounded-none"
+      >
+        <Plus />
+        <span>Ajouter une couche</span>
+      </Link>
     )
   }
 
   return (
     <section className="flex-1 card bg-base-200 w-full md:w-1/2 xl:w-1/4">
       <div className="overflow-x-hidden overflow-y-auto card-body">
-        <TitleBar babyId={babyId} babyName={babyName} babies={babies} />
+        <TitleBar
+          babyId={babyId}
+          babyName={babyName}
+          babies={babies}
+          tab={data.tab}
+        />
         {body}
       </div>
       <div className="card-actions">
-        <div className="btm-nav md:btm-nav-sm relative bg-base-300">
+        {action}
+        <div className="btm-nav md:btm-nav-sm relative bg-base-200">
           <Link
-            className={data.tab == 'bottles' ? 'active' : ''}
+            className={data.tab == 'bottles' ? 'active bg-base-300' : ''}
             to="?tab=bottles"
           >
             Biberons
           </Link>
           <Link
-            className={data.tab == 'diapers' ? 'active' : ''}
+            className={data.tab == 'diapers' ? 'active bg-base-300' : ''}
             to="?tab=diapers"
           >
             Couches

@@ -22,7 +22,7 @@ export default function DiaperList({
   groupedDiapers,
 }: DiaperListProps) {
   return (
-    <ul className="flex-1 p-2 -mx-5 overflow-y-auto menu">
+    <ul className="flex-1 p-2 -mx-8 shadow-inner overflow-y-auto menu bg-base-300">
       {Object.keys(groupedDiapers).map((day) => (
         <Fragment key={day}>
           <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">
