@@ -102,6 +102,7 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function DiaperPage() {
   let { diaper } = useSuperLoaderData<typeof loader>()
+  let [description, setDescription] = useState(diaper.description ?? '')
   let [confirm, setConfirm] = useState(false)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
@@ -199,16 +200,40 @@ export default function DiaperPage() {
                   }}
                 </Field>
                 <Field name="description">
-                  {({ Label, Errors, SmartInput }) => (
+                  {({ Label, Errors }) => (
                     <div className="form-control">
                       <Label className="label">
-                        <span className="text-lg label-text">Description</span>
+                        <span className="text-lg label-text">
+                          Description {description}
+                        </span>
                       </Label>
-                      <SmartInput
-                        type="text"
-                        className="w-full input"
-                        value={diaper.description}
-                      />
+                      <label className="input-group">
+                        <input
+                          {...register('description')}
+                          type="text"
+                          onChange={(e) => {
+                            console.log(e.currentTarget.value)
+                            setDescription(e.currentTarget.value)
+                          }}
+                          className="w-full input"
+                          placeholder="Souillée, pipi, mixte..."
+                          value={description}
+                        />
+                        <select
+                          name="de ton cul"
+                          className="select bg-base-300"
+                          onChangeCapture={(e) => {
+                            console.log(e.currentTarget.value)
+                            setDescription(e.currentTarget.value)
+                          }}
+                          value={description}
+                        >
+                          <option value="">Choix habituels</option>
+                          <option value="Souillée">Souillée</option>
+                          <option value="Pipi">Pipi</option>
+                          <option value="Mixte">Mixte</option>
+                        </select>
+                      </label>
                       <label className="label">
                         <span className="label-text-alt text-error">
                           <Errors />
