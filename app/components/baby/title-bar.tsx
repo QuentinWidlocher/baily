@@ -61,8 +61,7 @@ export default function TitleBar({
             >
               {babies.map((baby) => (
                 <li key={baby.id}>
-                  <LoadingItem
-                    type="link"
+                  <Link
                     className={baby.id == babyId ? 'active' : ''}
                     onClick={(e: { currentTarget: any }) => {
                       let ref = e.currentTarget
@@ -74,7 +73,7 @@ export default function TitleBar({
                     to={`../${baby.id}`}
                   >
                     {baby.name}
-                  </LoadingItem>
+                  </Link>
                 </li>
               ))}
               <li></li>
