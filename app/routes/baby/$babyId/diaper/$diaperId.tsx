@@ -19,6 +19,7 @@ import {
   getDiaper,
   updateDiaper,
 } from '~/services/diapers.server'
+import LoadingItem from '~/components/loading-item'
 
 const schema = z.object({
   _action: z.enum(['delete', 'update']),
@@ -123,14 +124,14 @@ export default function DiaperPage() {
       <section className="card mt-auto md:mb-auto bg-base-200 w-full md:w-1/2 xl:w-1/4">
         <div className="card-body">
           <div className="flex justify-between">
-            <Link
+            <LoadingItem
+              type="link"
               to="./../..?tab=diapers"
               className="mb-5 space-x-2 btn btn-ghost"
               title="Retour"
-            >
-              <NavArrowLeft />
-              <span>Retour</span>
-            </Link>
+              icon={<NavArrowLeft />}
+              label="Retour"
+            ></LoadingItem>
             {diaper.id ? (
               <Form schema={schema} onSubmit={onDelete}>
                 {({ Field, Button }) => (

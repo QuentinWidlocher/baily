@@ -8,9 +8,9 @@ import {
   RemoveEmpty,
   StatsSquareUp,
 } from 'iconoir-react'
-import { FormEvent, Ref, RefObject, useRef, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { Baby } from '~/services/babies.server'
-import LoadingMenuItem from '../loading-menu-item'
+import LoadingItem from '../loading-item'
 
 export type TitleBarProps = {
   babyId: string
@@ -61,19 +61,20 @@ export default function TitleBar({
             >
               {babies.map((baby) => (
                 <li key={baby.id}>
-                  <Link
+                  <LoadingItem
+                    type="link"
                     className={baby.id == babyId ? 'active' : ''}
-                    onClick={(e) => {
+                    onClick={(e: { currentTarget: any }) => {
                       let ref = e.currentTarget
 
                       setTimeout(() => {
                         ref.blur()
-                      }, 500)
+                      }, 1000)
                     }}
                     to={`../${baby.id}`}
                   >
                     {baby.name}
-                  </Link>
+                  </LoadingItem>
                 </li>
               ))}
               <li></li>
@@ -94,26 +95,32 @@ export default function TitleBar({
             tabIndex={0}
             className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-72"
           >
-            <LoadingMenuItem
-              type="button"
-              onClick={() => window.location.reload()}
-              label="Rafraîchir la page"
-              icon={<RefreshDouble />}
-            />
-            {tab == 'bottles' ? (
-              <LoadingMenuItem
-                type="link"
-                to={`/baby/${babyId}/stats`}
-                label="Voir l'évolution"
-                icon={<StatsSquareUp />}
+            <li>
+              <LoadingItem
+                type="button"
+                onClick={() => window.location.reload()}
+                label="Rafraîchir la page"
+                icon={<RefreshDouble />}
               />
+            </li>
+            {tab == 'bottles' ? (
+              <li>
+                <LoadingItem
+                  type="link"
+                  to={`/baby/${babyId}/stats`}
+                  label="Voir l'évolution"
+                  icon={<StatsSquareUp />}
+                />
+              </li>
             ) : null}
-            <LoadingMenuItem
-              type="link"
-              to={`/logout`}
-              label="Déconnexion"
-              icon={<LogOut />}
-            />
+            <li>
+              <LoadingItem
+                type="link"
+                to={`/logout`}
+                label="Déconnexion"
+                icon={<LogOut />}
+              />
+            </li>
             <li></li>
             <li
               className={`tooltip tooltip-error ${

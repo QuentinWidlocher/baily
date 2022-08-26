@@ -7,6 +7,7 @@ import {
   getDistanceFromNow,
   displayTime,
 } from '~/services/time'
+import LoadingItem from '../loading-item'
 
 export type BottleListProps = {
   babyId: string
@@ -38,7 +39,8 @@ export default function BottleList({
             let sameDay = isSameDay(bottle.time, new Date())
             return (
               <li key={bottle.id}>
-                <Link
+                <LoadingItem
+                  type="link"
                   className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
                   to={`/baby/${babyId}/bottle/${bottle.id}`}
                 >
@@ -55,7 +57,7 @@ export default function BottleList({
                     ) : null}
                     <span>{displayTime(bottle.time)}</span>
                   </span>
-                </Link>
+                </LoadingItem>
               </li>
             )
           })}

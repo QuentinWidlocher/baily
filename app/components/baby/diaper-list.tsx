@@ -7,6 +7,7 @@ import {
   getDistanceFromNow,
   displayTime,
 } from '~/services/time'
+import LoadingItem from '../loading-item'
 
 export type DiaperListProps = {
   babyId: string
@@ -34,7 +35,8 @@ export default function DiaperList({
             let sameDay = isSameDay(diaper.time, new Date())
             return (
               <li key={diaper.id}>
-                <Link
+                <LoadingItem
+                  type="link"
                   className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
                   to={`/baby/${babyId}/diaper/${diaper.id}`}
                 >
@@ -53,7 +55,7 @@ export default function DiaperList({
                     ) : null}
                     <span>{displayTime(diaper.time)}</span>
                   </span>
-                </Link>
+                </LoadingItem>
               </li>
             )
           })}

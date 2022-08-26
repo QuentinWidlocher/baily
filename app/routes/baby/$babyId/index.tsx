@@ -5,6 +5,7 @@ import invariant from 'tiny-invariant'
 import BottleList from '~/components/baby/bottle-list'
 import DiaperList from '~/components/baby/diaper-list'
 import TitleBar from '~/components/baby/title-bar'
+import LoadingItem from '~/components/loading-item'
 import { deleteBaby, getBabies, getBaby } from '~/services/babies.server'
 import { requireUserId } from '~/services/session.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
@@ -85,14 +86,14 @@ export default function Index() {
     }
 
     action = (
-      <Link
+      <LoadingItem
+        type="link"
         prefetch="render"
         to={`/baby/${babyId}/bottle/new`}
         className="w-full space-x-2 btn btn-primary rounded-none"
-      >
-        <Plus />
-        <span>Ajouter un biberon</span>
-      </Link>
+        icon={<Plus />}
+        label="Ajouter un biberon"
+      />
     )
   } else {
     if (!empty) {
@@ -100,14 +101,14 @@ export default function Index() {
     }
 
     action = (
-      <Link
+      <LoadingItem
+        type="link"
         prefetch="render"
         to={`/baby/${babyId}/diaper/new`}
         className="w-full space-x-2 btn btn-primary rounded-none"
-      >
-        <Plus />
-        <span>Ajouter une couche</span>
-      </Link>
+        icon={<Plus />}
+        label="Ajouter une couche"
+      />
     )
   }
 
