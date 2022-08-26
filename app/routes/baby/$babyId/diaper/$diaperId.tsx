@@ -54,6 +54,8 @@ export async function loader({ params }: LoaderArgs) {
   })
 }
 
+const prefillOptions = ['Souillée', 'Pipi', 'Mixte']
+
 export async function action({ request, params }: ActionArgs) {
   let action = (await request.clone().formData()).get('_action')?.toString()
 
@@ -102,8 +104,10 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function DiaperPage() {
   let { diaper } = useSuperLoaderData<typeof loader>()
-  console.log(diaper.description)
-  let [customDescription, setCustomDescription] = useState(!!diaper.description)
+
+  let [customDescription, setCustomDescription] = useState(
+    !!diaper.description && !prefillOptions.includes(diaper.description)
+  )
   let [confirm, setConfirm] = useState(false)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
@@ -222,7 +226,7 @@ export default function DiaperPage() {
                               customDescription ? '' : 'tab-active'
                             }`}
                           >
-                            Habituelles
+                            Habituelle
                           </button>
                         </div>
                       </Label>
@@ -233,13 +237,19 @@ export default function DiaperPage() {
                           value={diaper.description}
                         />
                       ) : (
-                        <select className="select bg-base-300">
-                          <option value="" disabled selected>
+                        <select
+                          {...register('description')}
+                          className="select bg-base-300"
+                          defaultValue={diaper.description ?? ''}
+                        >
+                          <option value="" disabled>
                             Choisir
                           </option>
-                          <option value="Souillée">Souillée</option>
-                          <option value="Pipi">Pipi</option>
-                          <option value="Mixte">Mixte</option>
+                          {prefillOptions.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
                         </select>
                       )}
                       <label className="label">
