@@ -26,8 +26,8 @@ const schema = z.object({
     .string({
       invalid_type_error: 'La description est invalide',
     })
-    .max(140, 'La description doit faire moins de 140 caractères')
-    .optional(),
+    .min(1, 'La description est obligatoire')
+    .max(50, 'La description doit faire moins de 50 caractères'),
   date: z
     .date({ invalid_type_error: 'La date doit être remplie' })
     .refine((date) => isBefore(date, new Date()), {
@@ -102,7 +102,8 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function DiaperPage() {
   let { diaper } = useSuperLoaderData<typeof loader>()
-  let [description, setDescription] = useState(diaper.description ?? '')
+  console.log(diaper.description)
+  let [customDescription, setCustomDescription] = useState(!!diaper.description)
   let [confirm, setConfirm] = useState(false)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
@@ -200,40 +201,47 @@ export default function DiaperPage() {
                   }}
                 </Field>
                 <Field name="description">
-                  {({ Label, Errors }) => (
+                  {({ Label, Errors, SmartInput }) => (
                     <div className="form-control">
                       <Label className="label">
-                        <span className="text-lg label-text">
-                          Description {description}
-                        </span>
+                        <span className="text-lg label-text">Description</span>
+                        <div className="tabs tabs-boxed">
+                          <button
+                            type="button"
+                            onClick={() => setCustomDescription(true)}
+                            className={`tab ${
+                              customDescription ? 'tab-active' : ''
+                            }`}
+                          >
+                            Personnelle
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCustomDescription(false)}
+                            className={`tab ${
+                              customDescription ? '' : 'tab-active'
+                            }`}
+                          >
+                            Habituelles
+                          </button>
+                        </div>
                       </Label>
-                      <label className="input-group">
-                        <input
-                          {...register('description')}
+                      {customDescription ? (
+                        <SmartInput
                           type="text"
-                          onChange={(e) => {
-                            console.log(e.currentTarget.value)
-                            setDescription(e.currentTarget.value)
-                          }}
                           className="w-full input"
-                          placeholder="Souillée, pipi, mixte..."
-                          value={description}
+                          value={diaper.description}
                         />
-                        <select
-                          name="de ton cul"
-                          className="select bg-base-300"
-                          onChangeCapture={(e) => {
-                            console.log(e.currentTarget.value)
-                            setDescription(e.currentTarget.value)
-                          }}
-                          value={description}
-                        >
-                          <option value="">Choix habituels</option>
+                      ) : (
+                        <select className="select bg-base-300">
+                          <option value="" disabled selected>
+                            Choisir
+                          </option>
                           <option value="Souillée">Souillée</option>
                           <option value="Pipi">Pipi</option>
                           <option value="Mixte">Mixte</option>
                         </select>
-                      </label>
+                      )}
                       <label className="label">
                         <span className="label-text-alt text-error">
                           <Errors />

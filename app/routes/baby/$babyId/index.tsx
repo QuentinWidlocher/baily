@@ -126,20 +126,16 @@ export default function Index() {
         {action}
         <div className="btm-nav md:btm-nav-sm mt-1 relative bg-base-200">
           <Link
-            className={`focus:bg-primary focus:text-primary-content transition-colors ${
-              data.tab == 'bottles'
-                ? 'active text-primary-content !bg-base-300'
-                : ''
+            className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
+              data.tab == 'bottles' ? 'active !text-primary !bg-base-300' : ''
             }`}
             to="?tab=bottles"
           >
             Biberons
           </Link>
           <Link
-            className={`focus:bg-primary focus:text-primary-content transition-colors ${
-              data.tab == 'diapers'
-                ? 'active text-primary-content !bg-base-300'
-                : ''
+            className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
+              data.tab == 'diapers' ? 'active !text-primary !bg-base-300' : ''
             }`}
             to="?tab=diapers"
           >
