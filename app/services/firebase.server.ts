@@ -47,7 +47,6 @@ if (process.env.NODE_ENV === 'production') {
   firebaseAdminAuth = getAdminAuth(firebaseAdmin)
   firestore = getFirestore(firebaseAdmin)
 } else if (process.env.NODE_ENV == 'development') {
-  console.log(Object.keys(process.env).filter((n) => n.startsWith('FIREBASE_')))
   if (
     !global._firebaseAdmin ||
     !global._firebaseApp ||

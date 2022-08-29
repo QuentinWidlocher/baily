@@ -78,7 +78,7 @@ export default function Index() {
     </div>
   )
   let body = emptyList
-  let action = <></>
+  let action: JSX.Element
 
   if (data.tab == 'bottles') {
     if (!empty) {

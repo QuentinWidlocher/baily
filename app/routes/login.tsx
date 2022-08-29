@@ -27,11 +27,11 @@ export async function action({ request }: ActionArgs) {
         if (e instanceof FirebaseError) {
           console.log(e.code)
           if (e.code == 'auth/user-not-found') {
-            throw "Cet email n'existe pas sur B++"
+            throw new Error("Cet email n'existe pas sur B++")
           } else if (e.code == 'auth/wrong-password') {
-            throw 'Le mot de passe est incorrect'
+            throw new Error('Le mot de passe est incorrect')
           } else {
-            throw 'Une erreur est survenue'
+            throw new Error('Une erreur est survenue')
           }
         }
       }

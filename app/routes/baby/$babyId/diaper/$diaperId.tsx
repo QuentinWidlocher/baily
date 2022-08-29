@@ -1,25 +1,23 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { Link } from '@remix-run/react'
-import invariant from 'tiny-invariant'
-import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { Bin, NavArrowLeft } from 'iconoir-react'
+import { isBefore } from 'date-fns'
+import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
-import { z } from 'zod'
-import { Form, formAction } from 'remix-forms'
 import { makeDomainFunction } from 'remix-domains'
-import { dateToISOLikeButLocal } from '~/services/time'
-import { isBefore } from 'date-fns'
-import { SaveFloppyDisk } from 'iconoir-react'
+import { Form, formAction } from 'remix-forms'
+import invariant from 'tiny-invariant'
+import { z } from 'zod'
+import LoadingItem from '~/components/loading-item'
 import {
-  Diaper,
   createDiaper,
   deleteDiaper,
+  Diaper,
   getDiaper,
   updateDiaper,
 } from '~/services/diapers.server'
-import LoadingItem from '~/components/loading-item'
+import { superjson, useSuperLoaderData } from '~/services/superjson'
+import { dateToISOLikeButLocal } from '~/services/time'
 
 const schema = z.object({
   _action: z.enum(['delete', 'update']),
@@ -37,7 +35,7 @@ const schema = z.object({
   time: z
     .string()
     .min(1, { message: "L'heure doit être remplie" })
-    .regex(/^[0-9]{2}:[0-9]{2}/, {
+    .regex(/^\d{2}:\d{2}/, {
       message: 'Le format doit être hh:mm',
     }),
 })

@@ -1,13 +1,12 @@
 import { Link } from '@remix-run/react'
 import { ActionArgs, json } from '@remix-run/server-runtime'
 import { FirebaseError } from 'firebase/app'
-import { UserCredential } from 'firebase/auth'
-import { EyeAlt, EyeClose, EyeEmpty } from 'iconoir-react'
+import { EyeClose, EyeEmpty } from 'iconoir-react'
 import { useState } from 'react'
 import { makeDomainFunction } from 'remix-domains'
 import { Form, performMutation } from 'remix-forms'
 import { z } from 'zod'
-import { authenticate, createUser } from '~/services/firebase.server'
+import { createUser } from '~/services/firebase.server'
 import { createUserSession } from '~/services/session.server'
 
 const schema = z.object({
@@ -33,11 +32,11 @@ export async function action({ request }: ActionArgs) {
         if (e instanceof FirebaseError) {
           console.log(e.code)
           if (e.code == 'auth/user-not-found') {
-            throw "Cet email n'existe pas sur B++"
+            throw new Error("Cet email n'existe pas sur B++")
           } else if (e.code == 'auth/wrong-password') {
-            throw 'Le mot de passe est incorrect'
+            throw new Error('Le mot de passe est incorrect')
           } else {
-            throw 'Une erreur est survenue'
+            throw new Error('Une erreur est survenue')
           }
         }
       }

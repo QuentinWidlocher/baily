@@ -1,16 +1,16 @@
 import {
+  differenceInMinutes,
   format,
   formatDistanceToNow,
   formatDuration,
   formatRelative,
+  getWeek,
   intervalToDuration,
   isBefore,
   isSameDay,
-  differenceInMinutes,
   lastDayOfWeek,
-  getWeek,
-  startOfWeek,
   parse,
+  startOfWeek,
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Bottle } from './bottles.server'
