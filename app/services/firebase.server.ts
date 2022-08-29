@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'production') {
 
   firebaseAdminAuth = getAdminAuth(firebaseAdmin)
   firestore = getFirestore(firebaseAdmin)
-} else {
+} else if (process.env.NODE_ENV == 'development') {
   if (
     !global._firebaseAdmin ||
     !global._firebaseApp ||

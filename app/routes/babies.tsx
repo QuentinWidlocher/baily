@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import { LoaderArgs, redirect } from '@remix-run/server-runtime'
 import LoadingItem from '~/components/loading-item'
 import { getBabies } from '~/services/babies.server'

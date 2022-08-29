@@ -1,0 +1,77 @@
+// Vitest Snapshot v1
+
+exports[`babies route > should redirect when no baby 1`] = `
+Response {
+  Symbol(realm): {
+    "settingsObject": {},
+  },
+  Symbol(state): {
+    "aborted": false,
+    "cacheState": "",
+    "headersList": HeadersList {
+      Symbol(headers map): Map {
+        "location" => "/baby/new",
+      },
+      Symbol(headers map sorted): null,
+    },
+    "rangeRequested": false,
+    "requestIncludesCredentials": false,
+    "status": 302,
+    "statusText": "",
+    "timingAllowPassed": false,
+    "timingInfo": null,
+    "type": "default",
+    "urlList": [],
+  },
+  Symbol(headers): Headers {
+    Symbol(headers list): HeadersList {
+      Symbol(headers map): Map {
+        "location" => "/baby/new",
+      },
+      Symbol(headers map sorted): null,
+    },
+    Symbol(guard): "response",
+    Symbol(realm): {
+      "settingsObject": {},
+    },
+  },
+}
+`;
+
+exports[`babies route > should redirect when one baby 1`] = `
+Response {
+  Symbol(realm): {
+    "settingsObject": {},
+  },
+  Symbol(state): {
+    "aborted": false,
+    "cacheState": "",
+    "headersList": HeadersList {
+      Symbol(headers map): Map {
+        "location" => "/baby/1",
+      },
+      Symbol(headers map sorted): null,
+    },
+    "rangeRequested": false,
+    "requestIncludesCredentials": false,
+    "status": 302,
+    "statusText": "",
+    "timingAllowPassed": false,
+    "timingInfo": null,
+    "type": "default",
+    "urlList": [],
+  },
+  Symbol(headers): Headers {
+    Symbol(headers list): HeadersList {
+      Symbol(headers map): Map {
+        "location" => "/baby/1",
+      },
+      Symbol(headers map sorted): null,
+    },
+    Symbol(guard): "response",
+    Symbol(realm): {
+      "settingsObject": {},
+    },
+  },
+}
+`;
