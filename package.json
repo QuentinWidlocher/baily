@@ -6,7 +6,8 @@
     "dev": "remix dev",
     "tailwind:dev": "tailwindcss --output ./app/style.css --config tailwind.config.js --watch",
     "tailwind:build": "tailwindcss --output ./app/style.css --config tailwind.config.js --minify",
-    "start": "cross-env NODE_ENV=production netlify dev"
+    "start": "cross-env NODE_ENV=production netlify dev",
+    "test": "vitest"
   },
   "dependencies": {
     "@firebase/app-types": "0.x",
@@ -48,6 +49,8 @@
     "node": ">=14"
   },
   "devDependencies": {
-    "netlify-plugin-inline-functions-env": "^1.0.9"
+    "@vitest/coverage-c8": "^0.22.1",
+    "netlify-plugin-inline-functions-env": "^1.0.9",
+    "vitest": "^0.22.1"
   }
 }

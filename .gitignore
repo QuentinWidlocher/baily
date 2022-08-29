@@ -7,3 +7,4 @@ node_modules
 firebase-private-key.json
 /app/style.css
 *.log
+/coverage

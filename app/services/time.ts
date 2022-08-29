@@ -4,7 +4,6 @@ import {
   formatDuration,
   formatRelative,
   intervalToDuration,
-  isAfter,
   isBefore,
   isSameDay,
   differenceInMinutes,
@@ -55,7 +54,6 @@ export function groupByWeeks(bottles: Bottle[]) {
       parse(b, 'yyyy-MM-dd', new Date()).getTime() -
       parse(a, 'yyyy-MM-dd', new Date()).getTime()
   )
-  console.log('keys', keys)
 
   let formatted = keys.reduce(
     (acc, key) => {
@@ -140,16 +138,9 @@ export function dateToISOLikeButLocal(date: Date) {
 }
 
 export function getRelativeDate(date: Date) {
-  let relative = formatRelative(date, new Date(), { locale: fr }).split('à')[0]
+  let relative = formatRelative(date, new Date(), { locale: fr }).split(' à')[0]
   let [firstLetter, ...rest] = relative
   return firstLetter.toUpperCase() + rest.join('')
-}
-
-export function getDuration(duration: number) {
-  return formatDuration(
-    { seconds: duration },
-    { format: ['hours', 'minutes'], locale: fr, delimiter: ' et ' }
-  )
 }
 
 export function displayTime(time: Date) {
