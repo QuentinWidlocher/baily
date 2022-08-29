@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { Bottle } from './bottles.server'
+import { Bottle } from '../../services/bottles.server'
 import {
   dateToISOLikeButLocal,
   displayTime,
@@ -8,7 +8,7 @@ import {
   getRelativeDate,
   groupByDay,
   groupByWeeks,
-} from './time'
+} from '../../services/time'
 
 describe('time', () => {
   let now: Date = new Date()

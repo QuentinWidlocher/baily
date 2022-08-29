@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { loader } from './babies'
+import { loader } from '../../routes/babies'
 import * as babies from '~/services/babies.server'
 import * as session from '~/services/session.server'
 
