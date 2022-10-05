@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react'
+import { withSentry } from '@sentry/remix'
 import styleSheetUrl from './style.css'
 
 export const meta: MetaFunction = () => ({
@@ -23,7 +24,7 @@ export const links: LinksFunction = () => {
   ]
 }
 
-export default function App() {
+function App() {
   return (
     <html lang="en">
       <head>
@@ -68,6 +69,8 @@ export default function App() {
     </html>
   )
 }
+
+export default withSentry(App)
 
 export function ErrorBoundary({ error }: { error: Error }) {
   if (process.env.NODE_ENV != 'production') {

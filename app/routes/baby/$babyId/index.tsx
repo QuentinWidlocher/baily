@@ -68,21 +68,22 @@ export default function Index() {
   let data = useSuperLoaderData<typeof loader>()
   let { babyId, babyName, babies, empty } = data
 
-  let emptyList = (
-    <div className="flex-1 flex -mx-8 p-20 shadow-inner bg-base-300">
-      <img
-        className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
-        src="/undraw_add_notes_re_ln36.svg"
-        alt="Illustration of a person adding notes on a wall"
-      />
-    </div>
-  )
-  let body = emptyList
+  let body: JSX.Element
   let action: JSX.Element
 
   if (data.tab == 'bottles') {
     if (!empty) {
       body = <BottleList babyId={babyId} groupedBottles={data.groupedBottles} />
+    } else {
+      body = (
+        <div className="flex-1 flex -mx-8 p-10 shadow-inner bg-base-300">
+          <img
+            className="m-auto"
+            src="/empty-bottle.svg"
+            alt="Illustration of a sad personified empty baby bottle"
+          />
+        </div>
+      )
     }
 
     action = (
@@ -98,6 +99,16 @@ export default function Index() {
   } else {
     if (!empty) {
       body = <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
+    } else {
+      body = (
+        <div className="flex-1 flex -mx-8 p-20 shadow-inner bg-base-300">
+          <img
+            className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+            src="/undraw_add_notes_re_ln36.svg"
+            alt="Illustration of a person adding notes on a wall"
+          />
+        </div>
+      )
     }
 
     action = (
