@@ -35,6 +35,10 @@ export async function action({ request }: ActionArgs) {
             throw new Error("Cet email n'existe pas sur B++")
           } else if (e.code == 'auth/wrong-password') {
             throw new Error('Le mot de passe est incorrect')
+          } else if (e.code == 'auth/email-already-in-use') {
+            throw new Error(
+              'Cet email existe déjà, vous pourriez essayer de vous connecter avec.',
+            )
           } else {
             throw new Error('Une erreur est survenue')
           }

@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { isBefore } from 'date-fns'
+import { format, isBefore, isSameDay, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -73,12 +73,11 @@ export async function action({ request, params }: ActionArgs) {
         invariant(params.bottleId, 'bottle id is required')
 
         let [hours, minutes] = bottle.time.split(':')
-        let time = new Date(bottle.date)
-        time.setHours(
-          Number(hours),
-          Number(minutes),
-          new Date().getSeconds(),
-          0
+        bottle.date
+        let time = parse(
+          `${format(bottle.date, 'yyyy-MM-dd')} ${hours + 1}:${minutes}`,
+          'yyyy-MM-dd HH:mm',
+          new Date(),
         )
 
         if (params.bottleId == 'new') {
@@ -184,7 +183,7 @@ export default function BottlePage() {
                         type="date"
                         value={
                           dateToISOLikeButLocal(
-                            bottle.time ?? new Date()
+                            bottle.time ?? new Date(),
                           ).split('T')[0]
                         }
                         className="w-full input"

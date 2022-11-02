@@ -87,12 +87,15 @@ export function groupByWeeks(bottles: Bottle[]) {
 
 export function getDistanceFromNow(date: Date) {
   let now = new Date()
+  let yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+
   if (Math.abs(differenceInMinutes(date, now)) <= 1) {
     return (
       'il y a ' +
       formatDistanceToNow(date, { locale: fr, includeSeconds: true })
     )
-  } else if (isSameDay(date, now)) {
+  } else if (isSameDay(date, now) || isSameDay(date, yesterday)) {
     let options = {
       locale: fr,
       format: ['hours', 'minutes'],
@@ -127,7 +130,7 @@ export function getDistanceFromNow(date: Date) {
 
 export function dateToISOLikeButLocal(date: Date) {
   let offsetMs =
-    (process.env.NODE_ENV == 'production' ? -60 : date.getTimezoneOffset()) *
+    (process.env.NODE_ENV == 'production' ? -120 : date.getTimezoneOffset()) *
     60 *
     1000
   let msLocal = date.getTime() - offsetMs

@@ -11,21 +11,7 @@
   to = "/.netlify/functions/server"
   status = 200
 
-[[plugins]]
-  package = "netlify-plugin-inline-functions-env"
-  [plugins.inputs]
-    buildEvent = "onBuild"
-
 [[headers]]
   for = "/build/*"
   [headers.values]
     "Cache-Control" = "public, max-age=31536000, s-maxage=31536000"
-
-[context.production.environment]
-  DEFAULT_BABY = "jfLdOvMT5o73TZigbFOG"
-
-[context.develop]
-  command = "tailwindcss --output ./app/style.css --config tailwind.config.js --minify && remix build"
-
-[context.develop.environment]
-  DEFAULT_BABY = "RPNkAF7syRNliNfrgUED"
