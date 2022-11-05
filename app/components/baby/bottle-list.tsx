@@ -22,8 +22,14 @@ export default function BottleList({
   babyId,
   groupedBottles,
 }: BottleListProps) {
+  let now = new Date()
+  let yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  let shouldSpecifyTime = (time: Date) =>
+    isSameDay(time, now) || isSameDay(time, yesterday)
+
   return (
-    <ul className="flex-1 flex-nowrap p-2 -mx-8 shadow-inner overflow-y-auto menu bg-base-300">
+    <ul className="flex-1 flex-nowrap p-2 -mx-8 shadow-inner overflow-y-auto overflow-x-hidden menu bg-base-300">
       {Object.keys(groupedBottles).map((day) => (
         <Fragment key={day}>
           <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">
@@ -35,23 +41,23 @@ export default function BottleList({
             </span>
           </li>
           {groupedBottles[day].items.map((bottle) => {
-            let sameDay = isSameDay(bottle.time, new Date())
+            let specifyTime = shouldSpecifyTime(bottle.time)
             return (
               <li key={bottle.id}>
                 <LoadingItem
                   type="link"
-                  className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
+                  className={`stat ${!specifyTime ? 'grid-cols-2' : ''}`}
                   to={`/baby/${babyId}/bottle/${bottle.id}`}
                 >
                   <span className="stat-value">{bottle.quantity}ml</span>
                   <span
                     className={`stat-desc text-lg leading-tight ${
-                      sameDay
-                        ? 'flex justify-between'
+                      specifyTime
+                        ? 'flex flex-wrap justify-between'
                         : 'col-start-2 text-right'
                     }`}
                   >
-                    {isSameDay(bottle.time, new Date()) ? (
+                    {specifyTime ? (
                       <span>{getDistanceFromNow(bottle.time)}</span>
                     ) : null}
                     <span>{displayTime(bottle.time)}</span>

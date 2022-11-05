@@ -44,9 +44,7 @@ export default function LoadingItem(props: LoadingItemProps) {
     return (
       <Link
         {...props}
-        className={`space-x-2 ${loading ? 'animate-pulse' : ''} ${
-          props.className ?? ''
-        }`}
+        className={`${loading ? 'animate-pulse' : ''} ${props.className ?? ''}`}
         onClick={(e) => {
           setLoading(true)
           props.onClick?.(e)
@@ -60,9 +58,7 @@ export default function LoadingItem(props: LoadingItemProps) {
       <button
         {...props}
         type="button"
-        className={`space-x-2 ${loading ? 'animate-pulse' : ''} ${
-          props.className ?? ''
-        }`}
+        className={`${loading ? 'animate-pulse' : ''} ${props.className ?? ''}`}
         onClick={(e) => {
           setLoading(true)
           props.onClick?.(e)

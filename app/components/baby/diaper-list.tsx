@@ -21,8 +21,14 @@ export default function DiaperList({
   babyId,
   groupedDiapers,
 }: DiaperListProps) {
+  let now = new Date()
+  let yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  let shouldSpecifyTime = (time: Date) =>
+    isSameDay(time, now) || isSameDay(time, yesterday)
+
   return (
-    <ul className="flex-1 p-2 -mx-8 shadow-inner overflow-y-auto menu bg-base-300">
+    <ul className="flex-1 flex-nowrap p-2 -mx-8 shadow-inner overflow-y-auto overflow-x-hidden menu bg-base-300">
       {Object.keys(groupedDiapers).map((day) => (
         <Fragment key={day}>
           <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">
@@ -31,12 +37,13 @@ export default function DiaperList({
             </span>
           </li>
           {groupedDiapers[day].items.map((diaper) => {
-            let sameDay = isSameDay(diaper.time, new Date())
+            let specifyTime = shouldSpecifyTime(diaper.time)
+
             return (
               <li key={diaper.id}>
                 <LoadingItem
                   type="link"
-                  className={`stat ${!sameDay ? 'grid-cols-2' : ''}`}
+                  className={`stat ${!specifyTime ? 'grid-cols-2' : ''}`}
                   to={`/baby/${babyId}/diaper/${diaper.id}`}
                 >
                   <span className="stat-value text-ellipsis">
@@ -44,12 +51,12 @@ export default function DiaperList({
                   </span>
                   <span
                     className={`stat-desc text-lg leading-tight ${
-                      sameDay
-                        ? 'flex justify-between'
+                      specifyTime
+                        ? 'flex flex-wrap justify-between'
                         : 'col-start-2 text-right'
                     }`}
                   >
-                    {isSameDay(diaper.time, new Date()) ? (
+                    {specifyTime ? (
                       <span>{getDistanceFromNow(diaper.time)}</span>
                     ) : null}
                     <span>{displayTime(diaper.time)}</span>

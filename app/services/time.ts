@@ -13,7 +13,7 @@ import {
   startOfWeek,
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { Bottle } from './bottles.server'
+import type { Bottle } from './bottles.server'
 
 export function groupByDay<T extends { time: Date }, U extends {}>(
   items: T[],
