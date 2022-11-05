@@ -1,4 +1,5 @@
 import {
+  addHours,
   differenceInMinutes,
   format,
   formatDistanceToNow,
@@ -8,9 +9,11 @@ import {
   intervalToDuration,
   isBefore,
   isSameDay,
+  lastDayOfMonth as getLastDayOfMonth,
   lastDayOfWeek,
   parse,
   startOfWeek,
+  subWeeks,
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { Bottle } from './bottles.server'
@@ -148,4 +151,61 @@ export function getRelativeDate(date: Date) {
 
 export function displayTime(time: Date) {
   return format(time, 'HH:mm', { locale: fr })
+}
+
+/**
+ * Return the same Date but +1h if it's DST (France only)
+ * DST starts the last Sunday of October and ends the last Sunday of March
+ * 
+ * We could have computed the last sundays and check if the date is between them
+ * but it's more efficient to check only if the month is March or October
+ * (All the other months are trivially DST or not) 
+ */
+export function adjustedForDST(date: Date) {
+  let today = new Date()
+  let month = today.getMonth()
+
+  // month + 1 because getMonth() is 0-indexed
+
+  if ([4, 5, 6, 7, 8, 9].includes(month + 1)) {
+    // If the date is after March or before October, we don't need to adjust
+    return date
+  } else if ([11, 12, 1, 2].includes(month + 1)) {
+    // If the date is between October and March, we need to add 1h
+    return addHours(date, 1)
+  }
+
+  // Now we know that the date is March or October, we need to check if it's the last Sunday
+
+  let lastDayOfMonth = getLastDayOfMonth(today)
+  let lastSunday = lastDayOfWeek(lastDayOfMonth, { locale: fr })
+  let lastSundayMonth = lastSunday.getMonth()
+
+  // We check if the the last sunday is really inside the correct month
+  // else we take the previous sunday
+  if (lastSundayMonth != month) {
+    lastSunday = subWeeks(lastSunday, 1)
+    lastSundayMonth = lastSunday.getMonth()
+  }
+
+  if (lastSundayMonth + 1 == 10) {
+    if (isBefore(today, lastSunday)) {
+      // If the date is before the last Sunday of October, we don't need to adjust
+      return date
+    } else {
+      // If the date is after the last Sunday of October, we need to add 1h
+      return addHours(date, 1)
+    }
+  } else if (lastSundayMonth + 1 == 3) {
+    if (isBefore(today, lastSunday)) {
+      // If the date is before the last Sunday of March, we need to add 1h
+      return addHours(date, 1)
+    } else {
+      // If the date is after the last Sunday of March, we don't need to adjust
+      return date
+    }
+  }
+
+  // If we reach this point, something went wrong
+  return date
 }

@@ -1,12 +1,16 @@
-import { DocumentReference } from 'firebase-admin/firestore'
-import {
+import type { DocumentReference } from 'firebase-admin/firestore'
+import type {
   BottleFromFirebase,
-  Bottle,
+  Bottle
+} from './bottles.server';
+import {
   parseBottleFromFirebase,
 } from './bottles.server'
-import {
+import type {
   DiaperFromFirebase,
-  Diaper,
+  Diaper
+} from './diapers.server';
+import {
   parseDiaperFromFirebase,
 } from './diapers.server'
 import { firestore, getDataAndId } from './firebase.server'

@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { addHours, format, isBefore, parse } from 'date-fns'
+import { format, isBefore, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -17,7 +17,7 @@ import {
   updateDiaper,
 } from '~/services/diapers.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { dateToISOLikeButLocal } from '~/services/time'
+import { adjustedForDST, dateToISOLikeButLocal } from '~/services/time'
 
 const schema = z.object({
   _action: z.enum(['delete', 'update']),
@@ -83,19 +83,18 @@ export async function action({ request, params }: ActionArgs) {
           new Date(),
         )
 
-        // FIXME: DST hack for now
-        let fixedTime = addHours(time, 1)
+        time = adjustedForDST(time)
 
         if (params.diaperId == 'new') {
           await createDiaper(params.babyId, {
             ...diaper,
-            time: fixedTime,
+            time,
           })
         } else {
           await updateDiaper({
             ...diaper,
             id: params.diaperId,
-            time: fixedTime,
+            time,
           })
         }
       }),
@@ -154,7 +153,7 @@ export default function DiaperPage() {
             ) : null}
           </div>
           <Form schema={schema} method="post" className="flex flex-col">
-            {({ Field, Errors, Button, register }) => (
+            {({ Field, Errors, Button, register, formState }) => (
               <>
                 <Field name="_action" hidden value="update" />
                 <Field name="date">
@@ -261,7 +260,12 @@ export default function DiaperPage() {
                     </div>
                   )}
                 </Field>
-                <Button className="w-full mt-10 space-x-2 btn btn-primary">
+                <Button
+                  disabled={
+                    formState.isSubmitting || formState.isSubmitSuccessful
+                  }
+                  className="w-full mt-10 space-x-2 btn btn-primary"
+                >
                   <SaveFloppyDisk />
                   <span>{diaper.id ? 'Modifier' : 'Ajouter'} cette couche</span>
                 </Button>

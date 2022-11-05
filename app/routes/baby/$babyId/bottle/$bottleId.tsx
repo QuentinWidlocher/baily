@@ -17,7 +17,7 @@ import {
 } from '~/services/bottles.server'
 import { formAction, Form } from '~/services/form'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { dateToISOLikeButLocal } from '~/services/time'
+import { adjustedForDST, dateToISOLikeButLocal } from '~/services/time'
 
 const schema = z.object({
   _action: z.enum(['delete', 'update']),
@@ -53,7 +53,6 @@ export async function loader({ params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
   let action = (await request.clone().formData()).get('_action')?.toString()
-  console.log(action)
 
   if (action == 'delete') {
     invariant(params.babyId, 'baby id is required')
@@ -80,19 +79,18 @@ export async function action({ request, params }: ActionArgs) {
           new Date(),
         )
 
-        // FIXME: DST hack for now
-        let fixedTime = addHours(time, 1)
+        time = adjustedForDST(time)
 
         if (params.bottleId == 'new') {
           await createBottle(params.babyId, {
             ...bottle,
-            time: fixedTime,
+            time,
           })
         } else {
           await updateBottle({
             ...bottle,
             id: params.bottleId,
-            time: fixedTime,
+            time,
           })
         }
       }),
@@ -173,7 +171,7 @@ export default function BottlePage() {
             ) : null}
           </div>
           <Form schema={schema} method="post" className="flex flex-col">
-            {({ Field, Errors, Button, register }) => (
+            {({ Field, Errors, Button, register, formState }) => (
               <>
                 <Field name="_action" hidden value="update" />
                 <Field name="date">
@@ -252,7 +250,12 @@ export default function BottlePage() {
                     </div>
                   )}
                 </Field>
-                <Button className="w-full mt-10 space-x-2 btn btn-primary">
+                <Button
+                  disabled={
+                    formState.isSubmitting || formState.isSubmitSuccessful
+                  }
+                  className="w-full mt-10 space-x-2 btn btn-primary"
+                >
                   <SaveFloppyDisk />
                   <span>{bottle.id ? 'Modifier' : 'Ajouter'} ce biberon</span>
                 </Button>
