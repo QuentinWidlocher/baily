@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { format, isBefore, isSameDay, parse } from 'date-fns'
+import { addHours, format, isBefore, isSameDay, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -75,21 +75,24 @@ export async function action({ request, params }: ActionArgs) {
         let [hours, minutes] = bottle.time.split(':')
         bottle.date
         let time = parse(
-          `${format(bottle.date, 'yyyy-MM-dd')} ${hours + 1}:${minutes}`,
+          `${format(bottle.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
           'yyyy-MM-dd HH:mm',
           new Date(),
         )
 
+        // FIXME: DST hack for now
+        let fixedTime = addHours(time, 1)
+
         if (params.bottleId == 'new') {
           await createBottle(params.babyId, {
             ...bottle,
-            time,
+            time: fixedTime,
           })
         } else {
           await updateBottle({
             ...bottle,
             id: params.bottleId,
-            time,
+            time: fixedTime,
           })
         }
       }),

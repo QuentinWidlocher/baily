@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { isBefore } from 'date-fns'
+import { addHours, format, isBefore, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -75,25 +75,27 @@ export async function action({ request, params }: ActionArgs) {
         invariant(params.babyId, 'baby id is required')
         invariant(params.diaperId, 'diaper id is required')
 
-        let [hours, minutes] = diaper.time.split(':')
-        let time = new Date(diaper.date)
-        time.setHours(
-          Number(hours),
-          Number(minutes),
-          new Date().getSeconds(),
-          0
+        let [hours, minutes] = values.time.split(':')
+        values.date
+        let time = parse(
+          `${format(values.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
+          'yyyy-MM-dd HH:mm',
+          new Date(),
         )
+
+        // FIXME: DST hack for now
+        let fixedTime = addHours(time, 1)
 
         if (params.diaperId == 'new') {
           await createDiaper(params.babyId, {
             ...diaper,
-            time,
+            time: fixedTime,
           })
         } else {
           await updateDiaper({
             ...diaper,
             id: params.diaperId,
-            time,
+            time: fixedTime,
           })
         }
       }),
@@ -105,7 +107,7 @@ export default function DiaperPage() {
   let { diaper } = useSuperLoaderData<typeof loader>()
 
   let [customDescription, setCustomDescription] = useState(
-    !!diaper.description && !prefillOptions.includes(diaper.description)
+    !!diaper.description && !prefillOptions.includes(diaper.description),
   )
   let [confirm, setConfirm] = useState(false)
 
@@ -165,7 +167,7 @@ export default function DiaperPage() {
                         type="date"
                         value={
                           dateToISOLikeButLocal(
-                            diaper.time ?? new Date()
+                            diaper.time ?? new Date(),
                           ).split('T')[0]
                         }
                         className="w-full input"
