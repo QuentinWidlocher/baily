@@ -1,5 +1,6 @@
 import { useLoaderData } from '@remix-run/react'
-import { LoaderArgs, redirect } from '@remix-run/server-runtime'
+import type { LoaderArgs } from '@remix-run/server-runtime'
+import { redirect } from '@remix-run/server-runtime'
 import LoadingItem from '~/components/loading-item'
 import { getBabies } from '~/services/babies.server'
 import { requireUserId } from '~/services/session.server'
@@ -30,7 +31,7 @@ export default function BabiesRoute() {
 
           <ul className="p-2 shadow dropdown-content menu bg-base-100 rounded-box">
             {babies.map((baby) => (
-              <li>
+              <li key={baby.id}>
                 <LoadingItem
                   key={baby.id}
                   type="link"

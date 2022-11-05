@@ -5,14 +5,14 @@ import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { makeDomainFunction } from 'remix-domains'
-import { Form, formAction } from 'remix-forms'
+import { formAction, Form } from '~/services/form'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
 import LoadingItem from '~/components/loading-item'
+import type { Diaper } from '~/services/diapers.server'
 import {
   createDiaper,
   deleteDiaper,
-  Diaper,
   getDiaper,
   updateDiaper,
 } from '~/services/diapers.server'
@@ -76,7 +76,7 @@ export async function action({ request, params }: ActionArgs) {
         invariant(params.diaperId, 'diaper id is required')
 
         let [hours, minutes] = values.time.split(':')
-        values.date
+
         let time = parse(
           `${format(values.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
           'yyyy-MM-dd HH:mm',
@@ -121,7 +121,7 @@ export default function DiaperPage() {
 
   return (
     <>
-      <section className="card mt-auto md:mb-auto bg-base-200 w-full md:w-1/2 xl:w-1/4">
+      <section className="card mt-auto md:mb-auto bg-base-200 w-full md:w-96">
         <div className="card-body">
           <div className="flex justify-between">
             <LoadingItem

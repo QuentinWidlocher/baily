@@ -1,7 +1,8 @@
 import { Link } from '@remix-run/react'
-import { RemixLinkProps } from '@remix-run/react/dist/components'
+import type { RemixLinkProps } from '@remix-run/react/dist/components'
 import { RefreshCircular } from 'iconoir-react'
-import { ReactNode, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useState } from 'react'
 
 export type LoadingItemProps = {
   className?: string

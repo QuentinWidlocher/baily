@@ -26,7 +26,6 @@ export type Baby = {
 }
 
 export function parseBabyFromFirebase(baby: BabyFromFirebase): Baby {
-  console.log(baby)
   return {
     id: baby.id,
     name: baby.name,

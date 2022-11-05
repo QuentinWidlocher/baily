@@ -1,6 +1,6 @@
 import { isSameDay, parse } from 'date-fns'
 import { Fragment } from 'react'
-import { Diaper } from '~/services/diapers.server'
+import type { Diaper } from '~/services/diapers.server'
 import {
   displayTime,
   getDistanceFromNow,

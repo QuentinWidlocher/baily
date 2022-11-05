@@ -1,4 +1,5 @@
-import { ActionArgs, LoaderArgs, redirect } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { Link } from '@remix-run/react'
 import { Plus } from 'iconoir-react'
 import invariant from 'tiny-invariant'
@@ -58,7 +59,7 @@ export async function loader({ params, request }: LoaderArgs) {
   }
 }
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ params }: ActionArgs) {
   invariant(params.babyId, 'params.babyId is required')
   deleteBaby(params.babyId)
   return redirect('/babies')
@@ -89,7 +90,6 @@ export default function Index() {
     action = (
       <LoadingItem
         type="link"
-        prefetch="render"
         to={`/baby/${babyId}/bottle/new`}
         className="w-full space-x-2 btn btn-primary rounded-none"
         icon={<Plus />}
@@ -114,7 +114,6 @@ export default function Index() {
     action = (
       <LoadingItem
         type="link"
-        prefetch="render"
         to={`/baby/${babyId}/diaper/new`}
         className="w-full space-x-2 btn btn-primary rounded-none"
         icon={<Plus />}
@@ -124,8 +123,8 @@ export default function Index() {
   }
 
   return (
-    <section className="flex-1 card bg-base-200 w-full md:w-1/2 xl:w-1/4">
-      <div className="overflow-x-hidden overflow-y-auto card-body">
+    <section className="flex-1 card bg-base-200 w-full overflow-y-hidden md:w-96 xl:w-1/4">
+      <div className="overflow-x-hidden overflow-y-auto card-body flex flex-col">
         <TitleBar
           babyId={babyId}
           babyName={babyName}

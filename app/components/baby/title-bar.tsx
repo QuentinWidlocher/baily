@@ -8,8 +8,9 @@ import {
   RemoveEmpty,
   StatsSquareUp,
 } from 'iconoir-react'
-import { FormEvent, useState } from 'react'
-import { Baby } from '~/services/babies.server'
+import type { FormEvent } from 'react'
+import { useState } from 'react'
+import type { Baby } from '~/services/babies.server'
 import LoadingItem from '../loading-item'
 
 export type TitleBarProps = {

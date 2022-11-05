@@ -1,6 +1,6 @@
 import { isSameDay, parse } from 'date-fns'
 import { Fragment } from 'react'
-import { Bottle } from '~/services/bottles.server'
+import type { Bottle } from '~/services/bottles.server'
 import {
   displayTime,
   getDistanceFromNow,
@@ -23,7 +23,7 @@ export default function BottleList({
   groupedBottles,
 }: BottleListProps) {
   return (
-    <ul className="flex-1 p-2 -mx-8 shadow-inner overflow-y-auto menu bg-base-300">
+    <ul className="flex-1 flex-nowrap p-2 -mx-8 shadow-inner overflow-y-auto menu bg-base-300">
       {Object.keys(groupedBottles).map((day) => (
         <Fragment key={day}>
           <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">

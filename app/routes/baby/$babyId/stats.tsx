@@ -21,7 +21,7 @@ export default function StatsPage() {
   } = useSuperLoaderData<typeof loader>()
 
   return (
-    <section className="card flex-1 bg-base-200 w-full md:w-1/2 xl:w-1/4">
+    <section className="card flex-1 bg-base-200 w-full md:w-96">
       <div className="card-body overflow-y-auto overflow-x-hidden">
         <Link to="./.." className="btn btn-ghost mb-5 space-x-2" title="Retour">
           <NavArrowLeft />

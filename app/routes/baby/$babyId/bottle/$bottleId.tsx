@@ -1,21 +1,21 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { addHours, format, isBefore, isSameDay, parse } from 'date-fns'
+import { addHours, format, isBefore, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { makeDomainFunction } from 'remix-domains'
-import { Form, formAction } from 'remix-forms'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
 import LoadingItem from '~/components/loading-item'
+import type { Bottle } from '~/services/bottles.server'
 import {
-  Bottle,
   createBottle,
   deleteBottle,
   getBottle,
   updateBottle,
 } from '~/services/bottles.server'
+import { formAction, Form } from '~/services/form'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { dateToISOLikeButLocal } from '~/services/time'
 
@@ -73,7 +73,7 @@ export async function action({ request, params }: ActionArgs) {
         invariant(params.bottleId, 'bottle id is required')
 
         let [hours, minutes] = bottle.time.split(':')
-        bottle.date
+
         let time = parse(
           `${format(bottle.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
           'yyyy-MM-dd HH:mm',
@@ -140,7 +140,7 @@ export default function BottlePage() {
           {sliderQuantity || 0} ml
         </span>
       </div>
-      <section className="card md:mb-auto bg-base-200 w-full md:w-1/2 xl:w-1/4">
+      <section className="card md:mb-auto bg-base-200 w-full md:w-96">
         <div className="card-body">
           <div className="flex justify-between">
             <LoadingItem
