@@ -1,5 +1,6 @@
 import { Form, Link } from '@remix-run/react'
 import {
+  Bell,
   LogOut,
   MoreHoriz,
   NavArrowDown,
@@ -18,6 +19,7 @@ export type TitleBarProps = {
   babyName: string
   babies: Baby[]
   tab: string
+  hasNewNotifications: boolean
 }
 
 function getTabName(tab: string) {
@@ -36,6 +38,7 @@ export default function TitleBar({
   babyName,
   babies,
   tab,
+  hasNewNotifications,
 }: TitleBarProps) {
   let [confirm, setConfirm] = useState(false)
 
@@ -113,6 +116,23 @@ export default function TitleBar({
                 />
               </li>
             ) : null}
+            <li>
+              <LoadingItem
+                type="link"
+                to="/notifications"
+                label="Notifications"
+                icon={
+                  hasNewNotifications ? (
+                    <div className="indicator">
+                      <span className="indicator-item indicator-bottom badge badge-xs badge-secondary"></span>
+                      <Bell />
+                    </div>
+                  ) : (
+                    <Bell />
+                  )
+                }
+              />
+            </li>
             <li>
               <LoadingItem
                 type="link"

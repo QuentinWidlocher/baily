@@ -33,6 +33,7 @@
     "eslint": "^8.26.0",
     "firebase": "^9.13.0",
     "firebase-admin": "^11.2.0",
+    "html-react-parser": "^3.0.4",
     "iconoir-react": "^5.4.0",
     "postcss": "^8.4.18",
     "react": "^17.0.2",

@@ -2,13 +2,14 @@ import { createCookieSessionStorage } from '@remix-run/node'
 import { redirect } from '@remix-run/server-runtime'
 import { firebaseAdminAuth } from './firebase.server'
 import * as Sentry from '@sentry/remix'
+import invariant from 'tiny-invariant'
 
 const expiresIn = 60 * 60 * 24 * 5 * 1000 // 5 days
 
-const storage = createCookieSessionStorage({
+export const storage = createCookieSessionStorage({
   cookie: {
     name: 'b-plus-plus',
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV == 'production',
     secrets: [process.env.FIREBASE_API_KEY!],
     sameSite: 'lax',
     path: '/',
@@ -43,6 +44,16 @@ export async function getUserId(request: Request) {
     )
     Sentry.setUser({ id: uid })
     return uid
+  } catch (err) {
+    return null
+  }
+}
+
+export async function getLastNotificationId(request: Request) {
+  try {
+    const sessionCookie = await getUserSession(request)
+    invariant(sessionCookie, 'No session cookie')
+    return sessionCookie.get('lastNotificationId') ?? null
   } catch (err) {
     return null
   }

@@ -8,7 +8,8 @@ import DiaperList from '~/components/baby/diaper-list'
 import TitleBar from '~/components/baby/title-bar'
 import LoadingItem from '~/components/loading-item'
 import { deleteBaby, getBabies, getBaby } from '~/services/babies.server'
-import { requireUserId } from '~/services/session.server'
+import { hasNewNotification } from '~/services/notifications.server'
+import { getLastNotificationId, requireUserId } from '~/services/session.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { groupByDay } from '~/services/time'
 
@@ -27,9 +28,10 @@ export async function loader({ params, request }: LoaderArgs) {
 
   invariant(assertTab(tab), 'tab is invalid')
 
-  let [baby, babies] = await Promise.all([
+  let [baby, babies, newNotifications] = await Promise.all([
     getBaby(params.babyId),
     requireUserId(request).then(getBabies),
+    getLastNotificationId(request).then(hasNewNotification),
   ])
 
   if (tab == 'bottles') {
@@ -44,6 +46,7 @@ export async function loader({ params, request }: LoaderArgs) {
       empty: baby.bottles.length <= 0,
       groupedBottles,
       babies,
+      newNotifications,
     })
   } else {
     let groupedDiapers = groupByDay(baby.diapers)
@@ -55,6 +58,7 @@ export async function loader({ params, request }: LoaderArgs) {
       empty: baby.diapers.length <= 0,
       groupedDiapers,
       babies,
+      newNotifications,
     })
   }
 }
@@ -67,7 +71,7 @@ export async function action({ params }: ActionArgs) {
 
 export default function Index() {
   let data = useSuperLoaderData<typeof loader>()
-  let { babyId, babyName, babies, empty } = data
+  let { babyId, babyName, babies, empty, newNotifications } = data
 
   let body: JSX.Element
   let action: JSX.Element
@@ -130,6 +134,7 @@ export default function Index() {
           babyName={babyName}
           babies={babies}
           tab={data.tab}
+          hasNewNotifications={newNotifications}
         />
         {body}
       </div>
