@@ -1,17 +1,21 @@
 import { Link } from '@remix-run/react'
-import { LoaderArgs } from '@remix-run/server-runtime'
+import type { LoaderArgs } from '@remix-run/server-runtime'
 import { format } from 'date-fns'
 import { NavArrowLeft } from 'iconoir-react'
 import invariant from 'tiny-invariant'
 import { getBaby } from '~/services/babies.server'
+import { getBottles } from '~/services/bottles.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { groupByWeeks } from '~/services/time'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
-  let baby = await getBaby(params.babyId, true)
+  let [baby, bottles] = await Promise.all([
+    getBaby(params.babyId),
+    getBottles(params.babyId, null),
+  ])
 
-  return superjson({ data: groupByWeeks(baby.bottles), babyName: baby.name })
+  return superjson({ data: groupByWeeks(bottles), babyName: baby.name })
 }
 
 export default function StatsPage() {
@@ -21,21 +25,21 @@ export default function StatsPage() {
   } = useSuperLoaderData<typeof loader>()
 
   return (
-    <section className="card flex-1 bg-base-200 w-full md:w-96">
-      <div className="card-body overflow-y-auto overflow-x-hidden">
-        <Link to="./.." className="btn btn-ghost mb-5 space-x-2" title="Retour">
+    <section className="flex-1 w-full overflow-y-auto card bg-base-200 md:w-96">
+      <div className="flex overflow-x-hidden card-body">
+        <Link to="./.." className="mb-5 space-x-2 btn btn-ghost" title="Retour">
           <NavArrowLeft />
           <span>Retour</span>
         </Link>
         {keys.length > 0 ? (
-          <ul className="space-y-2 -mx-2">
+          <ul className="flex-1 -mx-2 space-y-2 overflow-y-auto">
             {keys.map((week, i) => (
               <li key={week}>
-                <div className="stats grid grid-cols-2 w-full shadow overflow-x-hidden">
+                <div className="grid w-full grid-cols-2 overflow-x-hidden shadow stats">
                   <div className="stat">
                     <div className="stat-title">Semaine</div>
                     <div className="stat-value">{bottles[week].week}</div>
-                    <div className="stat-desc text-base">
+                    <div className="text-base stat-desc">
                       {format(bottles[week].start, 'dd/MM')} -{' '}
                       {format(bottles[week].end, 'dd/MM')}
                     </div>
@@ -44,7 +48,7 @@ export default function StatsPage() {
                   <div className="stat">
                     <div className="stat-title">Total</div>
                     <div className="stat-value">{bottles[week].total}ml</div>
-                    <div className="stat-desc text-base flex justify-between">
+                    <div className="flex justify-between text-base stat-desc">
                       <span>{bottles[week].bottles.length} biberons</span>
                     </div>
                   </div>

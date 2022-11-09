@@ -1,7 +1,6 @@
 import { createCookieSessionStorage } from '@remix-run/node'
 import { redirect } from '@remix-run/server-runtime'
 import { firebaseAdminAuth } from './firebase.server'
-import * as Sentry from '@sentry/remix'
 import invariant from 'tiny-invariant'
 
 const expiresIn = 60 * 60 * 24 * 5 * 1000 // 5 days
@@ -42,7 +41,6 @@ export async function getUserId(request: Request) {
       sessionCookie.get('token'),
       true
     )
-    Sentry.setUser({ id: uid })
     return uid
   } catch (err) {
     return null

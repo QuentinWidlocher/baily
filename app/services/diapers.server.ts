@@ -32,6 +32,23 @@ export async function getDiaper(id: string) {
   )
 }
 
+export async function getDiapers(babyId: string, limit: number | null = 30) {
+  let query = firestore
+    .collection('diapers')
+    .where('babyId', '==', babyId)
+    .orderBy('time', 'desc')
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map(diaper => {
+    return parseDiaperFromFirebase(getDataAndId(diaper) as DiaperFromFirebase)
+  }) as Diaper[]
+}
+
 export async function deleteDiaper(diaperId: string, babyId: string) {
   let res = await firestore.collection('diapers').doc(diaperId).get()
 

@@ -10,6 +10,7 @@ import { performMutation } from 'remix-forms'
 import { z } from 'zod'
 import { createUser } from '~/services/firebase.server'
 import { createUserSession } from '~/services/session.server'
+import { redirect } from '~/services/superjson'
 
 const schema = z.object({
   email: z
@@ -51,6 +52,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!result.success) return json(result, 400)
 
+  // result.data is the return value of createUserSession (a redirect())
   return result.data
 }
 
@@ -58,8 +60,8 @@ export default function LoginRoute() {
   let [showPassword, setShowPassword] = useState(false)
 
   return (
-    <main className="py-2 md:py-5 px-2 flex flex-col h-screen overflow-hidden items-center">
-      <section className="mt-auto md:my-auto w-full card bg-base-200 md:w-96">
+    <main className="flex flex-col items-center h-screen px-2 py-2 overflow-hidden md:py-5">
+      <section className="w-full mt-auto md:my-auto card bg-base-200 md:w-96">
         <div className="overflow-x-hidden overflow-y-auto card-body">
           <div className="flex justify-between mb-5 card-title">
             <h1 className="text-xl">S'inscrire</h1>
@@ -75,11 +77,11 @@ export default function LoginRoute() {
               <>
                 <Field name="email">
                   {({ SmartInput, Label, Errors }) => (
-                    <div className="form-control w-full">
+                    <div className="w-full form-control">
                       <Label className="label">
                         <span className="label-text">Email</span>
                       </Label>
-                      <SmartInput type="email" className="input w-full" />
+                      <SmartInput type="email" className="w-full input" />
                       <label className="label">
                         <span className="label-text-alt text-error">
                           <Errors />
@@ -90,7 +92,7 @@ export default function LoginRoute() {
                 </Field>
                 <Field name="password">
                   {({ Label, Errors }) => (
-                    <div className="form-control w-full">
+                    <div className="w-full form-control">
                       <Label className="label">
                         <span className="label-text">Mot de passe</span>
                         <span className="label-text-alt">
@@ -101,7 +103,7 @@ export default function LoginRoute() {
                         <input
                           {...register('password')}
                           type={showPassword ? 'text' : 'password'}
-                          className="input w-full"
+                          className="w-full input"
                         />
                         <div
                           onClick={() => setShowPassword((x) => !x)}
@@ -126,10 +128,10 @@ export default function LoginRoute() {
                   )}
                 </Field>
                 <Errors className="text-error" />
-                <div className="form-control w-full mt-5">
+                <div className="w-full mt-5 form-control">
                   <Button className="btn btn-primary">S'inscrire</Button>
                 </div>
-                <div className="form-control w-full mt-5">
+                <div className="w-full mt-5 form-control">
                   <Link to="/login" className="btn btn-ghost">
                     Se connecter
                   </Link>

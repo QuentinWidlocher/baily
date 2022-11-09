@@ -32,6 +32,23 @@ export async function getBottle(id: string) {
   )
 }
 
+export async function getBottles(babyId: string, limit: number | null = 30) {
+  let query = firestore
+    .collection('bottles')
+    .where('babyId', '==', babyId)
+    .orderBy('time', 'desc')
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const snapshot = await query.get()
+
+  return snapshot.docs.map(bottle => {
+    return parseBottleFromFirebase(getDataAndId(bottle) as BottleFromFirebase)
+  }) as Bottle[]
+}
+
 export async function deleteBottle(bottleId: string, babyId: string) {
   let res = await firestore.collection('bottles').doc(bottleId).get()
 

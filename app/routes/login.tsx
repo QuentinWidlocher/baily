@@ -8,6 +8,7 @@ import { performMutation } from 'remix-forms'
 import { z } from 'zod'
 import { authenticate } from '~/services/firebase.server'
 import { createUserSession } from '~/services/session.server'
+import { redirect } from '~/services/superjson'
 
 const schema = z.object({
   email: z
@@ -42,6 +43,7 @@ export async function action({ request }: ActionArgs) {
 
   if (!result.success) return json(result, 400)
 
+  // result.data is the return value of createUserSession (a redirect())
   return result.data
 }
 

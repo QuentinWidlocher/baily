@@ -10,7 +10,6 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
-import * as Sentry from '@sentry/remix'
 
 export let firebaseAdmin: AdminApp
 export let firebaseApp: FirebaseApp
@@ -93,11 +92,6 @@ export function getDataAndId<T extends { id: string }>(
 
 export async function authenticate(email: string, password: string) {
   let { user } = await signInWithEmailAndPassword(getAuth(), email, password)
-  Sentry.setUser({
-    id: user.uid,
-    email: user.email ?? undefined,
-    username: user.displayName ?? undefined,
-  })
   let result = await user.getIdTokenResult()
   return result.token
 }
@@ -108,12 +102,6 @@ export async function createUser(email: string, password: string) {
     email,
     password
   )
-
-  Sentry.setUser({
-    id: user.uid,
-    email: user.email ?? undefined,
-    username: user.displayName ?? undefined,
-  })
 
   return user
 }

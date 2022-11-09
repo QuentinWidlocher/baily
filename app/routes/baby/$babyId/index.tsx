@@ -8,6 +8,8 @@ import DiaperList from '~/components/baby/diaper-list'
 import TitleBar from '~/components/baby/title-bar'
 import LoadingItem from '~/components/loading-item'
 import { deleteBaby, getBabies, getBaby } from '~/services/babies.server'
+import { getBottles } from '~/services/bottles.server'
+import { getDiapers } from '~/services/diapers.server'
 import { hasNewNotification } from '~/services/notifications.server'
 import { getLastNotificationId, requireUserId } from '~/services/session.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
@@ -35,7 +37,9 @@ export async function loader({ params, request }: LoaderArgs) {
   ])
 
   if (tab == 'bottles') {
-    let groupedBottles = groupByDay(baby.bottles, (bottlesOfDay) => ({
+    let bottles = await getBottles(params.babyId)
+
+    let groupedBottles = groupByDay(bottles, (bottlesOfDay) => ({
       total: bottlesOfDay.reduce((acc, item) => acc + item.quantity, 0),
     }))
 
@@ -43,19 +47,21 @@ export async function loader({ params, request }: LoaderArgs) {
       tab,
       babyName: baby.name,
       babyId: baby.id,
-      empty: baby.bottles.length <= 0,
+      empty: bottles.length <= 0,
       groupedBottles,
       babies,
       newNotifications,
     })
   } else {
-    let groupedDiapers = groupByDay(baby.diapers)
+    let diapers = await getDiapers(params.babyId)
+
+    let groupedDiapers = groupByDay(diapers)
 
     return superjson({
       tab,
       babyName: baby.name,
       babyId: baby.id,
-      empty: baby.diapers.length <= 0,
+      empty: diapers.length <= 0,
       groupedDiapers,
       babies,
       newNotifications,
@@ -81,7 +87,7 @@ export default function Index() {
       body = <BottleList babyId={babyId} groupedBottles={data.groupedBottles} />
     } else {
       body = (
-        <div className="flex-1 flex -mx-8 p-10 shadow-inner bg-base-300">
+        <div className="flex flex-1 p-10 -mx-8 shadow-inner bg-base-300">
           <img
             className="m-auto"
             src="/empty-bottle.svg"
@@ -95,7 +101,7 @@ export default function Index() {
       <LoadingItem
         type="link"
         to={`/baby/${babyId}/bottle/new`}
-        className="w-full space-x-2 btn btn-primary rounded-none"
+        className="w-full space-x-2 rounded-none btn btn-primary"
         icon={<Plus />}
         label="Ajouter un biberon"
       />
@@ -105,7 +111,7 @@ export default function Index() {
       body = <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
     } else {
       body = (
-        <div className="flex-1 flex -mx-8 p-20 shadow-inner bg-base-300">
+        <div className="flex flex-1 p-20 -mx-8 shadow-inner bg-base-300">
           <img
             className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
             src="/undraw_add_notes_re_ln36.svg"
@@ -119,7 +125,7 @@ export default function Index() {
       <LoadingItem
         type="link"
         to={`/baby/${babyId}/diaper/new`}
-        className="w-full space-x-2 btn btn-primary rounded-none"
+        className="w-full space-x-2 rounded-none btn btn-primary"
         icon={<Plus />}
         label="Ajouter une couche"
       />
@@ -127,8 +133,8 @@ export default function Index() {
   }
 
   return (
-    <section className="flex-1 card bg-base-200 w-full overflow-y-hidden md:w-96 xl:w-1/4">
-      <div className="overflow-x-hidden overflow-y-auto card-body flex flex-col">
+    <section className="flex-1 w-full overflow-y-hidden card bg-base-200 md:w-96 xl:w-1/4">
+      <div className="flex flex-col overflow-x-hidden overflow-y-auto card-body">
         <TitleBar
           babyId={babyId}
           babyName={babyName}
@@ -138,9 +144,9 @@ export default function Index() {
         />
         {body}
       </div>
-      <div className="card-actions -mt-5">
+      <div className="-mt-5 card-actions">
         {action}
-        <div className="btm-nav md:btm-nav-sm mt-1 relative bg-base-200">
+        <div className="relative mt-1 btm-nav md:btm-nav-sm bg-base-200">
           <Link
             className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
               data.tab == 'bottles' ? 'active !text-primary !bg-base-300' : ''
