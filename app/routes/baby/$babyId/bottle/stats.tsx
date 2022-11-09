@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant'
 import { getBaby } from '~/services/babies.server'
 import { getBottles } from '~/services/bottles.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { groupByWeeks } from '~/services/time'
+import { groupBottlesByWeeks } from '~/services/time'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')
@@ -15,7 +15,7 @@ export async function loader({ params }: LoaderArgs) {
     getBottles(params.babyId, null),
   ])
 
-  return superjson({ data: groupByWeeks(bottles), babyName: baby.name })
+  return superjson({ data: groupBottlesByWeeks(bottles), babyName: baby.name })
 }
 
 export default function StatsPage() {
@@ -25,9 +25,13 @@ export default function StatsPage() {
   } = useSuperLoaderData<typeof loader>()
 
   return (
-    <section className="flex-1 w-full overflow-y-auto card bg-base-200 md:w-96">
+    <section className="flex-1 w-full overflow-y-auto card max-sm:rounded-none bg-base-200 md:w-96">
       <div className="flex overflow-x-hidden card-body">
-        <Link to="./.." className="mb-5 space-x-2 btn btn-ghost" title="Retour">
+        <Link
+          to="./../..?tab=bottles"
+          className="mb-5 space-x-2 btn btn-ghost"
+          title="Retour"
+        >
           <NavArrowLeft />
           <span>Retour</span>
         </Link>

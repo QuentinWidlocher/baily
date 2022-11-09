@@ -54,14 +54,14 @@ export default function TitleBar({
     <Form method="post" onSubmit={(e) => onDeleteClick(e)}>
       <div className="flex justify-between mb-2 card-title">
         <div className="flex space-x-2">
-          <h1 className="text-xl hidden md:block">Les {getTabName(tab)} de </h1>
+          <h1 className="hidden text-xl md:block">Les {getTabName(tab)} de </h1>
           <div className="dropdown">
             <label className="flex items-center space-x-2" tabIndex={0}>
               <span>{babyName}</span> <NavArrowDown className="text-sm" />
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-72"
+              className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-72"
             >
               {babies.map((baby) => (
                 <li key={baby.id}>
@@ -110,8 +110,18 @@ export default function TitleBar({
               <li>
                 <LoadingItem
                   type="link"
-                  to={`/baby/${babyId}/stats`}
+                  to={`/baby/${babyId}/bottle/stats`}
                   label="Voir l'évolution"
+                  icon={<StatsSquareUp />}
+                />
+              </li>
+            ) : null}
+            {tab == 'sleeps' ? (
+              <li>
+                <LoadingItem
+                  type="link"
+                  to={`/baby/${babyId}/sleep/stats`}
+                  label="Évolution du sommeil"
                   icon={<StatsSquareUp />}
                 />
               </li>

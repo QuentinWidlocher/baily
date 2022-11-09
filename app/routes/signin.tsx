@@ -61,7 +61,7 @@ export default function LoginRoute() {
 
   return (
     <main className="flex flex-col items-center h-screen px-2 py-2 overflow-hidden md:py-5">
-      <section className="w-full mt-auto md:my-auto card bg-base-200 md:w-96">
+      <section className="w-full mt-auto md:my-auto card max-sm:rounded-b-none bg-base-200 md:w-96">
         <div className="overflow-x-hidden overflow-y-auto card-body">
           <div className="flex justify-between mb-5 card-title">
             <h1 className="text-xl">S'inscrire</h1>

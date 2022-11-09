@@ -1,10 +1,12 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Link } from '@remix-run/react'
+import { differenceInMinutes } from 'date-fns'
 import { Plus } from 'iconoir-react'
 import invariant from 'tiny-invariant'
 import BottleList from '~/components/baby/bottle-list'
 import DiaperList from '~/components/baby/diaper-list'
+import SleepList from '~/components/baby/sleep-list'
 import TitleBar from '~/components/baby/title-bar'
 import LoadingItem from '~/components/loading-item'
 import { deleteBaby, getBabies, getBaby } from '~/services/babies.server'
@@ -12,10 +14,11 @@ import { getBottles } from '~/services/bottles.server'
 import { getDiapers } from '~/services/diapers.server'
 import { hasNewNotification } from '~/services/notifications.server'
 import { getLastNotificationId, requireUserId } from '~/services/session.server'
+import { getSleeps } from '~/services/sleeps.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { groupByDay } from '~/services/time'
+import { groupByStart, groupByTime } from '~/services/time'
 
-const tabs = ['bottles', 'diapers'] as const
+const tabs = ['bottles', 'diapers', 'sleeps'] as const
 type Tab = typeof tabs[number]
 
 function assertTab(tab: string): tab is Tab {
@@ -39,7 +42,7 @@ export async function loader({ params, request }: LoaderArgs) {
   if (tab == 'bottles') {
     let bottles = await getBottles(params.babyId)
 
-    let groupedBottles = groupByDay(bottles, (bottlesOfDay) => ({
+    let groupedBottles = groupByTime(bottles, (bottlesOfDay) => ({
       total: bottlesOfDay.reduce((acc, item) => acc + item.quantity, 0),
     }))
 
@@ -52,10 +55,10 @@ export async function loader({ params, request }: LoaderArgs) {
       babies,
       newNotifications,
     })
-  } else {
+  } else if (tab == 'diapers') {
     let diapers = await getDiapers(params.babyId)
 
-    let groupedDiapers = groupByDay(diapers)
+    let groupedDiapers = groupByTime(diapers)
 
     return superjson({
       tab,
@@ -63,6 +66,25 @@ export async function loader({ params, request }: LoaderArgs) {
       babyId: baby.id,
       empty: diapers.length <= 0,
       groupedDiapers,
+      babies,
+      newNotifications,
+    })
+  } else {
+    let sleeps = await getSleeps(params.babyId)
+
+    let groupedSleeps = groupByStart(sleeps, (sleepsOfDay) => ({
+      total: sleepsOfDay.reduce(
+        (acc, item) => acc + differenceInMinutes(item.end, item.start),
+        0,
+      ),
+    }))
+
+    return superjson({
+      tab,
+      babyName: baby.name,
+      babyId: baby.id,
+      empty: sleeps.length <= 0,
+      groupedSleeps,
       babies,
       newNotifications,
     })
@@ -106,7 +128,7 @@ export default function Index() {
         label="Ajouter un biberon"
       />
     )
-  } else {
+  } else if (data.tab == 'diapers') {
     if (!empty) {
       body = <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
     } else {
@@ -130,10 +152,34 @@ export default function Index() {
         label="Ajouter une couche"
       />
     )
+  } else {
+    if (!empty) {
+      body = <SleepList babyId={babyId} groupedSleeps={data.groupedSleeps} />
+    } else {
+      body = (
+        <div className="flex flex-1 p-20 -mx-8 shadow-inner bg-base-300">
+          <img
+            className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+            src="/undraw_add_notes_re_ln36.svg"
+            alt="Illustration of a person adding notes on a wall"
+          />
+        </div>
+      )
+    }
+
+    action = (
+      <LoadingItem
+        type="link"
+        to={`/baby/${babyId}/sleep/new`}
+        className="w-full space-x-2 rounded-none btn btn-primary"
+        icon={<Plus />}
+        label="Ajouter un dodo"
+      />
+    )
   }
 
   return (
-    <section className="flex-1 w-full overflow-y-hidden card bg-base-200 md:w-96 xl:w-1/4">
+    <section className="flex-1 w-full overflow-y-hidden card max-sm:rounded-none bg-base-200 md:w-96 xl:w-1/4">
       <div className="flex flex-col overflow-x-hidden overflow-y-auto card-body">
         <TitleBar
           babyId={babyId}
@@ -162,6 +208,14 @@ export default function Index() {
             to="?tab=diapers"
           >
             Couches
+          </Link>
+          <Link
+            className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
+              data.tab == 'sleeps' ? 'active !text-primary !bg-base-300' : ''
+            }`}
+            to="?tab=sleeps"
+          >
+            Dodos
           </Link>
         </div>
       </div>

@@ -29,7 +29,7 @@ export default function NotificationsRoute() {
 
   return (
     <main className="py-2 md:py-5 px-2 flex flex-col h-screen overflow-hidden items-center">
-      <section className="flex-1 card bg-base-200 w-full overflow-y-hidden md:w-96 xl:w-1/4">
+      <section className="flex-1 card max-sm:rounded-none bg-base-200 w-full overflow-y-hidden md:w-96 xl:w-1/4">
         <div className="overflow-x-hidden overflow-y-auto card-body flex flex-col">
           <div className="flex justify-between mb-5 card-title">
             <h1 className="text-xl">Notifications</h1>

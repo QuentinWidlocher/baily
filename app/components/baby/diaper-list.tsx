@@ -28,7 +28,7 @@ export default function DiaperList({
     isSameDay(time, now) || isSameDay(time, yesterday)
 
   return (
-    <ul className="flex-1 flex-nowrap p-2 -mx-8 shadow-inner overflow-y-auto overflow-x-hidden menu bg-base-300">
+    <ul className="flex-1 p-2 -mx-8 overflow-x-hidden overflow-y-auto shadow-inner flex-nowrap menu bg-base-300">
       {Object.keys(groupedDiapers).map((day) => (
         <Fragment key={day}>
           <li className="flex flex-row justify-between mx-3 mt-16 first-of-type:mt-0">

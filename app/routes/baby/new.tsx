@@ -25,7 +25,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function NewBabyRoute() {
   return (
-    <section className="mt-auto md:mb-auto w-full card bg-base-200 md:w-96">
+    <section className="mt-auto md:mb-auto w-full card max-sm:rounded-b-none bg-base-200 md:w-96">
       <div className="overflow-x-hidden overflow-y-auto card-body">
         <div className="flex justify-between mb-5 card-title">
           <h1 className="text-xl">Nouveau bébé !</h1>

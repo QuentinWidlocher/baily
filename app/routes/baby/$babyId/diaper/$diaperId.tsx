@@ -120,7 +120,7 @@ export default function DiaperPage() {
 
   return (
     <>
-      <section className="card mt-auto md:mb-auto bg-base-200 w-full md:w-96">
+      <section className="w-full mt-auto card max-sm:rounded-b-none md:mb-auto bg-base-200 md:w-96">
         <div className="card-body">
           <div className="flex justify-between">
             <LoadingItem
@@ -156,54 +156,7 @@ export default function DiaperPage() {
             {({ Field, Errors, Button, register, formState }) => (
               <>
                 <Field name="_action" hidden value="update" />
-                <Field name="date">
-                  {({ Label, Errors, SmartInput }) => (
-                    <div className="w-full form-control">
-                      <Label className="label">
-                        <span className="text-lg label-text">Date</span>
-                      </Label>
-                      <SmartInput
-                        type="date"
-                        value={
-                          dateToISOLikeButLocal(
-                            diaper.time ?? new Date(),
-                          ).split('T')[0]
-                        }
-                        className="w-full input"
-                      />
-                      <label className="label">
-                        <span className="label-text-alt text-error">
-                          <Errors />
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                </Field>
-                <Field name="time">
-                  {({ Label, Errors, SmartInput }) => {
-                    let [hours, minutes] = (diaper.time ?? new Date())
-                      .toLocaleTimeString()
-                      .split(':')
 
-                    return (
-                      <div className="w-full form-control">
-                        <Label className="label">
-                          <span className="text-lg label-text">Heure</span>
-                        </Label>
-                        <SmartInput
-                          type="time"
-                          value={`${hours}:${minutes}`}
-                          className="w-full input"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt text-error">
-                            <Errors />
-                          </span>
-                        </label>
-                      </div>
-                    )
-                  }}
-                </Field>
                 <Field name="description">
                   {({ Label, Errors, SmartInput }) => (
                     <div className="form-control">
@@ -260,6 +213,57 @@ export default function DiaperPage() {
                     </div>
                   )}
                 </Field>
+
+                <Field name="date">
+                  {({ Label, Errors, SmartInput }) => (
+                    <div className="w-full form-control">
+                      <Label className="label">
+                        <span className="text-lg label-text">Date</span>
+                      </Label>
+                      <SmartInput
+                        type="date"
+                        value={
+                          dateToISOLikeButLocal(
+                            diaper.time ?? new Date(),
+                          ).split('T')[0]
+                        }
+                        className="w-full input"
+                      />
+                      <label className="label">
+                        <span className="label-text-alt text-error">
+                          <Errors />
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                </Field>
+
+                <Field name="time">
+                  {({ Label, Errors, SmartInput }) => {
+                    let [hours, minutes] = (diaper.time ?? new Date())
+                      .toLocaleTimeString()
+                      .split(':')
+
+                    return (
+                      <div className="w-full form-control">
+                        <Label className="label">
+                          <span className="text-lg label-text">Heure</span>
+                        </Label>
+                        <SmartInput
+                          type="time"
+                          value={`${hours}:${minutes}`}
+                          className="w-full input"
+                        />
+                        <label className="label">
+                          <span className="label-text-alt text-error">
+                            <Errors />
+                          </span>
+                        </label>
+                      </div>
+                    )
+                  }}
+                </Field>
+
                 <Button
                   disabled={
                     formState.isSubmitting || formState.isSubmitSuccessful

@@ -17,13 +17,15 @@ import {
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { Bottle } from './bottles.server'
+import { Sleep } from './sleeps.server'
 
-export function groupByDay<T extends { time: Date }, U extends {}>(
+export function getGroupByTimeKey<K extends string, T extends { [k in K]: Date }, U extends {}>(
+  keyToGroupBy: K,
   items: T[],
   calculateByDay: (items: T[]) => U = (items) => ({} as U)
 ) {
   let grouped = items.reduce((acc, item) => {
-    const key = format(item.time, 'yyyy-MM-dd')
+    const key = format(item[keyToGroupBy], 'yyyy-MM-dd')
     if (!acc[key]) {
       acc[key] = []
     }
@@ -42,7 +44,20 @@ export function groupByDay<T extends { time: Date }, U extends {}>(
   }, {} as { [key: string]: { items: T[] } & U })
 }
 
-export function groupByWeeks(bottles: Bottle[]) {
+export function groupByTime<T extends { time: Date }, U extends {}>(
+  items: T[],
+  calculateByDay: (items: T[]) => U = (items) => ({} as U)
+) {
+  return getGroupByTimeKey<'time', T, U>('time', items, calculateByDay)
+}
+export function groupByStart<T extends { start: Date }, U extends {}>(
+  items: T[],
+  calculateByDay: (items: T[]) => U = (items) => ({} as U)
+) {
+  return getGroupByTimeKey<'start', T, U>('start', items, calculateByDay)
+}
+
+export function groupBottlesByWeeks(bottles: Bottle[]) {
   let grouped = bottles.reduce((acc, bottle) => {
     const key = format(startOfWeek(bottle.time, { locale: fr }), 'yyyy-MM-dd')
     if (!acc[key]) {
@@ -87,6 +102,54 @@ export function groupByWeeks(bottles: Bottle[]) {
 
   return [keys, formatted] as const
 }
+
+export function groupSleepsByWeeks(sleeps: Sleep[]) {
+  let grouped = sleeps.reduce((acc, sleep) => {
+    const key = format(startOfWeek(sleep.start, { locale: fr }), 'yyyy-MM-dd')
+    if (!acc[key]) {
+      acc[key] = []
+    }
+    acc[key].push(sleep)
+    return acc
+  }, {} as { [key: string]: Sleep[] })
+
+  let keys = Object.keys(grouped).sort(
+    (a, b) =>
+      parse(b, 'yyyy-MM-dd', new Date()).getTime() -
+      parse(a, 'yyyy-MM-dd', new Date()).getTime()
+  )
+
+  let formatted = keys.reduce(
+    (acc, key) => {
+      let parsedDate = parse(key, 'yyyy-MM-dd', new Date())
+      let total = grouped[key].reduce((acc, sleep) => acc + differenceInMinutes(sleep.end, sleep.start), 0)
+
+      return {
+        ...acc,
+        [key]: {
+          week: getWeek(parsedDate, { locale: fr }),
+          start: parsedDate,
+          end: lastDayOfWeek(parsedDate, { locale: fr }),
+          sleeps: grouped[key],
+          total,
+        },
+      }
+    },
+    {} as {
+      [key: string]: {
+        sleeps: Sleep[]
+        total: number
+        week: number
+        start: Date
+        end: Date
+      }
+    }
+  )
+
+  return [keys, formatted] as const
+}
+
+
 
 export function getDistanceFromNow(date: Date) {
   let now = new Date()

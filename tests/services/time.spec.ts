@@ -6,8 +6,8 @@ import {
   displayTime,
   getDistanceFromNow,
   getRelativeDate,
-  groupByDay,
-  groupByWeeks,
+  groupByTime,
+  groupBottlesByWeeks,
 } from '../../app/services/time'
 
 describe('time', () => {
@@ -156,7 +156,7 @@ describe('time', () => {
     }
 
     expect(
-      groupByDay(bottles, (bottlesOfDay) => ({
+      groupByTime(bottles, (bottlesOfDay) => ({
         total: bottlesOfDay.reduce(
           (total, bottle) => total + bottle.quantity,
           0
@@ -199,7 +199,7 @@ describe('time', () => {
       },
     ]
 
-    let expected: ReturnType<typeof groupByWeeks> = [
+    let expected: ReturnType<typeof groupBottlesByWeeks> = [
       ['2022-02-28', '2022-02-21'],
       {
         '2022-02-21': {
@@ -251,6 +251,6 @@ describe('time', () => {
       },
     ]
 
-    expect(groupByWeeks(bottles)).toEqual(expected)
+    expect(groupBottlesByWeeks(bottles)).toEqual(expected)
   })
 })
