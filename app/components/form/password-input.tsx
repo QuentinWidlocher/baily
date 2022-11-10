@@ -1,26 +1,48 @@
-import { useField } from 'remix-validated-form'
+import { EyeClose, EyeEmpty } from 'iconoir-react'
+import { useState } from 'react'
+import Input from './input'
 
 type PasswordInputProps = {
   name: string
   label: string
+  labelAlt?: string
+  toggleVisibility?: boolean
 }
 
-export default function PasswordInput({ name, label }: PasswordInputProps) {
-  let field = useField(name)
-  return (
-    <div className="w-full form-control">
-      <label htmlFor={name} className="label">
-        <span className="label-text">{label}</span>
-      </label>
-      <input
-        {...field.getInputProps({ id: name, type: 'password' })}
-        className={`w-full input ${field.error ? 'input-error' : ''}`}
+export default function PasswordInput({
+  name,
+  label,
+  labelAlt,
+  toggleVisibility,
+}: PasswordInputProps) {
+  let [showPassword, setShowPassword] = useState(false)
+
+  if (toggleVisibility) {
+    return (
+      <Input
+        name={name}
+        label={label}
+        labelAlt={labelAlt}
+        type={showPassword ? 'text' : 'password'}
+        groupAppend={
+          <button
+            type="button"
+            onClick={() => setShowPassword((x) => !x)}
+            className={`bg-base-300 swap px-2 ${
+              showPassword ? 'swap-active' : ''
+            }`}
+          >
+            <div className="swap-on">
+              <EyeClose />
+            </div>
+            <div className="swap-off">
+              <EyeEmpty />
+            </div>
+          </button>
+        }
       />
-      <label className="label">
-        <span className="label-text-alt text-error">
-          {field.error ? field.error : null}
-        </span>
-      </label>
-    </div>
-  )
+    )
+  } else {
+    return <Input name={name} label={label} type="password" />
+  }
 }

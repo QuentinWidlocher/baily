@@ -6,9 +6,9 @@ import { authenticate } from '~/services/firebase.server'
 import { createUserSession } from '~/services/session.server'
 import { withZod } from '@remix-validated-form/with-zod'
 import { ValidatedForm, validationError } from 'remix-validated-form'
-import TextInput from '~/components/form/text-input'
 import SubmitButton from '~/components/form/submit-button'
 import PasswordInput from '~/components/form/password-input'
+import Input from '~/components/form/input'
 
 const schema = z.object({
   email: z
@@ -71,7 +71,7 @@ export default function LoginRoute() {
           </div>
 
           <ValidatedForm validator={validator} method="post">
-            <TextInput name="email" label="Email" />
+            <Input name="email" label="Email" />
             <PasswordInput name="password" label="Mot de passe" />
             <div className="w-full mt-5 form-control">
               <SubmitButton label="Se connecter" submittingLabel="Connexion" />
