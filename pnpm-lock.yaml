@@ -10,6 +10,7 @@ specifiers:
   '@remix-run/react': ^1.7.5
   '@remix-run/serve': ^1.7.5
   '@remix-run/server-runtime': ^1.7.5
+  '@remix-validated-form/with-zod': ^2.0.5
   '@types/react': ^17.0.52
   '@types/react-dom': ^17.0.18
   '@vitest/coverage-c8': ^0.22.1
@@ -31,6 +32,7 @@ specifiers:
   react-hook-form: ^7.39.1
   remix-domains: ^0.3.2
   remix-forms: ^1.0.0
+  remix-validated-form: ^4.6.4
   superjson: ^1.11.0
   tailwindcss: ^3.2.2
   timezone-mock: ^1.3.4
@@ -38,6 +40,7 @@ specifiers:
   typescript: ^4.8.4
   vitest: ^0.22.1
   zod: ^3.19.1
+  zod-form-data: ^1.2.4
 
 dependencies:
   '@firebase/app-types': 0.8.1
@@ -49,6 +52,7 @@ dependencies:
   '@remix-run/react': 1.7.5_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/serve': 1.7.5_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/server-runtime': 1.7.5_sfoxds7t5ydpegc3knd667wn6m
+  '@remix-validated-form/with-zod': 2.0.5_5hszhmbp2ma2352jykxsxvvyia
   autoprefixer: 10.4.13_postcss@8.4.18
   cross-env: 7.0.3
   daisyui: 2.38.0_lycaqaeny3mp632atgvyvqdgwe
@@ -66,12 +70,14 @@ dependencies:
   react-hook-form: 7.39.1_react@17.0.2
   remix-domains: 0.3.2_zod@3.19.1
   remix-forms: 1.0.0_tcf4ceqpacmtfdvul7mpymktka
+  remix-validated-form: 4.6.4_xbsayks4r7flq66bxtn4arv6r4
   superjson: 1.11.0
   tailwindcss: 3.2.2_postcss@8.4.18
   timezone-mock: 1.3.4
   tiny-invariant: 1.3.1
   typescript: 4.8.4
   zod: 3.19.1
+  zod-form-data: 1.2.4_zod@3.19.1
 
 devDependencies:
   '@types/react': 17.0.52
@@ -2427,6 +2433,16 @@ packages:
     resolution: {integrity: sha512-wlezlJaA5NF6SsNMiwQnnAW6tnPzQ5I8qk0Y0pSohm0eHKa2FQ1QhEKLVVcDDu02TmkfHgnux0igNfeYhDOXiA==}
     dependencies:
       web-streams-polyfill: 3.2.1
+    dev: false
+
+  /@remix-validated-form/with-zod/2.0.5_5hszhmbp2ma2352jykxsxvvyia:
+    resolution: {integrity: sha512-HDKFlhtBbsVL1EWZkT9l8IVGg/yRgFEzLmNxk36gPBhCFLEZ0rIFlpJRC3lITD22Vm0SDDCG/iI0CqqaXzuRmw==}
+    peerDependencies:
+      remix-validated-form: ^4.x
+      zod: ^3.11.x
+    dependencies:
+      remix-validated-form: 4.6.4_xbsayks4r7flq66bxtn4arv6r4
+      zod: 3.19.1
     dev: false
 
   /@rollup/pluginutils/4.2.1:
@@ -5997,6 +6013,10 @@ packages:
     resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
     dev: false
 
+  /immer/9.0.16:
+    resolution: {integrity: sha512-qenGE7CstVm1NrHQbMh8YaSzTZTFNP3zPqr3YU0S0UY441j4bJTg4A2Hh5KAhwgaiU6ZZ1Ar6y/2f4TblnMReQ==}
+    dev: false
+
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -8522,6 +8542,10 @@ packages:
       unified: 10.1.2
     dev: false
 
+  /remeda/1.2.0:
+    resolution: {integrity: sha512-XRechb9xoJqWok7MBwqhGlFC4PnyTlLU5CWlE3fCiaEGvLa6J73IGkklr1uGd+GBPr/DOPbaLKfJeJgILWUnyA==}
+    dev: false
+
   /remix-domains/0.3.2_zod@3.19.1:
     resolution: {integrity: sha512-e/SvgweoZdItbagdijkCFyaCOc1rZJGaDEu68tBlFv5SAa0RjebFMn+Kj3KxwjmK57ltXJt20022EmnGV4meBQ==}
     deprecated: 🚨 remix-domains was renamed to domain-functions 🔀. Make sure you change it in your package.json so you keep your version up to date.
@@ -8545,6 +8569,20 @@ packages:
       react: 17.0.2
       react-hook-form: 7.39.1_react@17.0.2
       zod: 3.19.1
+    dev: false
+
+  /remix-validated-form/4.6.4_xbsayks4r7flq66bxtn4arv6r4:
+    resolution: {integrity: sha512-HYIaKYnig3e1aEPlUNl5aPFOSY77AjoViReXjKdoYJNNNRR4zUTqBtp1sm12EC6gM99aymLikz3vd0Vs2Dse/Q==}
+    peerDependencies:
+      '@remix-run/react': 1.x
+      react: ^17.0.2 || ^18.0.0
+    dependencies:
+      '@remix-run/react': 1.7.5_sfoxds7t5ydpegc3knd667wn6m
+      immer: 9.0.16
+      react: 17.0.2
+      remeda: 1.2.0
+      tiny-invariant: 1.3.1
+      zustand: 4.1.4_immer@9.0.16+react@17.0.2
     dev: false
 
   /repeat-element/1.1.4:
@@ -9633,6 +9671,14 @@ packages:
     deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: false
 
+  /use-sync-external-store/1.2.0_react@17.0.2:
+    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 17.0.2
+    dev: false
+
   /use/3.1.1:
     resolution: {integrity: sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==}
     engines: {node: '>=0.10.0'}
@@ -10011,8 +10057,33 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  /zod-form-data/1.2.4_zod@3.19.1:
+    resolution: {integrity: sha512-mI/rgItfvYQpvzEqGuBda/nuTHrMNoFZJ5cpiGLC5O3ZaVwI0XVo3/yTY2RreVMu57wGcDrfQcTRe5aMq2ijYA==}
+    peerDependencies:
+      zod: ^3.11.x
+    dependencies:
+      zod: 3.19.1
+    dev: false
+
   /zod/3.19.1:
     resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
+
+  /zustand/4.1.4_immer@9.0.16+react@17.0.2:
+    resolution: {integrity: sha512-k2jVOlWo8p4R83mQ+/uyB8ILPO2PCJOf+QVjcL+1PbMCk1w5OoPYpAIxy9zd93FSfmJqoH6lGdwzzjwqJIRU5A==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      immer: 9.0.16
+      react: 17.0.2
+      use-sync-external-store: 1.2.0_react@17.0.2
     dev: false
 
   /zwitch/2.0.2:
