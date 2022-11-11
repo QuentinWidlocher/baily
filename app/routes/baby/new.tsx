@@ -1,64 +1,62 @@
-import { Link } from '@remix-run/react'
+import { NavArrowLeft } from 'iconoir-react'
+import LoadingItem from '~/components/loading-item'
 import type { ActionArgs } from '@remix-run/server-runtime'
-import { makeDomainFunction } from 'remix-domains'
+import { withZod } from '@remix-validated-form/with-zod'
 import { z } from 'zod'
 import { createBaby } from '~/services/babies.server'
-import { Form, formAction } from '~/services/form'
 import { requireUserId } from '~/services/session.server'
+import { ValidatedForm, validationError } from 'remix-validated-form'
+import Input from '~/components/form/input'
+import SubmitButton from '~/components/form/submit-button'
+import { redirect } from '~/services/superjson'
 
 const schema = z.object({
   name: z.string().min(1, 'Le nom est requis'),
 })
 
+const validator = withZod(schema)
+
 export async function action({ request }: ActionArgs) {
   let uid = await requireUserId(request)
 
-  return formAction({
-    request,
-    schema,
-    successPath: (id) => `/baby/${id}`,
-    mutation: makeDomainFunction(schema)(async ({ name }) => {
-      return createBaby(uid, name)
-    }),
-  })
+  let result = await validator.validate(await request.formData())
+
+  if (result.error) {
+    return validationError(result.error)
+  }
+
+  let { name } = result.data
+
+  let id = await createBaby(uid, name)
+
+  return redirect(`/baby/${id}`)
 }
 
 export default function NewBabyRoute() {
   return (
-    <section className="mt-auto md:mb-auto w-full card max-sm:rounded-b-none bg-base-200 md:w-96">
+    <section className="w-full mt-auto md:mb-auto mx-2 card max-sm:rounded-b-none bg-base-200 md:w-96">
       <div className="overflow-x-hidden overflow-y-auto card-body">
         <div className="flex justify-between mb-5 card-title">
           <h1 className="text-xl">Nouveau bébé !</h1>
-          <Link className="text-base opacity-75" to="/babies">
-            Retour
-          </Link>
+          <LoadingItem
+            type="link"
+            to="/babies"
+            className="space-x-2 btn btn-ghost"
+            title="Retour"
+            icon={<NavArrowLeft />}
+            label="Retour"
+          />
         </div>
 
-        <Form schema={schema}>
-          {({ Button, Field, Errors }) => (
-            <>
-              <Field name="name">
-                {({ SmartInput, Label, Errors }) => (
-                  <div className="form-control w-full">
-                    <Label className="label">
-                      <span className="label-text">Nom du bébé</span>
-                    </Label>
-                    <SmartInput className="input w-full" />
-                    <label className="label">
-                      <span className="label-text-alt text-error">
-                        <Errors />
-                      </span>
-                    </label>
-                  </div>
-                )}
-              </Field>
-              <Errors className="text-error" />
-              <div className="form-control w-full mt-5">
-                <Button className="btn btn-primary">Ajouter le bébé</Button>
-              </div>
-            </>
-          )}
-        </Form>
+        <ValidatedForm validator={validator} method="post">
+          <Input name="name" label="Nom du bébé" />
+          <div className="w-full mt-5 form-control">
+            <SubmitButton
+              label="Ajouter le bébé"
+              submittingLabel="Ajout en cours"
+            />
+          </div>
+        </ValidatedForm>
       </div>
     </section>
   )

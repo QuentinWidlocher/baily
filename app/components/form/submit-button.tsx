@@ -19,7 +19,7 @@ export default function SubmitButton(props: SubmitButtonProps) {
     <button
       type="submit"
       disabled={props.disabled || isSubmitting}
-      className={className}
+      className={`${className} space-x-2`}
     >
       {isSubmitting ? (
         <RefreshCircular className="animate-spin" />
