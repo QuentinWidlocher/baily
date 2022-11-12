@@ -2,11 +2,14 @@ import { useField } from 'remix-validated-form'
 
 type InputProps = {
   name: string
-  label: string
+  label?: string
   labelAlt?: string
   type?: React.HTMLInputTypeAttribute
   groupPrepend?: JSX.Element
   groupAppend?: JSX.Element
+  defaultValue?: string
+  value?: string
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function Input({
@@ -14,6 +17,9 @@ export default function Input({
   label,
   labelAlt,
   type = 'text',
+  value,
+  defaultValue,
+  onChange,
   ...props
 }: InputProps) {
   let field = useField(name)
@@ -26,7 +32,8 @@ export default function Input({
       <label className="input-group">
         {props.groupPrepend ?? null}
         <input
-          {...field.getInputProps({ id: name, type })}
+          {...field.getInputProps({ id: name, type, onChange, value })}
+          defaultValue={defaultValue}
           className={`w-full input ${field.error ? 'input-error' : ''}`}
         />
         {props.groupAppend ?? null}
@@ -35,7 +42,8 @@ export default function Input({
   } else {
     inputTag = (
       <input
-        {...field.getInputProps({ id: name, type })}
+        {...field.getInputProps({ id: name, type, onChange, value })}
+        defaultValue={defaultValue}
         className={`w-full input ${field.error ? 'input-error' : ''}`}
       />
     )
@@ -43,10 +51,12 @@ export default function Input({
 
   return (
     <div className="w-full form-control">
-      <label htmlFor={name} className="label">
-        <span className="label-text">{label}</span>
-        {labelAlt ? <span className="label-text-alt">{labelAlt}</span> : null}
-      </label>
+      {label ? (
+        <label htmlFor={name} className="label">
+          <span className="label-text">{label}</span>
+          {labelAlt ? <span className="label-text-alt">{labelAlt}</span> : null}
+        </label>
+      ) : null}
       {inputTag}
       <label className="label">
         <span className="label-text-alt text-error">

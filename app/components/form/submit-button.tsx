@@ -26,7 +26,7 @@ export default function SubmitButton(props: SubmitButtonProps) {
       ) : (
         props.icon ?? null
       )}
-      {isSubmitting ? submittingLabel : props.label}
+      <span>{isSubmitting ? `${submittingLabel}...` : props.label}</span>
     </button>
   )
 }

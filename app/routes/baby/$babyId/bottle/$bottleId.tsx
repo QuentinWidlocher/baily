@@ -1,12 +1,13 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { addHours, format, isBefore, parse } from 'date-fns'
+import { format, isBefore, parseISO, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
-import { makeDomainFunction } from 'remix-domains'
+import { ValidatedForm, validationError } from 'remix-validated-form'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
+import { zfd } from 'zod-form-data'
 import LoadingItem from '~/components/loading-item'
 import type { Bottle } from '~/services/bottles.server'
 import {
@@ -15,28 +16,40 @@ import {
   getBottle,
   updateBottle,
 } from '~/services/bottles.server'
-import { formAction, Form } from '~/services/form'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { adjustedForDST, dateToISOLikeButLocal } from '~/services/time'
+import { adjustedForDST } from '~/services/time'
+import { withZod } from '@remix-validated-form/with-zod'
+import DateTimeInput from '~/components/form/date-time-input'
+import Input from '~/components/form/input'
+import SubmitButton from '~/components/form/submit-button'
+import { Form } from '@remix-run/react'
 
 const schema = z.object({
-  _action: z.enum(['delete', 'update']),
-  quantity: z.number({
-    required_error: 'La quantité est requise',
-    invalid_type_error: 'La quantité est requise',
+  _action: z.literal('update'),
+  quantity: zfd.numeric(
+    z.number({
+      required_error: 'La quantité est requise',
+      invalid_type_error: 'La quantité est invalide',
+    }),
+  ),
+  date: z.object({
+    date: z
+      .string()
+      .min(1, { message: 'La date doit être remplie' })
+      .transform((x) => parseISO(x))
+      .refine((date) => isBefore(date, new Date()), {
+        message: 'La date doit être dans le passé',
+      }),
+    time: z
+      .string()
+      .min(1, { message: "L'heure doit être remplie" })
+      .regex(/^\d{2}:\d{2}/, {
+        message: 'Le format doit être hh:mm',
+      }),
   }),
-  date: z
-    .date({ invalid_type_error: 'La date doit être remplie' })
-    .refine((date) => isBefore(date, new Date()), {
-      message: 'La date doit être dans le passé',
-    }),
-  time: z
-    .string()
-    .min(1, { message: "L'heure doit être remplie" })
-    .regex(/^\d{2}:\d{2}/, {
-      message: 'Le format doit être hh:mm',
-    }),
 })
+
+const validator = withZod(schema)
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.bottleId, 'bottle id is required')
@@ -52,49 +65,47 @@ export async function loader({ params }: LoaderArgs) {
 }
 
 export async function action({ request, params }: ActionArgs) {
+  invariant(params.babyId, 'baby id is required')
+  invariant(params.bottleId, 'bottle id is required')
+
   let action = (await request.clone().formData()).get('_action')?.toString()
 
   if (action == 'delete') {
-    invariant(params.babyId, 'baby id is required')
-    invariant(params.bottleId, 'bottle id is required')
-
     await deleteBottle(params.bottleId, params.babyId)
     return redirect(`/baby/${params.babyId}`)
   } else {
-    return formAction({
-      request,
-      schema,
-      successPath: `/baby/${params.babyId}?tab=bottles`,
-      mutation: makeDomainFunction(schema)(async (values) => {
-        let bottle = values
+    let result = await validator.validate(await request.formData())
 
-        invariant(params.babyId, 'baby id is required')
-        invariant(params.bottleId, 'bottle id is required')
+    if (result.error) {
+      return validationError(result.error)
+    }
 
-        let [hours, minutes] = bottle.time.split(':')
+    let bottle = result.data
 
-        let time = parse(
-          `${format(bottle.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
-          'yyyy-MM-dd HH:mm',
-          new Date(),
-        )
+    let [hours, minutes] = bottle.date.time.split(':')
 
-        time = adjustedForDST(time)
+    let time = parse(
+      `${format(bottle.date.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
+      'yyyy-MM-dd HH:mm',
+      new Date(),
+    )
 
-        if (params.bottleId == 'new') {
-          await createBottle(params.babyId, {
-            ...bottle,
-            time,
-          })
-        } else {
-          await updateBottle({
-            ...bottle,
-            id: params.bottleId,
-            time,
-          })
-        }
-      }),
-    })
+    time = adjustedForDST(time)
+
+    if (params.bottleId == 'new') {
+      await createBottle(params.babyId, {
+        ...bottle,
+        time,
+      })
+    } else {
+      await updateBottle({
+        ...bottle,
+        id: params.bottleId,
+        time,
+      })
+    }
+
+    return redirect(`/baby/${params.babyId}?tab=bottles`)
   }
 }
 
@@ -150,118 +161,48 @@ export default function BottlePage() {
               label="Retour"
             />
             {bottle.id ? (
-              <Form schema={schema} onSubmit={onDelete}>
-                {({ Field, Button }) => (
-                  <>
-                    <Field hidden name="_action" value="delete" />
-                    <Button
-                      className={`btn ${
-                        confirm
-                          ? 'btn-error'
-                          : 'btn-square btn-ghost text-error'
-                      }`}
-                      title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
-                    >
-                      {confirm ? <span className="mr-1">Confirmer</span> : ''}
-                      <Bin />
-                    </Button>
-                  </>
-                )}
+              <Form method="post" onSubmit={onDelete}>
+                <input hidden name="_action" value="delete" readOnly />
+                <button
+                  className={`btn ${
+                    confirm ? 'btn-error' : 'btn-square btn-ghost text-error'
+                  }`}
+                  title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
+                >
+                  {confirm ? <span className="mr-1">Confirmer</span> : ''}
+                  <Bin />
+                </button>
               </Form>
             ) : null}
           </div>
-          <Form schema={schema} method="post" className="flex flex-col">
-            {({ Field, Errors, Button, register, formState }) => (
-              <>
-                <Field name="_action" hidden value="update" />
-                <Field name="date">
-                  {({ Label, Errors, SmartInput }) => (
-                    <div className="w-full form-control">
-                      <Label className="label">
-                        <span className="text-lg label-text">Date</span>
-                      </Label>
-                      <SmartInput
-                        type="date"
-                        value={
-                          dateToISOLikeButLocal(
-                            bottle.time ?? new Date(),
-                          ).split('T')[0]
-                        }
-                        className="w-full input"
-                      />
-                      <label className="label">
-                        <span className="label-text-alt text-error">
-                          <Errors />
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                </Field>
-                <Field name="time">
-                  {({ Label, Errors, SmartInput }) => {
-                    let [hours, minutes] = (bottle.time ?? new Date())
-                      .toLocaleTimeString()
-                      .split(':')
 
-                    return (
-                      <div className="w-full form-control">
-                        <Label className="label">
-                          <span className="text-lg label-text">Heure</span>
-                        </Label>
-                        <SmartInput
-                          type="time"
-                          value={`${hours}:${minutes}`}
-                          className="w-full input"
-                        />
-                        <label className="label">
-                          <span className="label-text-alt text-error">
-                            <Errors />
-                          </span>
-                        </label>
-                      </div>
-                    )
-                  }}
-                </Field>
-                <Field name="quantity">
-                  {({ Label, Errors, SmartInput }) => (
-                    <div className="form-control">
-                      <Label className="label">
-                        <span className="text-lg label-text">
-                          Quantité donnée
-                        </span>
-                      </Label>
-                      <label className="input-group">
-                        <input
-                          {...register('quantity')}
-                          type="number"
-                          value={sliderQuantity}
-                          onChange={(e) => {
-                            setSliderQuantity(e.target.valueAsNumber)
-                          }}
-                          className="w-full input"
-                        />
-                        <span>ml</span>
-                      </label>
-                      <label className="label">
-                        <span className="label-text-alt text-error">
-                          <Errors />
-                        </span>
-                      </label>
-                    </div>
-                  )}
-                </Field>
-                <Button
-                  disabled={
-                    formState.isSubmitting || formState.isSubmitSuccessful
-                  }
-                  className="w-full mt-10 space-x-2 btn btn-primary"
-                >
-                  <SaveFloppyDisk />
-                  <span>{bottle.id ? 'Modifier' : 'Ajouter'} ce biberon</span>
-                </Button>
-              </>
-            )}
-          </Form>
+          <ValidatedForm
+            validator={validator}
+            method="post"
+            className="flex flex-col"
+          >
+            <input name="_action" hidden value="update" readOnly />
+            <DateTimeInput
+              name="date"
+              label="Date et heure"
+              defaultValue={bottle.time ?? new Date()}
+            />
+            <Input
+              name="quantity"
+              type="number"
+              label="Quantité donnée"
+              value={String(sliderQuantity)}
+              onChange={(e) => {
+                setSliderQuantity(e.target.valueAsNumber)
+              }}
+            />
+            <SubmitButton
+              icon={<SaveFloppyDisk />}
+              label={`${bottle.id ? 'Modifier' : 'Ajouter'} ce biberon`}
+              submittingLabel={bottle.id ? 'Modification' : 'Ajout'}
+              className="mt-10 btn btn-primary"
+            />
+          </ValidatedForm>
         </div>
       </section>
     </>

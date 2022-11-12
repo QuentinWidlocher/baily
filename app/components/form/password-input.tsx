@@ -10,19 +10,15 @@ type PasswordInputProps = {
 }
 
 export default function PasswordInput({
-  name,
-  label,
-  labelAlt,
   toggleVisibility,
+  ...props
 }: PasswordInputProps) {
   let [showPassword, setShowPassword] = useState(false)
 
   if (toggleVisibility) {
     return (
       <Input
-        name={name}
-        label={label}
-        labelAlt={labelAlt}
+        {...props}
         type={showPassword ? 'text' : 'password'}
         groupAppend={
           <button
@@ -43,6 +39,6 @@ export default function PasswordInput({
       />
     )
   } else {
-    return <Input name={name} label={label} type="password" />
+    return <Input {...props} type="password" />
   }
 }
