@@ -1,25 +1,27 @@
-import { useField } from 'remix-validated-form'
+import { FieldProps, useField } from 'remix-validated-form'
 
 type InputProps = {
   name: string
   label?: string
-  labelAlt?: string
+  labelAlt?: string | JSX.Element
   type?: React.HTMLInputTypeAttribute
   groupPrepend?: JSX.Element
   groupAppend?: JSX.Element
   defaultValue?: string
   value?: string
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+
+  customInputTag?: (field: FieldProps) => JSX.Element
 }
 
 export default function Input({
   name,
   label,
-  labelAlt,
   type = 'text',
   value,
   defaultValue,
   onChange,
+  customInputTag,
   ...props
 }: InputProps) {
   let field = useField(name)
@@ -27,26 +29,40 @@ export default function Input({
 
   let inputTag
 
-  if (isInputGroup) {
-    inputTag = (
-      <label className="input-group">
-        {props.groupPrepend ?? null}
+  if (customInputTag) {
+    inputTag = customInputTag(field)
+  } else {
+    if (isInputGroup) {
+      inputTag = (
+        <label className="input-group">
+          {props.groupPrepend ?? null}
+          <input
+            {...field.getInputProps({ id: name, type, onChange, value })}
+            defaultValue={defaultValue}
+            className={`w-full input ${field.error ? 'input-error' : ''}`}
+          />
+          {props.groupAppend ?? null}
+        </label>
+      )
+    } else {
+      inputTag = (
         <input
           {...field.getInputProps({ id: name, type, onChange, value })}
           defaultValue={defaultValue}
           className={`w-full input ${field.error ? 'input-error' : ''}`}
         />
-        {props.groupAppend ?? null}
-      </label>
-    )
-  } else {
-    inputTag = (
-      <input
-        {...field.getInputProps({ id: name, type, onChange, value })}
-        defaultValue={defaultValue}
-        className={`w-full input ${field.error ? 'input-error' : ''}`}
-      />
-    )
+      )
+    }
+  }
+
+  let labelAlt = null
+
+  if (props.labelAlt) {
+    if (typeof props.labelAlt == 'string') {
+      labelAlt = <span className="label-text-alt">{props.labelAlt}</span>
+    } else {
+      labelAlt = props.labelAlt
+    }
   }
 
   return (
@@ -54,7 +70,7 @@ export default function Input({
       {label ? (
         <label htmlFor={name} className="label">
           <span className="label-text">{label}</span>
-          {labelAlt ? <span className="label-text-alt">{labelAlt}</span> : null}
+          {labelAlt}
         </label>
       ) : null}
       {inputTag}
