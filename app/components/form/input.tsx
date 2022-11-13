@@ -1,4 +1,5 @@
-import { FieldProps, useField } from 'remix-validated-form'
+import type { FieldProps } from 'remix-validated-form'
+import { useField } from 'remix-validated-form'
 
 type InputProps = {
   name: string

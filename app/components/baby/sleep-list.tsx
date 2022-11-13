@@ -40,17 +40,29 @@ export default function SleepList({ babyId, groupedSleeps }: SleepListProps) {
               </span>
             </li>
             {sleeps.items.map((sleep) => {
-              let duration = formatDuration(
-                intervalToDuration({
-                  start: sleep.start,
-                  end: sleep.end ?? new Date(),
-                }),
-                {
+              let durationRaw = intervalToDuration({
+                start: sleep.start,
+                end: sleep.end ?? new Date(),
+              })
+
+              let duration
+              if (
+                (!durationRaw.years || durationRaw.years == 0) &&
+                (!durationRaw.months || durationRaw.months == 0) &&
+                (!durationRaw.weeks || durationRaw.weeks == 0) &&
+                (!durationRaw.days || durationRaw.days == 0) &&
+                (!durationRaw.hours || durationRaw.hours == 0) &&
+                (!durationRaw.minutes || durationRaw.minutes <= 0)
+              ) {
+                duration = "Moins d'une minute"
+              } else {
+                duration = formatDuration(durationRaw, {
                   locale: fr,
                   format: ['hours', 'minutes'],
                   delimiter: ' et ',
-                },
-              )
+                })
+              }
+
               return (
                 <li key={sleep.id}>
                   <LoadingItem

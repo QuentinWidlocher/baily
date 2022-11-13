@@ -156,7 +156,7 @@ export async function action({ request, params }: ActionArgs) {
 
   if (action == 'delete') {
     await deleteSleep(params.sleepId, params.babyId)
-    return redirect(`/baby/${params.babyId}`)
+    return redirect(`/baby/${params.babyId}?tab=sleeps`)
   } else {
     let result = await validator.validate(await request.formData())
 

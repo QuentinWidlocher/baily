@@ -72,7 +72,7 @@ export async function action({ request, params }: ActionArgs) {
 
   if (action == 'delete') {
     await deleteBottle(params.bottleId, params.babyId)
-    return redirect(`/baby/${params.babyId}`)
+    return redirect(`/baby/${params.babyId}?tab=bottles`)
   } else {
     let result = await validator.validate(await request.formData())
 
