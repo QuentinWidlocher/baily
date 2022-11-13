@@ -146,7 +146,7 @@ export async function loader({ params }: LoaderArgs) {
   })
 }
 
-const prefillOptions = ["D'une traite", 'Agité', 'Normal']
+const prefillOptions = ['Agité', 'Normal']
 
 export async function action({ request, params }: ActionArgs) {
   invariant(params.babyId, 'baby id is required')

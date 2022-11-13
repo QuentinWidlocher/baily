@@ -66,9 +66,8 @@ export async function deleteSleep(sleepId: string, babyId: string) {
 }
 
 export async function createSleep(babyId: string, sleep: Omit<Sleep, 'id'>) {
-  console.log('createSleep', babyId, sleep)
   let createdSleep = await firestore.collection('sleeps').add({
-    description: sleep.description ?? '',
+    description: sleep.description ?? null,
     start: Timestamp.fromDate(sleep.start),
     end: sleep.end ? Timestamp.fromDate(sleep.end) : null,
     babyId,
@@ -87,7 +86,7 @@ export function updateSleep(sleep: Sleep) {
     .collection('sleeps')
     .doc(sleep.id)
     .update({
-      description: sleep.description,
+      description: sleep.description ?? null,
       start: Timestamp.fromDate(sleep.start),
       end: sleep.end ? Timestamp.fromDate(sleep.end) : null,
     } as Partial<SleepFromFirebase>)
