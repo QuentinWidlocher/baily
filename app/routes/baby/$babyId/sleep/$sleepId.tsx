@@ -2,7 +2,7 @@ import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form } from '@remix-run/react'
 import { withZod } from '@remix-validated-form/with-zod'
-import { format, isBefore, parse, parseISO } from 'date-fns'
+import { format, isBefore, isToday, parse, parseISO } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -53,7 +53,6 @@ const schema = z
     }),
     end: z.preprocess(
       (end) => {
-        console.log(end)
         if (
           !end ||
           !(typeof end == 'object') ||
@@ -184,6 +183,7 @@ export default function SleepPage() {
   let { sleep } = useSuperLoaderData<typeof loader>()
 
   let [confirm, setConfirm] = useState(false)
+  let [end, setEnd] = useState(sleep.end)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
     if (!confirm) {
@@ -243,7 +243,39 @@ export default function SleepPage() {
             <DateTimeInput
               name="end"
               label="Fin"
-              defaultValue={sleep.end ?? undefined}
+              labelAlt={
+                !end || !isToday(end) ? (
+                  <button
+                    onClick={() => setEnd(new Date())}
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                  >
+                    Maintenant
+                  </button>
+                ) : undefined
+              }
+              defaultValue={end ?? undefined}
+              value={end}
+              onTimeChange={(e) => {
+                let parsed = parse(e.target.value, 'HH:mm', end ?? new Date())
+                if (!isNaN(parsed.getTime())) {
+                  setEnd(parsed)
+                } else {
+                  setEnd(undefined)
+                }
+              }}
+              onDateChange={(e) => {
+                let parsed = parse(
+                  e.target.value,
+                  'yyyy-MM-dd',
+                  end ?? new Date(),
+                )
+                if (!isNaN(parsed.getTime())) {
+                  setEnd(parsed)
+                } else {
+                  setEnd(undefined)
+                }
+              }}
             />
             <SubmitButton
               icon={<SaveFloppyDisk />}

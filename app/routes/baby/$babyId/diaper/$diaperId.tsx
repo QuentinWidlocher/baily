@@ -64,7 +64,7 @@ export async function loader({ params }: LoaderArgs) {
   })
 }
 
-const prefillOptions = ['Souillée', 'Pipi', 'Mixte']
+const prefillOptions = ['Pipi 💦', 'Popo 💩', 'Mixte']
 
 export async function action({ request, params }: ActionArgs) {
   invariant(params.babyId, 'baby id is required')

@@ -7,6 +7,8 @@ type DateInputProps = {
   labelAlt?: string
   toggleVisibility?: boolean
   defaultValue?: Date
+  value?: string
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function DateInput({
