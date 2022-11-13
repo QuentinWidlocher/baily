@@ -17,7 +17,7 @@ import {
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { Bottle } from './bottles.server'
-import { Sleep } from './sleeps.server'
+import type { Sleep } from './sleeps.server'
 
 export function getGroupByTimeKey<K extends string, T extends { [k in K]: Date }, U extends {}>(
   keyToGroupBy: K,
@@ -122,7 +122,7 @@ export function groupSleepsByWeeks(sleeps: Sleep[]) {
   let formatted = keys.reduce(
     (acc, key) => {
       let parsedDate = parse(key, 'yyyy-MM-dd', new Date())
-      let total = grouped[key].reduce((acc, sleep) => acc + differenceInMinutes(sleep.end, sleep.start), 0)
+      let total = grouped[key].reduce((acc, sleep) => acc + differenceInMinutes(sleep.end ?? new Date(), sleep.start), 0)
 
       return {
         ...acc,

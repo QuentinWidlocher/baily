@@ -1,6 +1,5 @@
 import { addMinutes, formatDuration, intervalToDuration, parse } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { ArrowRight } from 'iconoir-react'
 import { Fragment } from 'react'
 import type { Sleep } from '~/services/sleeps.server'
 import { displayTime, getRelativeDate } from '~/services/time'
@@ -44,7 +43,7 @@ export default function SleepList({ babyId, groupedSleeps }: SleepListProps) {
               let duration = formatDuration(
                 intervalToDuration({
                   start: sleep.start,
-                  end: sleep.end,
+                  end: sleep.end ?? new Date(),
                 }),
                 {
                   locale: fr,
@@ -65,9 +64,15 @@ export default function SleepList({ babyId, groupedSleeps }: SleepListProps) {
                     <span
                       className={`stat-desc text-lg leading-tight w-full flex flex-wrap justify-between`}
                     >
-                      <span>{sleep.description || 'Dodo'}</span>
+                      <span>
+                        {sleep.description || ''} {!sleep.end && ' (en cours)'}
+                      </span>
                       <span className="flex">
-                        {displayTime(sleep.start)} - {displayTime(sleep.end)}
+                        {sleep.end
+                          ? `${displayTime(sleep.start)} - ${displayTime(
+                              sleep.end,
+                            )}`
+                          : `Depuis ${displayTime(sleep.start)}`}
                       </span>
                     </span>
                   </LoadingItem>

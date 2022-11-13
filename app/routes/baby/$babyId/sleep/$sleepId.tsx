@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { ValidatedForm, validationError } from 'remix-validated-form'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
+import { zfd } from 'zod-form-data'
 import DateTimeInput from '~/components/form/date-time-input'
 import SelectInput from '~/components/form/select-input'
 import SubmitButton from '~/components/form/submit-button'
@@ -26,12 +27,15 @@ import { adjustedForDST } from '~/services/time'
 const schema = z
   .object({
     _action: z.literal('update'),
-    description: z
-      .string({
-        invalid_type_error: 'La description est invalide',
-      })
-      .min(1, 'La description est obligatoire')
-      .max(50, 'La description doit faire moins de 50 caractères'),
+    description: zfd.text(
+      z.undefined().or(
+        z
+          .string({
+            invalid_type_error: 'La description est invalide',
+          })
+          .max(50, 'La description doit faire moins de 50 caractères'),
+      ),
+    ),
     start: z.object({
       date: z
         .string()
@@ -47,21 +51,41 @@ const schema = z
           message: 'Le format doit être hh:mm',
         }),
     }),
-    end: z.object({
-      date: z
-        .string()
-        .min(1, { message: 'La date doit être remplie' })
-        .transform((x) => parseISO(x))
-        .refine((date) => isBefore(date, new Date()), {
-          message: 'La date doit être dans le passé',
-        }),
-      time: z
-        .string()
-        .min(1, { message: "L'heure doit être remplie" })
-        .regex(/^\d{2}:\d{2}/, {
-          message: 'Le format doit être hh:mm',
-        }),
-    }),
+    end: z.preprocess(
+      (end) => {
+        console.log(end)
+        if (
+          !end ||
+          !(typeof end == 'object') ||
+          !('date' in end) ||
+          !('time' in end) ||
+          // @ts-ignore
+          !end.date ||
+          // @ts-ignore
+          !end.time
+        ) {
+          return undefined
+        }
+        return end
+      },
+      z
+        .object({
+          date: z
+            .string()
+            .min(1, { message: 'La date doit être remplie' })
+            .transform((x) => parseISO(x))
+            .refine((date) => isBefore(date, new Date()), {
+              message: 'La date doit être dans le passé',
+            }),
+          time: z
+            .string()
+            .min(1, { message: "L'heure doit être remplie" })
+            .regex(/^\d{2}:\d{2}/, {
+              message: 'Le format doit être hh:mm',
+            }),
+        })
+        .optional(),
+    ),
   })
   .transform((values, ctx) => {
     let [startHours, startMinutes] = values.start.time.split(':')
@@ -77,28 +101,36 @@ const schema = z
 
     start = adjustedForDST(start)
 
-    let [endHours, endMinutes] = values.end.time.split(':')
+    if (values.end?.time && values.end?.date) {
+      let [endHours, endMinutes] = values.end.time.split(':')
 
-    let end = parse(
-      `${format(values.end.date, 'yyyy-MM-dd')} ${endHours}:${endMinutes}`,
-      'yyyy-MM-dd HH:mm',
-      new Date(),
-    )
+      let end = parse(
+        `${format(values.end.date, 'yyyy-MM-dd')} ${endHours}:${endMinutes}`,
+        'yyyy-MM-dd HH:mm',
+        new Date(),
+      )
 
-    end = adjustedForDST(end)
+      end = adjustedForDST(end)
 
-    if (isBefore(end, start)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.invalid_date,
-        message: 'La date de fin doit être après la date de début',
-        path: ['endDate'],
-      })
-    }
+      if (isBefore(end, start)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_date,
+          message: 'La date de fin doit être après la date de début',
+          path: ['endDate'],
+        })
+      }
 
-    return {
-      ...values,
-      start,
-      end,
+      return {
+        ...values,
+        start,
+        end,
+      }
+    } else {
+      return {
+        ...values,
+        start,
+        end: undefined,
+      }
     }
   })
 
@@ -115,7 +147,7 @@ export async function loader({ params }: LoaderArgs) {
   })
 }
 
-const prefillOptions = ['Souillée', 'Pipi', 'Mixte']
+const prefillOptions = ["D'une traite", 'Agité', 'Normal']
 
 export async function action({ request, params }: ActionArgs) {
   invariant(params.babyId, 'baby id is required')
@@ -211,7 +243,7 @@ export default function SleepPage() {
             <DateTimeInput
               name="end"
               label="Fin"
-              defaultValue={sleep.end ?? new Date()}
+              defaultValue={sleep.end ?? undefined}
             />
             <SubmitButton
               icon={<SaveFloppyDisk />}

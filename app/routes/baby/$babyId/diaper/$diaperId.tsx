@@ -27,6 +27,7 @@ const schema = z.object({
   _action: z.literal('update'),
   description: z
     .string({
+      required_error: 'La description est obligatoire',
       invalid_type_error: 'La description est invalide',
     })
     .min(1, 'La description est obligatoire')

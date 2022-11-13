@@ -4,7 +4,7 @@ import { firestore, getDataAndId } from './firebase.server'
 export type SleepFromFirebase = {
   id: string
   start: Timestamp
-  end: Timestamp
+  end?: Timestamp
   description: string
   babyId: string
 }
@@ -12,7 +12,7 @@ export type SleepFromFirebase = {
 export type Sleep = {
   id: string
   start: Date
-  end: Date
+  end?: Date
   description?: string
 }
 
@@ -20,7 +20,7 @@ export function parseSleepFromFirebase(sleep: SleepFromFirebase): Sleep {
   return {
     id: sleep.id,
     start: sleep.start.toDate(),
-    end: sleep.end.toDate(),
+    end: sleep.end?.toDate(),
     description: sleep.description,
   }
 }
@@ -66,10 +66,11 @@ export async function deleteSleep(sleepId: string, babyId: string) {
 }
 
 export async function createSleep(babyId: string, sleep: Omit<Sleep, 'id'>) {
+  console.log('createSleep', babyId, sleep)
   let createdSleep = await firestore.collection('sleeps').add({
     description: sleep.description ?? '',
     start: Timestamp.fromDate(sleep.start),
-    end: Timestamp.fromDate(sleep.end),
+    end: sleep.end ? Timestamp.fromDate(sleep.end) : null,
     babyId,
   } as Partial<SleepFromFirebase>)
 
@@ -88,6 +89,6 @@ export function updateSleep(sleep: Sleep) {
     .update({
       description: sleep.description,
       start: Timestamp.fromDate(sleep.start),
-      end: Timestamp.fromDate(sleep.end),
+      end: sleep.end ? Timestamp.fromDate(sleep.end) : null,
     } as Partial<SleepFromFirebase>)
 }

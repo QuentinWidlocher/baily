@@ -71,10 +71,11 @@ export async function loader({ params, request }: LoaderArgs) {
     })
   } else {
     let sleeps = await getSleeps(params.babyId)
+    let now = new Date()
 
     let groupedSleeps = groupByStart(sleeps, (sleepsOfDay) => ({
       total: sleepsOfDay.reduce(
-        (acc, item) => acc + differenceInMinutes(item.end, item.start),
+        (acc, item) => acc + differenceInMinutes(item.end ?? now, item.start),
         0,
       ),
     }))

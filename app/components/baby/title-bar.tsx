@@ -22,17 +22,6 @@ export type TitleBarProps = {
   hasNewNotifications: boolean
 }
 
-function getTabName(tab: string) {
-  switch (tab) {
-    case 'bottles':
-      return 'biberons'
-    case 'diapers':
-      return 'couches'
-    default:
-      return 'trucs'
-  }
-}
-
 export default function TitleBar({
   babyId,
   babyName,
@@ -54,7 +43,6 @@ export default function TitleBar({
     <Form method="post" onSubmit={(e) => onDeleteClick(e)}>
       <div className="flex justify-between mb-2 card-title">
         <div className="flex space-x-2">
-          <h1 className="hidden text-xl md:block">Les {getTabName(tab)} de </h1>
           <div className="dropdown">
             <label className="flex items-center space-x-2" tabIndex={0}>
               <span>{babyName}</span> <NavArrowDown className="text-sm" />
@@ -156,7 +144,7 @@ export default function TitleBar({
               className={`tooltip tooltip-error ${
                 confirm ? 'tooltip-open' : ''
               }`}
-              data-tip="La suppression est définitive, vous perdez l'accès aux biberons"
+              data-tip="La suppression est définitive, vous perdrez l'accès à toutes les données de ce bébé."
             >
               <button
                 className={`w-full ${
