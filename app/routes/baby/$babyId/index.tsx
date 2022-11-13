@@ -1,8 +1,9 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { Link } from '@remix-run/react'
+import { Link, useTransition } from '@remix-run/react'
 import { differenceInMinutes } from 'date-fns'
 import { Plus } from 'iconoir-react'
+import { Fragment } from 'react'
 import invariant from 'tiny-invariant'
 import BottleList from '~/components/baby/bottle-list'
 import DiaperList from '~/components/baby/diaper-list'
@@ -101,82 +102,115 @@ export async function action({ params }: ActionArgs) {
 export default function Index() {
   let data = useSuperLoaderData<typeof loader>()
   let { babyId, babyName, babies, empty, newNotifications } = data
+  let transition = useTransition()
 
   let body: JSX.Element
   let action: JSX.Element
 
-  if (data.tab == 'bottles') {
-    if (!empty) {
-      body = <BottleList babyId={babyId} groupedBottles={data.groupedBottles} />
-    } else {
-      body = (
-        <div className="flex flex-1 p-10 -mx-8 shadow-inner bg-base-300">
-          <img
-            className="m-auto"
-            src="/empty-bottle.svg"
-            alt="Illustration of a sad personified empty baby bottle"
-          />
-        </div>
-      )
-    }
-
-    action = (
-      <LoadingItem
-        type="link"
-        to={`/baby/${babyId}/bottle/new`}
-        className="w-full space-x-2 rounded-none btn btn-primary"
-        icon={<Plus />}
-        label="Ajouter un biberon"
-      />
+  if (
+    transition.state == 'loading' &&
+    transition.location?.pathname == `/baby/${babyId}`
+  ) {
+    body = (
+      <ul className="flex-1 p-2 -mx-8 overflow-x-hidden overflow-y-auto shadow-inner flex-nowrap menu bg-base-300">
+        {[...new Array(10)].map((_, i) => (
+          <Fragment key={i}>
+            {i % 3 == 0 ? (
+              <li className="flex flex-row justify-between mx-4 mt-16 first-of-type:mt-0">
+                <span className="p-1 bg-base-100 animate-pulse h-6 w-24 rounded"></span>
+                <span className="p-1 bg-base-100 animate-pulse h-6 w-24 rounded"></span>
+              </li>
+            ) : null}
+            <li className="rounded-lg h-24 animate-pulse" />
+          </Fragment>
+        ))}
+      </ul>
     )
-  } else if (data.tab == 'diapers') {
-    if (!empty) {
-      body = <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
-    } else {
-      body = (
-        <div className="flex flex-1 p-20 -mx-8 shadow-inner bg-base-300">
-          <img
-            className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
-            src="/undraw_add_notes_re_ln36.svg"
-            alt="Illustration of a person adding notes on a wall"
-          />
-        </div>
-      )
-    }
-
     action = (
-      <LoadingItem
-        type="link"
-        to={`/baby/${babyId}/diaper/new`}
-        className="w-full space-x-2 rounded-none btn btn-primary"
-        icon={<Plus />}
-        label="Ajouter une couche"
-      />
+      <button
+        type="button"
+        className="w-full space-x-2 rounded-none btn btn-primary animate-pulse"
+        disabled
+      ></button>
     )
   } else {
-    if (!empty) {
-      body = <SleepList babyId={babyId} groupedSleeps={data.groupedSleeps} />
+    if (data.tab == 'bottles') {
+      if (!empty) {
+        body = (
+          <BottleList babyId={babyId} groupedBottles={data.groupedBottles} />
+        )
+      } else {
+        body = (
+          <div className="flex flex-1 p-10 -mx-8 shadow-inner bg-base-300">
+            <img
+              className="m-auto"
+              src="/empty-bottle.svg"
+              alt="Illustration of a sad personified empty baby bottle"
+            />
+          </div>
+        )
+      }
+
+      action = (
+        <LoadingItem
+          type="link"
+          to={`/baby/${babyId}/bottle/new`}
+          className="w-full space-x-2 rounded-none btn btn-primary"
+          icon={<Plus />}
+          label="Ajouter un biberon"
+        />
+      )
+    } else if (data.tab == 'diapers') {
+      if (!empty) {
+        body = (
+          <DiaperList babyId={babyId} groupedDiapers={data.groupedDiapers} />
+        )
+      } else {
+        body = (
+          <div className="flex flex-1 p-20 -mx-8 shadow-inner bg-base-300">
+            <img
+              className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+              src="/undraw_add_notes_re_ln36.svg"
+              alt="Illustration of a person adding notes on a wall"
+            />
+          </div>
+        )
+      }
+
+      action = (
+        <LoadingItem
+          type="link"
+          to={`/baby/${babyId}/diaper/new`}
+          className="w-full space-x-2 rounded-none btn btn-primary"
+          icon={<Plus />}
+          label="Ajouter une couche"
+        />
+      )
     } else {
-      body = (
-        <div className="flex flex-1 p-20 -mx-8 shadow-inner bg-base-300">
-          <img
-            className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
-            src="/undraw_add_notes_re_ln36.svg"
-            alt="Illustration of a person adding notes on a wall"
-          />
-        </div>
+      if (!empty) {
+        body = <SleepList babyId={babyId} groupedSleeps={data.groupedSleeps} />
+      } else {
+        body = (
+          <div className="flex flex-1 p-20 -mx-8 shadow-inner bg-base-300">
+            <img
+              className="m-auto dark:brightness-[0.7] dark:contrast-[1.3] dark:saturate-[1.3]"
+              src="/undraw_add_notes_re_ln36.svg"
+              alt="Illustration of a person adding notes on a wall"
+            />
+          </div>
+        )
+      }
+
+      action = (
+        <LoadingItem
+          type="link"
+          to={`/baby/${babyId}/sleep/new`}
+          className="w-full space-x-2 rounded-none btn btn-primary"
+          icon={<Plus />}
+          label="Ajouter un dodo"
+        />
       )
     }
-
-    action = (
-      <LoadingItem
-        type="link"
-        to={`/baby/${babyId}/sleep/new`}
-        className="w-full space-x-2 rounded-none btn btn-primary"
-        icon={<Plus />}
-        label="Ajouter un dodo"
-      />
-    )
   }
 
   return (
