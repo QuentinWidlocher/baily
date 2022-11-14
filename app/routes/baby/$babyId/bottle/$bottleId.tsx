@@ -17,7 +17,6 @@ import {
   updateBottle,
 } from '~/services/bottles.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { adjustedForDST } from '~/services/time'
 import { withZod } from '@remix-validated-form/with-zod'
 import DateTimeInput from '~/components/form/date-time-input'
 import Input from '~/components/form/input'
@@ -82,6 +81,8 @@ export async function action({ request, params }: ActionArgs) {
 
     let bottle = result.data
 
+    console.log('server bottle', bottle.date)
+
     let [hours, minutes] = bottle.date.time.split(':')
 
     let time = parse(
@@ -90,7 +91,7 @@ export async function action({ request, params }: ActionArgs) {
       new Date(),
     )
 
-    time = adjustedForDST(time)
+    console.log('server time', time)
 
     if (params.bottleId == 'new') {
       await createBottle(params.babyId, {
@@ -180,6 +181,7 @@ export default function BottlePage() {
             validator={validator}
             method="post"
             className="flex flex-col"
+            onSubmit={(e) => console.log('client', e.date)}
           >
             <input name="_action" hidden value="update" readOnly />
             <DateTimeInput
