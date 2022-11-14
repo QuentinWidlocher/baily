@@ -31,29 +31,36 @@ const schema = z.object({
       invalid_type_error: 'La quantité est invalide',
     }),
   ),
-  date: z
-    .object({
-      date: z
-        .string()
-        .min(1, { message: 'La date doit être remplie' })
-        .transform((x) => parseISO(x))
-        .refine((date) => isBefore(date, new Date()), {
-          message: 'La date doit être dans le passé',
-        }),
-      time: z
-        .string()
-        .min(1, { message: "L'heure doit être remplie" })
-        .regex(/^\d{2}:\d{2}/, {
-          message: 'Le format doit être hh:mm',
-        }),
-    })
-    .transform((x) =>
-      parse(
-        format(x.date, 'yyyy-MM-dd') + ' ' + x.time,
-        'yyyy-MM-dd HH:mm',
-        new Date(),
-      ),
-    ),
+  time: z
+    .string()
+    .min(1, { message: 'La date doit être remplie' })
+    .transform((x) => parseISO(x))
+    .refine((date) => isBefore(date, new Date()), {
+      message: 'La date doit être dans le passé',
+    }),
+  // date: z
+  //   .object({
+  //     date: z
+  //       .string()
+  //       .min(1, { message: 'La date doit être remplie' })
+  //       .transform((x) => parseISO(x))
+  //       .refine((date) => isBefore(date, new Date()), {
+  //         message: 'La date doit être dans le passé',
+  //       }),
+  //     time: z
+  //       .string()
+  //       .min(1, { message: "L'heure doit être remplie" })
+  //       .regex(/^\d{2}:\d{2}/, {
+  //         message: 'Le format doit être hh:mm',
+  //       }),
+  //   })
+  //   .transform((x) =>
+  //     parse(
+  //       format(x.date, 'yyyy-MM-dd') + ' ' + x.time,
+  //       'yyyy-MM-dd HH:mm',
+  //       new Date(),
+  //     ),
+  //   ),
 })
 
 const validator = withZod(schema)
@@ -89,18 +96,14 @@ export async function action({ request, params }: ActionArgs) {
 
     let bottle = result.data
 
-    console.log('server', bottle.date)
+    console.log('server', bottle.time)
 
     if (params.bottleId == 'new') {
-      await createBottle(params.babyId, {
-        ...bottle,
-        time: bottle.date,
-      })
+      await createBottle(params.babyId, bottle)
     } else {
       await updateBottle({
         ...bottle,
         id: params.bottleId,
-        time: bottle.date,
       })
     }
 
@@ -179,11 +182,11 @@ export default function BottlePage() {
             validator={validator}
             method="post"
             className="flex flex-col"
-            onSubmit={(e) => console.log('client', e.date)}
+            onSubmit={(e) => console.log('client', e.time)}
           >
             <input name="_action" hidden value="update" readOnly />
             <DateTimeInput
-              name="date"
+              name="time"
               label="Date et heure"
               defaultValue={bottle.time ? new Date(bottle.time) : new Date()}
             />
