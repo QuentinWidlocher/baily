@@ -48,7 +48,11 @@ const schema = z.object({
         }),
     })
     .transform((x) =>
-      parse(x.date + ' ' + x.time, 'yyyy-MM-dd HH:mm', new Date()),
+      parse(
+        format(x.date, 'yyyy-MM-dd') + ' ' + x.time,
+        'yyyy-MM-dd HH:mm',
+        new Date(),
+      ),
     ),
 })
 
