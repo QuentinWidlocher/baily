@@ -1,4 +1,5 @@
-import { ActionArgs, json, LoaderArgs } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, useLoaderData } from '@remix-run/react'
 import { withZod } from '@remix-validated-form/with-zod'
@@ -20,7 +21,6 @@ import {
   getDiaper,
   updateDiaper,
 } from '~/services/diapers.server'
-import { superjson, useSuperLoaderData } from '~/services/superjson'
 
 const schema = z.object({
   _action: z.literal('update'),
