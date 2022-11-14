@@ -20,7 +20,7 @@ export default function DateTimeInput({
     <>
       <Input
         {...props}
-        type="datetime-local"
+        type="datetime"
         defaultValue={defaultValue ? formatISO(defaultValue) : undefined}
       />
     </>
