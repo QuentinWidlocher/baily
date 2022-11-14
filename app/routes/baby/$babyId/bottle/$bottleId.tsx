@@ -31,21 +31,25 @@ const schema = z.object({
       invalid_type_error: 'La quantité est invalide',
     }),
   ),
-  date: z.object({
-    date: z
-      .string()
-      .min(1, { message: 'La date doit être remplie' })
-      .transform((x) => parseISO(x))
-      .refine((date) => isBefore(date, new Date()), {
-        message: 'La date doit être dans le passé',
-      }),
-    time: z
-      .string()
-      .min(1, { message: "L'heure doit être remplie" })
-      .regex(/^\d{2}:\d{2}/, {
-        message: 'Le format doit être hh:mm',
-      }),
-  }),
+  date: z
+    .object({
+      date: z
+        .string()
+        .min(1, { message: 'La date doit être remplie' })
+        .transform((x) => parseISO(x))
+        .refine((date) => isBefore(date, new Date()), {
+          message: 'La date doit être dans le passé',
+        }),
+      time: z
+        .string()
+        .min(1, { message: "L'heure doit être remplie" })
+        .regex(/^\d{2}:\d{2}/, {
+          message: 'Le format doit être hh:mm',
+        }),
+    })
+    .transform((x) =>
+      parse(x.date + ' ' + x.time, 'yyyy-MM-dd HH:mm', new Date()),
+    ),
 })
 
 const validator = withZod(schema)
@@ -81,28 +85,18 @@ export async function action({ request, params }: ActionArgs) {
 
     let bottle = result.data
 
-    console.log('server bottle', bottle.date)
-
-    let [hours, minutes] = bottle.date.time.split(':')
-
-    let time = parse(
-      `${format(bottle.date.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
-      'yyyy-MM-dd HH:mm',
-      new Date(),
-    )
-
-    console.log('server time', time)
+    console.log('server', bottle.date)
 
     if (params.bottleId == 'new') {
       await createBottle(params.babyId, {
         ...bottle,
-        time,
+        time: bottle.date,
       })
     } else {
       await updateBottle({
         ...bottle,
         id: params.bottleId,
-        time,
+        time: bottle.date,
       })
     }
 
