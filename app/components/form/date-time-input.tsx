@@ -1,4 +1,4 @@
-import { format, formatISO, getHours, set } from 'date-fns'
+import { format, formatISO, isToday, set } from 'date-fns'
 import { useState } from 'react'
 import { useField } from 'remix-validated-form'
 import DateInput from '~/components/form/date-input'
@@ -7,7 +7,7 @@ import TimeInput from '~/components/form/time-input'
 interface DateTimeInputProps {
   name: string
   label?: string
-  labelAlt?: string | JSX.Element
+  withSetNowButton?: boolean
   defaultValue?: Date
   onTimeChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onDateChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -16,7 +16,7 @@ interface DateTimeInputProps {
 export default function DateTimeInput({
   name,
   label,
-  labelAlt,
+  withSetNowButton,
   defaultValue,
   onTimeChange,
   onDateChange,
@@ -29,7 +29,15 @@ export default function DateTimeInput({
       {label ? (
         <label htmlFor={name} className="label">
           <span className="label-text">{label}</span>
-          {labelAlt ? <span className="label-text-alt">{labelAlt}</span> : null}
+          {withSetNowButton && (!dateTime || !isToday(dateTime)) ? (
+            <button
+              onClick={() => setDateTime(new Date())}
+              type="button"
+              className="btn btn-primary btn-sm"
+            >
+              Maintenant
+            </button>
+          ) : undefined}
         </label>
       ) : null}
       <div className="flex gap-2">

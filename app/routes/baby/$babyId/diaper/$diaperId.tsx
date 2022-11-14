@@ -31,21 +31,13 @@ const schema = z.object({
     })
     .min(1, 'La description est obligatoire')
     .max(50, 'La description doit faire moins de 50 caractères'),
-  date: z.object({
-    date: z
-      .string()
-      .min(1, { message: 'La date doit être remplie' })
-      .transform((x) => parseISO(x))
-      .refine((date) => isBefore(date, new Date()), {
-        message: 'La date doit être dans le passé',
-      }),
-    time: z
-      .string()
-      .min(1, { message: "L'heure doit être remplie" })
-      .regex(/^\d{2}:\d{2}/, {
-        message: 'Le format doit être hh:mm',
-      }),
-  }),
+  time: z
+    .string()
+    .min(1, { message: 'La date doit être remplie' })
+    .transform((x) => parseISO(x))
+    .refine((date) => isBefore(date, new Date()), {
+      message: 'La date doit être dans le passé',
+    }),
 })
 
 const validator = withZod(schema)
@@ -83,24 +75,12 @@ export async function action({ request, params }: ActionArgs) {
 
     let diaper = result.data
 
-    let [hours, minutes] = diaper.date.time.split(':')
-
-    let time = parse(
-      `${format(diaper.date.date, 'yyyy-MM-dd')} ${hours}:${minutes}`,
-      'yyyy-MM-dd HH:mm',
-      new Date(),
-    )
-
     if (params.diaperId == 'new') {
-      await createDiaper(params.babyId, {
-        ...diaper,
-        time,
-      })
+      await createDiaper(params.babyId, diaper)
     } else {
       await updateDiaper({
         ...diaper,
         id: params.diaperId,
-        time,
       })
     }
 

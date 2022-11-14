@@ -35,97 +35,24 @@ const schema = z
           .max(50, 'La description doit faire moins de 50 caractères'),
       ),
     ),
-    start: z.object({
-      date: z
-        .string()
-        .min(1, { message: 'La date doit être remplie' })
-        .transform((x) => parseISO(x))
-        .refine((date) => isBefore(date, new Date()), {
-          message: 'La date doit être dans le passé',
-        }),
-      time: z
-        .string()
-        .min(1, { message: "L'heure doit être remplie" })
-        .regex(/^\d{2}:\d{2}/, {
-          message: 'Le format doit être hh:mm',
-        }),
-    }),
-    end: z.preprocess(
-      (end) => {
-        if (
-          !end ||
-          !(typeof end == 'object') ||
-          !('date' in end) ||
-          !('time' in end) ||
-          // @ts-ignore
-          !end.date ||
-          // @ts-ignore
-          !end.time
-        ) {
-          return undefined
-        }
-        return end
-      },
-      z
-        .object({
-          date: z
-            .string()
-            .min(1, { message: 'La date doit être remplie' })
-            .transform((x) => parseISO(x))
-            .refine((date) => isBefore(date, new Date()), {
-              message: 'La date doit être dans le passé',
-            }),
-          time: z
-            .string()
-            .min(1, { message: "L'heure doit être remplie" })
-            .regex(/^\d{2}:\d{2}/, {
-              message: 'Le format doit être hh:mm',
-            }),
-        })
-        .optional(),
-    ),
+    start: z
+      .string()
+      .min(1, { message: 'La date doit être remplie' })
+      .transform((x) => parseISO(x))
+      .refine((date) => isBefore(date, new Date()), {
+        message: 'La date doit être dans le passé',
+      }),
+    end: z
+      .string()
+      .transform((x) => parseISO(x))
+      .refine((date) => isBefore(date, new Date()), {
+        message: 'La date doit être dans le passé',
+      })
+      .optional(),
   })
-  .transform((values, ctx) => {
-    let [startHours, startMinutes] = values.start.time.split(':')
-
-    let start = parse(
-      `${format(
-        values.start.date,
-        'yyyy-MM-dd',
-      )} ${startHours}:${startMinutes}`,
-      'yyyy-MM-dd HH:mm',
-      new Date(),
-    )
-
-    if (values.end?.time && values.end?.date) {
-      let [endHours, endMinutes] = values.end.time.split(':')
-
-      let end = parse(
-        `${format(values.end.date, 'yyyy-MM-dd')} ${endHours}:${endMinutes}`,
-        'yyyy-MM-dd HH:mm',
-        new Date(),
-      )
-
-      if (isBefore(end, start)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.invalid_date,
-          message: 'La date de fin doit être après la date de début',
-          path: ['endDate'],
-        })
-      }
-
-      return {
-        ...values,
-        start,
-        end,
-      }
-    } else {
-      return {
-        ...values,
-        start,
-        end: undefined,
-      }
-    }
+  .refine(({ start, end }) => !end || isBefore(start, end), {
+    message: 'La date de fin doit être après la date de début',
+    path: ['end'],
   })
 
 const validator = withZod(schema)
@@ -178,7 +105,6 @@ export default function SleepPage() {
   let { sleep } = useLoaderData<typeof loader>()
 
   let [confirm, setConfirm] = useState(false)
-  let [end, setEnd] = useState(sleep.end ? new Date(sleep.end) : undefined)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
     if (!confirm) {
@@ -238,39 +164,8 @@ export default function SleepPage() {
             <DateTimeInput
               name="end"
               label="Fin"
-              labelAlt={
-                !end || !isToday(end) ? (
-                  <button
-                    onClick={() => setEnd(new Date())}
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                  >
-                    Maintenant
-                  </button>
-                ) : undefined
-              }
-              defaultValue={end ?? undefined}
-              value={end}
-              onTimeChange={(e) => {
-                let parsed = parse(e.target.value, 'HH:mm', end ?? new Date())
-                if (!isNaN(parsed.getTime())) {
-                  setEnd(parsed)
-                } else {
-                  setEnd(undefined)
-                }
-              }}
-              onDateChange={(e) => {
-                let parsed = parse(
-                  e.target.value,
-                  'yyyy-MM-dd',
-                  end ?? new Date(),
-                )
-                if (!isNaN(parsed.getTime())) {
-                  setEnd(parsed)
-                } else {
-                  setEnd(undefined)
-                }
-              }}
+              withSetNowButton
+              defaultValue={sleep.end ? new Date(sleep.end) : undefined}
             />
             <SubmitButton
               icon={<SaveFloppyDisk />}

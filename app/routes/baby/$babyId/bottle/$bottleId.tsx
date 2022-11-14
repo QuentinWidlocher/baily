@@ -73,8 +73,6 @@ export async function action({ request, params }: ActionArgs) {
 
     let bottle = result.data
 
-    console.log('server', bottle.time)
-
     if (params.bottleId == 'new') {
       await createBottle(params.babyId, bottle)
     } else {
