@@ -1,18 +1,18 @@
 import { createRequestHandler } from "@remix-run/netlify";
 import * as build from "@remix-run/dev/server-build";
-import { register, options } from 'timezone-mock'
+// import { register, options } from 'timezone-mock'
 import { config } from 'dotenv'
 import { expand } from 'dotenv-expand'
 
 expand(config())
 
-let _Date = Date
+// let _Date = Date
 
-options({
-  fallbackFn: (date) => new _Date(date),
-})
+// options({
+//   fallbackFn: (date) => new _Date(date),
+// })
 
-register('Etc/GMT-2')
+// register('Etc/GMT-2')
 
 /*
  * Returns a context object with at most 3 keys:

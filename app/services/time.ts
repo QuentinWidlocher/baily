@@ -225,6 +225,7 @@ export function displayTime(time: Date) {
  * (All the other months are trivially DST or not) 
  */
 export function adjustedForDST(date: Date) {
+  return date;
   let today = new Date()
   let month = today.getMonth()
 
