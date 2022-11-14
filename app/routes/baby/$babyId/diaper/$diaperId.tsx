@@ -21,7 +21,6 @@ import {
   updateDiaper,
 } from '~/services/diapers.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { adjustedForDST } from '~/services/time'
 
 const schema = z.object({
   _action: z.literal('update'),
@@ -91,8 +90,6 @@ export async function action({ request, params }: ActionArgs) {
       'yyyy-MM-dd HH:mm',
       new Date(),
     )
-
-    time = adjustedForDST(time)
 
     if (params.diaperId == 'new') {
       await createDiaper(params.babyId, {

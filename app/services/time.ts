@@ -1,5 +1,4 @@
 import {
-  addHours,
   differenceInMinutes,
   format,
   formatDistanceToNow,
@@ -8,12 +7,9 @@ import {
   getWeek,
   intervalToDuration,
   isBefore,
-  isSameDay,
-  lastDayOfMonth as getLastDayOfMonth,
-  lastDayOfWeek,
+  isSameDay, lastDayOfWeek,
   parse,
-  startOfWeek,
-  subWeeks,
+  startOfWeek
 } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { Bottle } from './bottles.server'
