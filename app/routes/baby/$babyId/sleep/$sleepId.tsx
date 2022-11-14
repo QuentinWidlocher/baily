@@ -22,7 +22,6 @@ import {
   updateSleep,
 } from '~/services/sleeps.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
-import { adjustedForDST } from '~/services/time'
 
 const schema = z
   .object({
@@ -98,8 +97,6 @@ const schema = z
       new Date(),
     )
 
-    start = adjustedForDST(start)
-
     if (values.end?.time && values.end?.date) {
       let [endHours, endMinutes] = values.end.time.split(':')
 
@@ -108,8 +105,6 @@ const schema = z
         'yyyy-MM-dd HH:mm',
         new Date(),
       )
-
-      end = adjustedForDST(end)
 
       if (isBefore(end, start)) {
         ctx.addIssue({
