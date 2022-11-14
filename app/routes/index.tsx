@@ -1,7 +1,7 @@
 import { Link } from '@remix-run/react'
-import { LoaderArgs } from '@remix-run/server-runtime'
+import type { LoaderArgs } from '@remix-run/server-runtime'
+import { redirect } from '@remix-run/server-runtime'
 import { getUserId } from '~/services/session.server'
-import { redirect } from '~/services/superjson'
 
 export async function loader({ request }: LoaderArgs) {
   let uid = await getUserId(request)
@@ -21,8 +21,8 @@ export default function IndexRoute() {
         <div className="max-w-md">
           <h1 className="mb-5 text-7xl font-bold">B++</h1>
           <p className="mb-5">
-            Gardez un trace des biberons que vous donnez à votre/vos bébé(s) et
-            voyez l'évolution hébdomadaire.
+            Gardez une trace des biberons, des couches et des dodos de votre/vos
+            bébé(s) et voyez l'évolution hébdomadaire.
             <br />
             <br />
             Pour commencer, il suffit de créer un compte

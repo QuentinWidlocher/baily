@@ -1,6 +1,6 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { ActionArgs, json, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { Form } from '@remix-run/react'
+import { Form, useLoaderData } from '@remix-run/react'
 import { withZod } from '@remix-validated-form/with-zod'
 import { format, isBefore, isToday, parse, parseISO } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
@@ -141,7 +141,7 @@ export async function loader({ params }: LoaderArgs) {
   let sleep =
     params.sleepId === 'new' ? ({} as Sleep) : await getSleep(params.sleepId)
 
-  return superjson({
+  return json({
     sleep,
   })
 }
@@ -180,10 +180,10 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function SleepPage() {
-  let { sleep } = useSuperLoaderData<typeof loader>()
+  let { sleep } = useLoaderData<typeof loader>()
 
   let [confirm, setConfirm] = useState(false)
-  let [end, setEnd] = useState(sleep.end)
+  let [end, setEnd] = useState(sleep.end ? new Date(sleep.end) : undefined)
 
   function onDelete(e: FormEvent<HTMLFormElement>) {
     if (!confirm) {
@@ -238,7 +238,7 @@ export default function SleepPage() {
             <DateTimeInput
               name="start"
               label="Début"
-              defaultValue={sleep.start ?? new Date()}
+              defaultValue={sleep.start ? new Date(sleep.start) : new Date()}
             />
             <DateTimeInput
               name="end"

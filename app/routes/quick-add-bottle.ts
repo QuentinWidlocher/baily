@@ -1,7 +1,7 @@
-import { LoaderArgs } from '@remix-run/server-runtime'
+import type { LoaderArgs } from '@remix-run/server-runtime';
+import { redirect } from '@remix-run/server-runtime'
 import { getBabies } from '~/services/babies.server'
 import { requireUserId } from '~/services/session.server'
-import { redirect } from '~/services/superjson'
 
 export async function loader({ request }: LoaderArgs) {
   let uid = await requireUserId(request)

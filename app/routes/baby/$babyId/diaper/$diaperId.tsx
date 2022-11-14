@@ -1,6 +1,6 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { ActionArgs, json, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { Form } from '@remix-run/react'
+import { Form, useLoaderData } from '@remix-run/react'
 import { withZod } from '@remix-validated-form/with-zod'
 import { format, isBefore, parse, parseISO } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
@@ -59,7 +59,7 @@ export async function loader({ params }: LoaderArgs) {
       ? ({} as Diaper)
       : await getDiaper(params.diaperId)
 
-  return superjson({
+  return json({
     diaper,
   })
 }
@@ -112,7 +112,7 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function DiaperPage() {
-  let { diaper } = useSuperLoaderData<typeof loader>()
+  let { diaper } = useLoaderData<typeof loader>()
 
   let [confirm, setConfirm] = useState(false)
 
@@ -169,7 +169,7 @@ export default function DiaperPage() {
             <DateTimeInput
               name="date"
               label="Date et heure"
-              defaultValue={diaper.time ?? new Date()}
+              defaultValue={diaper.time ? new Date(diaper.time) : new Date()}
             />
             <SubmitButton
               icon={<SaveFloppyDisk />}

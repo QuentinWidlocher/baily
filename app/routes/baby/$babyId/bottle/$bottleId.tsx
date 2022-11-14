@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import { ActionArgs, json, LoaderArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { format, isBefore, parseISO, parse } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
@@ -16,13 +16,12 @@ import {
   getBottle,
   updateBottle,
 } from '~/services/bottles.server'
-import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { adjustedForDST } from '~/services/time'
 import { withZod } from '@remix-validated-form/with-zod'
 import DateTimeInput from '~/components/form/date-time-input'
 import Input from '~/components/form/input'
 import SubmitButton from '~/components/form/submit-button'
-import { Form } from '@remix-run/react'
+import { Form, useLoaderData } from '@remix-run/react'
 
 const schema = z.object({
   _action: z.literal('update'),
@@ -59,7 +58,7 @@ export async function loader({ params }: LoaderArgs) {
       ? ({} as Bottle)
       : await getBottle(params.bottleId)
 
-  return superjson({
+  return json({
     bottle,
   })
 }
@@ -110,7 +109,7 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function BottlePage() {
-  let { bottle } = useSuperLoaderData<typeof loader>()
+  let { bottle } = useLoaderData<typeof loader>()
   let [confirm, setConfirm] = useState(false)
   let [sliderQuantity, setSliderQuantity] = useState(bottle.quantity ?? 140)
 
@@ -185,7 +184,7 @@ export default function BottlePage() {
             <DateTimeInput
               name="date"
               label="Date et heure"
-              defaultValue={bottle.time ?? new Date()}
+              defaultValue={bottle.time ? new Date(bottle.time) : new Date()}
             />
             <Input
               name="quantity"

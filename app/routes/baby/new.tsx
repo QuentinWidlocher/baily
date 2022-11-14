@@ -1,6 +1,7 @@
 import { NavArrowLeft } from 'iconoir-react'
 import LoadingItem from '~/components/loading-item'
 import type { ActionArgs } from '@remix-run/server-runtime'
+import { redirect } from '@remix-run/server-runtime'
 import { withZod } from '@remix-validated-form/with-zod'
 import { z } from 'zod'
 import { createBaby } from '~/services/babies.server'
@@ -8,7 +9,6 @@ import { requireUserId } from '~/services/session.server'
 import { ValidatedForm, validationError } from 'remix-validated-form'
 import Input from '~/components/form/input'
 import SubmitButton from '~/components/form/submit-button'
-import { redirect } from '~/services/superjson'
 
 const schema = z.object({
   name: z.string().min(1, 'Le nom est requis'),
