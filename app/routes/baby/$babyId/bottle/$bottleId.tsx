@@ -38,29 +38,6 @@ const schema = z.object({
     .refine((date) => isBefore(date, new Date()), {
       message: 'La date doit être dans le passé',
     }),
-  // date: z
-  //   .object({
-  //     date: z
-  //       .string()
-  //       .min(1, { message: 'La date doit être remplie' })
-  //       .transform((x) => parseISO(x))
-  //       .refine((date) => isBefore(date, new Date()), {
-  //         message: 'La date doit être dans le passé',
-  //       }),
-  //     time: z
-  //       .string()
-  //       .min(1, { message: "L'heure doit être remplie" })
-  //       .regex(/^\d{2}:\d{2}/, {
-  //         message: 'Le format doit être hh:mm',
-  //       }),
-  //   })
-  //   .transform((x) =>
-  //     parse(
-  //       format(x.date, 'yyyy-MM-dd') + ' ' + x.time,
-  //       'yyyy-MM-dd HH:mm',
-  //       new Date(),
-  //     ),
-  //   ),
 })
 
 const validator = withZod(schema)
