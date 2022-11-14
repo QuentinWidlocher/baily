@@ -1,10 +1,12 @@
 import { credential } from 'firebase-admin'
 import type { App as AdminApp } from 'firebase-admin/app'
 import { initializeApp as initializeAdmin } from 'firebase-admin/app'
-import { Auth, getAuth as getAdminAuth } from 'firebase-admin/auth'
+import type { Auth } from 'firebase-admin/auth';
+import { getAuth as getAdminAuth } from 'firebase-admin/auth'
 import type { DocumentSnapshot } from 'firebase-admin/firestore'
 import { getFirestore } from 'firebase-admin/firestore'
-import { FirebaseApp, initializeApp } from 'firebase/app'
+import type { FirebaseApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
   getAuth,
