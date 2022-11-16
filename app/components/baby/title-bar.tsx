@@ -1,4 +1,4 @@
-import { Form, Link } from '@remix-run/react'
+import { Form, Link, useTransition } from '@remix-run/react'
 import {
   Bell,
   LogOut,
@@ -9,7 +9,7 @@ import {
   RemoveEmpty,
   StatsSquareUp,
 } from 'iconoir-react'
-import type { FormEvent } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { useState } from 'react'
 import type { Baby } from '~/services/babies.server'
 import LoadingItem from '../loading-item'
@@ -29,6 +29,8 @@ export default function TitleBar({
   tab,
   hasNewNotifications,
 }: TitleBarProps) {
+  let transition = useTransition()
+  let [refToUnfocus, setRef] = useState<HTMLElement | null>(null)
   let [confirm, setConfirm] = useState(false)
 
   function onDeleteClick(e: FormEvent<HTMLFormElement>) {
@@ -38,6 +40,13 @@ export default function TitleBar({
       setTimeout(() => setConfirm(false), 3000)
     }
   }
+
+  useEffect(() => {
+    if (transition.state == 'idle' && refToUnfocus) {
+      refToUnfocus.blur()
+      setRef(null)
+    }
+  }, [transition.state])
 
   return (
     <Form method="post" onSubmit={(e) => onDeleteClick(e)}>
@@ -56,13 +65,9 @@ export default function TitleBar({
                   <Link
                     className={baby.id == babyId ? 'active' : ''}
                     onClick={(e: { currentTarget: any }) => {
-                      let ref = e.currentTarget
-
-                      setTimeout(() => {
-                        ref.blur()
-                      }, 1000)
+                      setRef(e.currentTarget)
                     }}
-                    to={`../${baby.id}`}
+                    to={`/baby/${baby.id}`}
                   >
                     {baby.name}
                   </Link>
@@ -70,7 +75,7 @@ export default function TitleBar({
               ))}
               <li></li>
               <li>
-                <Link to={`../new`}>
+                <Link to={`/baby/new`}>
                   <Plus />
                   <span>Nouveau bébé !</span>
                 </Link>
@@ -155,11 +160,7 @@ export default function TitleBar({
                 title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
                 onClick={(e) => {
                   if (confirm) {
-                    let ref = e.currentTarget
-
-                    setTimeout(() => {
-                      ref.blur()
-                    }, 500)
+                    setRef(e.currentTarget)
                   }
                 }}
               >

@@ -14,6 +14,7 @@ import { zfd } from 'zod-form-data'
 import DateTimeInput from '~/components/form/date-time-input'
 import SelectInput from '~/components/form/select-input'
 import SubmitButton from '~/components/form/submit-button'
+import BottomCardLayout from '~/components/layouts/bottom-card'
 import LoadingItem from '~/components/loading-item'
 import type { Sleep } from '~/services/sleeps.server'
 import {
@@ -114,67 +115,63 @@ export default function SleepPage() {
   }
 
   return (
-    <>
-      <section className="w-full mt-auto card max-sm:rounded-b-none md:mb-auto bg-base-200 md:w-96">
-        <div className="card-body">
-          <div className="flex justify-between">
-            <LoadingItem
-              type="link"
-              to="./../..?tab=sleeps"
-              className="mb-5 space-x-2 btn btn-ghost"
-              title="Retour"
-              icon={<NavArrowLeft />}
-              label="Retour"
-            ></LoadingItem>
-            {sleep.id ? (
-              <Form method="post" onSubmit={onDelete}>
-                <input hidden name="_action" value="delete" readOnly />
-                <button
-                  className={`btn ${
-                    confirm ? 'btn-error' : 'btn-square btn-ghost text-error'
-                  }`}
-                  title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
-                >
-                  {confirm ? <span className="mr-1">Confirmer</span> : ''}
-                  <Bin />
-                </button>
-              </Form>
-            ) : null}
-          </div>
+    <BottomCardLayout>
+      <div className="flex justify-between">
+        <LoadingItem
+          type="link"
+          to="./../..?tab=sleeps"
+          className="mb-5 space-x-2 btn btn-ghost"
+          title="Retour"
+          icon={<NavArrowLeft />}
+          label="Retour"
+        ></LoadingItem>
+        {sleep.id ? (
+          <Form method="post" onSubmit={onDelete}>
+            <input hidden name="_action" value="delete" readOnly />
+            <button
+              className={`btn ${
+                confirm ? 'btn-error' : 'btn-square btn-ghost text-error'
+              }`}
+              title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
+            >
+              {confirm ? <span className="mr-1">Confirmer</span> : ''}
+              <Bin />
+            </button>
+          </Form>
+        ) : null}
+      </div>
 
-          <ValidatedForm
-            validator={validator}
-            method="post"
-            className="flex flex-col"
-          >
-            <input name="_action" hidden value="update" readOnly />
-            <SelectInput
-              name="description"
-              options={prefillOptions}
-              allowCustom
-              defaultValue={sleep.description}
-              label="Description"
-            />
-            <DateTimeInput
-              name="start"
-              label="Début"
-              defaultValue={sleep.start ? new Date(sleep.start) : new Date()}
-            />
-            <DateTimeInput
-              name="end"
-              label="Fin"
-              withSetNowButton
-              defaultValue={sleep.end ? new Date(sleep.end) : undefined}
-            />
-            <SubmitButton
-              icon={<SaveFloppyDisk />}
-              label={`${sleep.id ? 'Modifier' : 'Ajouter'} ce dodo`}
-              submittingLabel={sleep.id ? 'Modification' : 'Ajout'}
-              className="mt-10 btn btn-primary"
-            />
-          </ValidatedForm>
-        </div>
-      </section>
-    </>
+      <ValidatedForm
+        validator={validator}
+        method="post"
+        className="flex flex-col"
+      >
+        <input name="_action" hidden value="update" readOnly />
+        <SelectInput
+          name="description"
+          options={prefillOptions}
+          allowCustom
+          defaultValue={sleep.description}
+          label="Description"
+        />
+        <DateTimeInput
+          name="start"
+          label="Début"
+          defaultValue={sleep.start ? new Date(sleep.start) : new Date()}
+        />
+        <DateTimeInput
+          name="end"
+          label="Fin"
+          withSetNowButton
+          defaultValue={sleep.end ? new Date(sleep.end) : undefined}
+        />
+        <SubmitButton
+          icon={<SaveFloppyDisk />}
+          label={`${sleep.id ? 'Modifier' : 'Ajouter'} ce dodo`}
+          submittingLabel={sleep.id ? 'Modification' : 'Ajout'}
+          className="mt-10 btn btn-primary"
+        />
+      </ValidatedForm>
+    </BottomCardLayout>
   )
 }

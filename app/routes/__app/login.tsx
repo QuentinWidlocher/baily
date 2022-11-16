@@ -9,6 +9,7 @@ import { ValidatedForm, validationError } from 'remix-validated-form'
 import SubmitButton from '~/components/form/submit-button'
 import PasswordInput from '~/components/form/password-input'
 import Input from '~/components/form/input'
+import BottomCardLayout from '~/components/layouts/bottom-card'
 
 const schema = z.object({
   email: z
@@ -63,27 +64,23 @@ export async function action({ request }: ActionArgs) {
 
 export default function LoginRoute() {
   return (
-    <main className="flex flex-col items-center h-screen px-2 overflow-hidden md:py-5">
-      <section className="w-full mt-auto md:my-auto card max-sm:rounded-b-none bg-base-200 md:w-96">
-        <div className="overflow-x-hidden overflow-y-auto card-body">
-          <div className="flex justify-between mb-5 card-title">
-            <h1 className="text-xl">Connexion</h1>
-          </div>
+    <BottomCardLayout>
+      <div className="flex justify-between mb-5 card-title">
+        <h1 className="text-xl">Connexion</h1>
+      </div>
 
-          <ValidatedForm validator={validator} method="post">
-            <Input name="email" label="Email" />
-            <PasswordInput name="password" label="Mot de passe" />
-            <div className="w-full mt-5 form-control">
-              <SubmitButton label="Se connecter" submittingLabel="Connexion" />
-            </div>
-            <div className="w-full mt-5 form-control">
-              <Link to="/signin" className="btn btn-ghost">
-                S'inscrire
-              </Link>
-            </div>
-          </ValidatedForm>
+      <ValidatedForm validator={validator} method="post">
+        <Input name="email" label="Email" />
+        <PasswordInput name="password" label="Mot de passe" />
+        <div className="w-full mt-5 form-control">
+          <SubmitButton label="Se connecter" submittingLabel="Connexion" />
         </div>
-      </section>
-    </main>
+        <div className="w-full mt-5 form-control">
+          <Link to="/signin" className="btn btn-ghost">
+            S'inscrire
+          </Link>
+        </div>
+      </ValidatedForm>
+    </BottomCardLayout>
   )
 }

@@ -22,6 +22,7 @@ import DateTimeInput from '~/components/form/date-time-input'
 import Input from '~/components/form/input'
 import SubmitButton from '~/components/form/submit-button'
 import { Form, useLoaderData } from '@remix-run/react'
+import BottomCardLayout from '~/components/layouts/bottom-card'
 
 const schema = z.object({
   _action: z.literal('update'),
@@ -101,7 +102,7 @@ export default function BottlePage() {
 
   return (
     <>
-      <div className="flex px-5 flex-col-reverse flex-1 w-full mb-5 align-middle md:mb-0 md:flex-col">
+      <div className="flex px-5 flex-col-reverse flex-1 w-full mb-5 align-middle desktop:mb-0 desktop:flex-col">
         <input
           type="range"
           min="40"
@@ -126,63 +127,61 @@ export default function BottlePage() {
           {sliderQuantity || 0} ml
         </span>
       </div>
-      <section className="card max-sm:rounded-b-none md:mb-auto bg-base-200 w-full md:w-96">
-        <div className="card-body">
-          <div className="flex justify-between">
-            <LoadingItem
-              type="link"
-              to="./../..?tab=bottles"
-              className="mb-5 space-x-2 btn btn-ghost"
-              title="Retour"
-              icon={<NavArrowLeft />}
-              label="Retour"
-            />
-            {bottle.id ? (
-              <Form method="post" onSubmit={onDelete}>
-                <input hidden name="_action" value="delete" readOnly />
-                <button
-                  className={`btn ${
-                    confirm ? 'btn-error' : 'btn-square btn-ghost text-error'
-                  }`}
-                  title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
-                >
-                  {confirm ? <span className="mr-1">Confirmer</span> : ''}
-                  <Bin />
-                </button>
-              </Form>
-            ) : null}
-          </div>
-
-          <ValidatedForm
-            validator={validator}
-            method="post"
-            className="flex flex-col"
-            onSubmit={(e) => console.log('client', e.time)}
-          >
-            <input name="_action" hidden value="update" readOnly />
-            <DateTimeInput
-              name="time"
-              label="Date et heure"
-              defaultValue={bottle.time ? new Date(bottle.time) : new Date()}
-            />
-            <Input
-              name="quantity"
-              type="number"
-              label="Quantité donnée"
-              value={String(sliderQuantity)}
-              onChange={(e) => {
-                setSliderQuantity(e.target.valueAsNumber)
-              }}
-            />
-            <SubmitButton
-              icon={<SaveFloppyDisk />}
-              label={`${bottle.id ? 'Modifier' : 'Ajouter'} ce biberon`}
-              submittingLabel={bottle.id ? 'Modification' : 'Ajout'}
-              className="mt-10 btn btn-primary"
-            />
-          </ValidatedForm>
+      <BottomCardLayout>
+        <div className="flex justify-between">
+          <LoadingItem
+            type="link"
+            to="./../..?tab=bottles"
+            className="mb-5 space-x-2 btn btn-ghost"
+            title="Retour"
+            icon={<NavArrowLeft />}
+            label="Retour"
+          />
+          {bottle.id ? (
+            <Form method="post" onSubmit={onDelete}>
+              <input hidden name="_action" value="delete" readOnly />
+              <button
+                className={`btn ${
+                  confirm ? 'btn-error' : 'btn-square btn-ghost text-error'
+                }`}
+                title={confirm ? 'Confirmer la suppression' : 'Supprimer'}
+              >
+                {confirm ? <span className="mr-1">Confirmer</span> : ''}
+                <Bin />
+              </button>
+            </Form>
+          ) : null}
         </div>
-      </section>
+
+        <ValidatedForm
+          validator={validator}
+          method="post"
+          className="flex flex-col"
+          onSubmit={(e) => console.log('client', e.time)}
+        >
+          <input name="_action" hidden value="update" readOnly />
+          <DateTimeInput
+            name="time"
+            label="Date et heure"
+            defaultValue={bottle.time ? new Date(bottle.time) : new Date()}
+          />
+          <Input
+            name="quantity"
+            type="number"
+            label="Quantité donnée"
+            value={String(sliderQuantity)}
+            onChange={(e) => {
+              setSliderQuantity(e.target.valueAsNumber)
+            }}
+          />
+          <SubmitButton
+            icon={<SaveFloppyDisk />}
+            label={`${bottle.id ? 'Modifier' : 'Ajouter'} ce biberon`}
+            submittingLabel={bottle.id ? 'Modification' : 'Ajout'}
+            className="mt-10 btn btn-primary"
+          />
+        </ValidatedForm>
+      </BottomCardLayout>
     </>
   )
 }

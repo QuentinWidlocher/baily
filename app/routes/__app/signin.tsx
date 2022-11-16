@@ -9,6 +9,7 @@ import { ValidatedForm, validationError } from 'remix-validated-form'
 import Input from '~/components/form/input'
 import PasswordInput from '~/components/form/password-input'
 import SubmitButton from '~/components/form/submit-button'
+import BottomCardLayout from '~/components/layouts/bottom-card'
 
 const schema = z.object({
   email: z
@@ -55,37 +56,33 @@ export async function action({ request }: ActionArgs) {
 
 export default function LoginRoute() {
   return (
-    <main className="flex flex-col items-center h-screen px-2 overflow-hidden md:py-5">
-      <section className="w-full mt-auto md:my-auto card max-sm:rounded-b-none bg-base-200 md:w-96">
-        <div className="overflow-x-hidden overflow-y-auto card-body">
-          <div className="flex justify-between mb-5 card-title">
-            <h1 className="text-xl">S'inscrire</h1>
-          </div>
+    <BottomCardLayout>
+      <div className="flex justify-between mb-5 card-title">
+        <h1 className="text-xl">S'inscrire</h1>
+      </div>
 
-          <p>
-            Créer un compte sur B++ que les parents pourront utiliser afin de
-            noter les biberons.
-          </p>
+      <p>
+        Créer un compte sur B++ que les parents pourront utiliser afin de noter
+        les biberons.
+      </p>
 
-          <ValidatedForm validator={validator} method="post">
-            <Input label="Email" name="email" />
-            <PasswordInput
-              label="Mot de passe"
-              name="password"
-              labelAlt="Au moins 8 caractères"
-              toggleVisibility
-            />
-            <div className="w-full mt-5 form-control">
-              <SubmitButton label="S'inscrire" submittingLabel="Inscription" />
-            </div>
-            <div className="w-full mt-5 form-control">
-              <Link to="/login" className="btn btn-ghost">
-                Se connecter
-              </Link>
-            </div>
-          </ValidatedForm>
+      <ValidatedForm validator={validator} method="post">
+        <Input label="Email" name="email" />
+        <PasswordInput
+          label="Mot de passe"
+          name="password"
+          labelAlt="Au moins 8 caractères"
+          toggleVisibility
+        />
+        <div className="w-full mt-5 form-control">
+          <SubmitButton label="S'inscrire" submittingLabel="Inscription" />
         </div>
-      </section>
-    </main>
+        <div className="w-full mt-5 form-control">
+          <Link to="/login" className="btn btn-ghost">
+            Se connecter
+          </Link>
+        </div>
+      </ValidatedForm>
+    </BottomCardLayout>
   )
 }

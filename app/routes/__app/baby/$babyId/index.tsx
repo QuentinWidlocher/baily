@@ -9,6 +9,7 @@ import BottleList from '~/components/baby/bottle-list'
 import DiaperList from '~/components/baby/diaper-list'
 import SleepList from '~/components/baby/sleep-list'
 import TitleBar from '~/components/baby/title-bar'
+import FullPageCardLayout from '~/components/layouts/fullpage-card'
 import LoadingItem from '~/components/loading-item'
 import { deleteBaby, getBabies, getBaby } from '~/services/babies.server'
 import { getBottles } from '~/services/bottles.server'
@@ -112,16 +113,16 @@ export default function Index() {
     transition.location?.pathname == `/baby/${babyId}`
   ) {
     body = (
-      <ul className="flex-1 p-2 -mx-8 overflow-x-hidden overflow-y-auto shadow-inner flex-nowrap menu bg-base-300">
+      <ul className="flex-1 p-2 -mx-8 overflow-hidden shadow-inner flex-nowrap menu bg-base-300">
         {[...new Array(10)].map((_, i) => (
           <Fragment key={i}>
             {i % 3 == 0 ? (
               <li className="flex flex-row justify-between mx-4 mt-16 first-of-type:mt-0">
-                <span className="p-1 bg-base-100 animate-pulse h-6 w-24 rounded"></span>
-                <span className="p-1 bg-base-100 animate-pulse h-6 w-24 rounded"></span>
+                <span className="p-1 bg-base-200 dark:bg-base-100 animate-pulse h-6 w-24 rounded"></span>
+                <span className="p-1 bg-base-200 dark:bg-base-100 animate-pulse h-6 w-24 rounded"></span>
               </li>
             ) : null}
-            <li className="rounded-lg h-24 animate-pulse" />
+            <li className="rounded-lg h-24 bg-base-200 dark:bg-base-100 animate-pulse" />
           </Fragment>
         ))}
       </ul>
@@ -213,47 +214,48 @@ export default function Index() {
     }
   }
 
+  let actions = (
+    <>
+      {action}
+      <div className="relative mt-1 btm-nav desktop:btm-nav-sm bg-base-200">
+        <Link
+          className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
+            data.tab == 'bottles' ? 'active !text-primary !bg-base-300' : ''
+          }`}
+          to="?tab=bottles"
+        >
+          Biberons
+        </Link>
+        <Link
+          className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
+            data.tab == 'diapers' ? 'active !text-primary !bg-base-300' : ''
+          }`}
+          to="?tab=diapers"
+        >
+          Couches
+        </Link>
+        <Link
+          className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
+            data.tab == 'sleeps' ? 'active !text-primary !bg-base-300' : ''
+          }`}
+          to="?tab=sleeps"
+        >
+          Dodos
+        </Link>
+      </div>
+    </>
+  )
+
   return (
-    <section className="flex-1 w-full overflow-y-hidden card max-sm:rounded-none bg-base-200 md:w-96 xl:w-1/4">
-      <div className="flex flex-col overflow-x-hidden overflow-y-auto card-body">
-        <TitleBar
-          babyId={babyId}
-          babyName={babyName}
-          babies={babies}
-          tab={data.tab}
-          hasNewNotifications={newNotifications}
-        />
-        {body}
-      </div>
-      <div className="-mt-5 card-actions">
-        {action}
-        <div className="relative mt-1 btm-nav md:btm-nav-sm bg-base-200">
-          <Link
-            className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
-              data.tab == 'bottles' ? 'active !text-primary !bg-base-300' : ''
-            }`}
-            to="?tab=bottles"
-          >
-            Biberons
-          </Link>
-          <Link
-            className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
-              data.tab == 'diapers' ? 'active !text-primary !bg-base-300' : ''
-            }`}
-            to="?tab=diapers"
-          >
-            Couches
-          </Link>
-          <Link
-            className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
-              data.tab == 'sleeps' ? 'active !text-primary !bg-base-300' : ''
-            }`}
-            to="?tab=sleeps"
-          >
-            Dodos
-          </Link>
-        </div>
-      </div>
-    </section>
+    <FullPageCardLayout actions={actions}>
+      <TitleBar
+        babyId={babyId}
+        babyName={babyName}
+        babies={babies}
+        tab={data.tab}
+        hasNewNotifications={newNotifications}
+      />
+      {body}
+    </FullPageCardLayout>
   )
 }

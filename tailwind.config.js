@@ -2,7 +2,15 @@
 module.exports = {
   content: ["./app/**/*.{ts,tsx,js,jsx,html}"],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        'desktop': '27rem'
+      },
+      screens: {
+        'mobile': '640px',
+        'desktop': '768px',
+      },
+    },
   },
   daisyui: {
     themes: [
