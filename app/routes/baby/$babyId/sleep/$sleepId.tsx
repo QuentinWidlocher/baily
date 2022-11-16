@@ -42,13 +42,12 @@ const schema = z
       .refine((date) => isBefore(date, new Date()), {
         message: 'La date doit être dans le passé',
       }),
-    end: z
-      .string()
-      .transform((x) => parseISO(x))
-      .refine((date) => isBefore(date, new Date()), {
+    end: zfd
+      .text(z.string().optional())
+      .transform((x) => (x ? parseISO(x) : undefined))
+      .refine((date) => !date || isBefore(date, new Date()), {
         message: 'La date doit être dans le passé',
-      })
-      .optional(),
+      }),
   })
   .refine(({ start, end }) => !end || isBefore(start, end), {
     message: 'La date de fin doit être après la date de début',
