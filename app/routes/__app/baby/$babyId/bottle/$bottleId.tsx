@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { format, isBefore, parseISO, parse } from 'date-fns'
@@ -42,6 +42,12 @@ const schema = z.object({
 })
 
 const validator = withZod(schema)
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `Baily - ${data.bottle.id ? 'Modifier' : 'Ajouter'} un biberon`,
+  }
+}
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.bottleId, 'bottle id is required')

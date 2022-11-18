@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Link, useTransition } from '@remix-run/react'
 import { differenceInMinutes } from 'date-fns'
@@ -23,8 +23,22 @@ import { groupByStart, groupByTime } from '~/services/time'
 const tabs = ['bottles', 'diapers', 'sleeps'] as const
 type Tab = typeof tabs[number]
 
+const tabNames: Record<Tab, string> = {
+  bottles: 'biberons',
+  diapers: 'couches',
+  sleeps: 'dodos',
+}
+
 function assertTab(tab: string): tab is Tab {
   return tabs.includes(tab as Tab)
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `Baily - Les ${tabNames[data.json.tab as Tab] ?? 'biberons'} de ${
+      data.json.babyName
+    }`,
+  }
 }
 
 export async function loader({ params, request }: LoaderArgs) {

@@ -12,7 +12,7 @@ import styleSheetUrl from './style.css'
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title: 'B++',
+  title: 'Baily',
   viewport: 'width=device-width,initial-scale=1',
 })
 
@@ -48,8 +48,8 @@ export default function App() {
           href="/favicon-16x16.png"
         />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#9333ea" />
-        <meta name="apple-mobile-web-app-title" content="B++" />
-        <meta name="application-name" content="B++" />
+        <meta name="apple-mobile-web-app-title" content="Baily" />
+        <meta name="application-name" content="Baily" />
         <meta name="msapplication-TileColor" content="#9333ea" />
         <meta name="theme-color" content="#ffffff" />
       </head>

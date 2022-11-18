@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, useLoaderData } from '@remix-run/react'
@@ -42,6 +42,12 @@ const schema = z.object({
 })
 
 const validator = withZod(schema)
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `Baily - ${data.diaper.id ? 'Modifier' : 'Ajouter'} une couche`,
+  }
+}
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.diaperId, 'diaper id is required')

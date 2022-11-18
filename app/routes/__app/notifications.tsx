@@ -5,10 +5,14 @@ import LoadingItem from '~/components/loading-item'
 import { getNotifications } from '~/services/notifications.server'
 import { fr } from 'date-fns/locale'
 import parse from 'html-react-parser'
-import type { LoaderArgs } from '@remix-run/server-runtime'
+import type { LoaderArgs, MetaFunction } from '@remix-run/server-runtime'
 import { json } from '@remix-run/server-runtime'
 import { getUserSession, storage } from '~/services/session.server'
 import FullPageCardLayout from '~/components/layouts/fullpage-card'
+
+export const meta: MetaFunction<typeof loader> = () => ({
+  title: `Baily - Notifications`,
+})
 
 export async function loader({ request }: LoaderArgs) {
   let [notifications, session] = await Promise.all([

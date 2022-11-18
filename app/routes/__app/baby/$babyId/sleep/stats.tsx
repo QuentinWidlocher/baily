@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import type { LoaderArgs } from '@remix-run/server-runtime'
+import type { LoaderArgs, MetaFunction } from '@remix-run/server-runtime'
 import { addMinutes, format, intervalToDuration } from 'date-fns'
 import { NavArrowLeft } from 'iconoir-react'
 import invariant from 'tiny-invariant'
@@ -8,6 +8,12 @@ import { getBaby } from '~/services/babies.server'
 import { getSleeps } from '~/services/sleeps.server'
 import { superjson, useSuperLoaderData } from '~/services/superjson'
 import { groupSleepsByWeeks } from '~/services/time'
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return {
+    title: `Baily - Évolution des dodos de ${data.json.babyName}`,
+  }
+}
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.babyId, 'params.id is required')

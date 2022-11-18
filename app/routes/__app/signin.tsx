@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import type { ActionArgs } from '@remix-run/server-runtime'
+import type { ActionArgs, MetaFunction } from '@remix-run/server-runtime'
 import { FirebaseError } from 'firebase/app'
 import { z } from 'zod'
 import { createUser } from '~/services/firebase.server'
@@ -23,6 +23,10 @@ const schema = z.object({
 })
 
 const validator = withZod(schema)
+
+export const meta: MetaFunction = () => ({
+  title: 'Baily - Créer un compte',
+})
 
 export async function action({ request }: ActionArgs) {
   let result = await validator.validate(await request.formData())
@@ -62,8 +66,8 @@ export default function LoginRoute() {
       </div>
 
       <p>
-        Créer un compte sur B++ que les parents pourront utiliser afin de noter
-        les biberons.
+        Créer un compte sur Baily que les parents pourront utiliser afin de
+        noter les biberons.
       </p>
 
       <ValidatedForm validator={validator} method="post">

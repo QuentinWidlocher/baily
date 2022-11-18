@@ -1,6 +1,6 @@
 import { NavArrowLeft } from 'iconoir-react'
 import LoadingItem from '~/components/loading-item'
-import type { ActionArgs } from '@remix-run/server-runtime'
+import type { ActionArgs, MetaFunction } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import { withZod } from '@remix-validated-form/with-zod'
 import { z } from 'zod'
@@ -16,6 +16,10 @@ const schema = z.object({
 })
 
 const validator = withZod(schema)
+
+export const meta: MetaFunction = () => ({
+  title: 'Baily - Nouveau bébé !',
+})
 
 export async function action({ request }: ActionArgs) {
   let uid = await requireUserId(request)

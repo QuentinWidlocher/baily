@@ -1,5 +1,5 @@
 import { useLoaderData } from '@remix-run/react'
-import type { LoaderArgs } from '@remix-run/server-runtime'
+import type { LoaderArgs, MetaFunction } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import BottomCardLayout from '~/components/layouts/bottom-card'
 import LoadingItem from '~/components/loading-item'
@@ -19,6 +19,10 @@ export async function loader({ request }: LoaderArgs) {
 
   return babies
 }
+
+export const meta: MetaFunction = () => ({
+  title: 'Baily - Les petits bouts',
+})
 
 export default function BabiesRoute() {
   let babies = useLoaderData<typeof loader>()

@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import type { ActionArgs } from '@remix-run/server-runtime'
+import type { ActionArgs, MetaFunction } from '@remix-run/server-runtime'
 import { FirebaseError } from 'firebase/app'
 import { z } from 'zod'
 import { authenticate } from '~/services/firebase.server'
@@ -21,6 +21,10 @@ const schema = z.object({
 
 const validator = withZod(schema)
 
+export const meta: MetaFunction = () => ({
+  title: 'Baily - Connectez-vous',
+})
+
 export async function action({ request }: ActionArgs) {
   let result = await validator.validate(await request.formData())
 
@@ -39,7 +43,7 @@ export async function action({ request }: ActionArgs) {
       if (e.code == 'auth/user-not-found') {
         return validationError({
           fieldErrors: {
-            email: "Cet email n'existe pas sur B++",
+            email: "Cet email n'existe pas sur Baily",
           },
           formId: result.formId,
         })
