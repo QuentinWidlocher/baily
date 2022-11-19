@@ -54,7 +54,7 @@ export default function DateTimeInput({
                       month: e.target.valueAsDate?.getMonth() ?? 0,
                       year: e.target.valueAsDate?.getFullYear() ?? 0,
                     })
-                  : undefined,
+                  : e.target.valueAsDate ?? undefined,
               )
               onDateChange?.(e)
             }}
