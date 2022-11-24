@@ -9,7 +9,8 @@ import {
   RemoveEmpty,
   StatsSquareUp,
 } from 'iconoir-react'
-import { FormEvent, useEffect } from 'react'
+import type { FormEvent } from 'react'
+import { useEffect } from 'react'
 import { useState } from 'react'
 import type { Baby } from '~/services/babies.server'
 import LoadingItem from '../loading-item'

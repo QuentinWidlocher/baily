@@ -1,7 +1,7 @@
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { format, isBefore, parseISO, parse } from 'date-fns'
+import { isBefore, parseISO } from 'date-fns'
 import { Bin, NavArrowLeft, SaveFloppyDisk } from 'iconoir-react'
 import type { FormEvent } from 'react'
 import { useState } from 'react'
@@ -108,7 +108,7 @@ export default function BottlePage() {
 
   return (
     <>
-      <div className="flex px-5 flex-col-reverse flex-1 w-full mb-5 align-middle desktop:mb-0 desktop:flex-col">
+      <div className="flex flex-col-reverse flex-1 w-full px-5 mb-5 align-middle desktop:mb-0 desktop:flex-col">
         <input
           type="range"
           min="40"

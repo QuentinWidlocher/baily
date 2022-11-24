@@ -25,7 +25,7 @@ export async function getBabies(userId: string) {
     .get()
 
   return snapshot.docs.map(baby => {
-    return parseBabyFromFirebase(getDataAndId(baby) as BabyFromFirebase)
+    return parseBabyFromFirebase(getDataAndId(baby))
   }) as Baby[]
 }
 

@@ -45,7 +45,7 @@ export async function getBottles(babyId: string, limit: number | null = 30) {
   const snapshot = await query.get()
 
   return snapshot.docs.map(bottle => {
-    return parseBottleFromFirebase(getDataAndId(bottle) as BottleFromFirebase)
+    return parseBottleFromFirebase(getDataAndId(bottle))
   }) as Bottle[]
 }
 

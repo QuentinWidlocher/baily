@@ -48,7 +48,7 @@ export async function getSleeps(babyId: string, limit: number | null = 30) {
   const snapshot = await query.get()
 
   return snapshot.docs.map(sleep => {
-    return parseSleepFromFirebase(getDataAndId(sleep) as SleepFromFirebase)
+    return parseSleepFromFirebase(getDataAndId(sleep))
   }) as Sleep[]
 }
 

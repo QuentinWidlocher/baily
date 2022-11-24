@@ -45,7 +45,7 @@ export async function getDiapers(babyId: string, limit: number | null = 30) {
   const snapshot = await query.get()
 
   return snapshot.docs.map(diaper => {
-    return parseDiaperFromFirebase(getDataAndId(diaper) as DiaperFromFirebase)
+    return parseDiaperFromFirebase(getDataAndId(diaper))
   }) as Diaper[]
 }
 
