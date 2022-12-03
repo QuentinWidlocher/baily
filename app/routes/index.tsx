@@ -3,8 +3,7 @@ import { getSelectorsByUserAgent } from 'react-device-detect'
 import type { LoaderArgs, MetaFunction } from '@remix-run/server-runtime'
 import { redirect } from '@remix-run/server-runtime'
 import { getUserId } from '~/services/session.server'
-import { useHydrated } from 'remix-utils'
-import { useEffect, useState } from 'react'
+import { useCustomPWAInstall } from '~/services/pwa'
 
 export const meta: MetaFunction = () => ({
   title: 'Baily - Notez tout ce qui concerne votre bébé',
@@ -23,36 +22,10 @@ export async function loader({ request }: LoaderArgs) {
   }
 }
 
-function isStandalone() {
-  let iOSCheck = 'standalone' in window.navigator && window.navigator.standalone
-  let androidCheck = window.matchMedia('(display-mode: standalone)').matches
-
-  return iOSCheck || androidCheck
-}
-
 export default function IndexRoute() {
   let isMobile = useLoaderData<typeof loader>()
-  let isHydrated = useHydrated()
 
-  // Browsers are considered standalone, else we need to have the PWA installed
-  let standalone = !isMobile || (isHydrated && isStandalone())
-
-  let [deferredPrompt, setDeferredPrompt] = useState<
-    BeforeInstallPromptEvent | undefined
-  >(undefined)
-
-  function manualInstallPrompt(e: Event) {
-    e.preventDefault()
-    setDeferredPrompt(e as BeforeInstallPromptEvent)
-  }
-
-  useEffect(() => {
-    window.addEventListener('beforeinstallprompt', manualInstallPrompt)
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', manualInstallPrompt)
-    }
-  }, [])
+  let { deferredPrompt, installed } = useCustomPWAInstall(isMobile)
 
   return (
     <main className="min-h-screen hero">
@@ -65,12 +38,12 @@ export default function IndexRoute() {
             bébé(s) et voyez l'évolution hébdomadaire.
             <br />
             <br />
-            {standalone
+            {installed
               ? 'Pour commencer, il suffit de créer un compte'
               : "Pour commencer, il suffit d'installer Baily"}
           </p>
           <div className="space-x-2">
-            {standalone ? (
+            {installed ? (
               <>
                 <Link className="btn btn-primary" to="signin">
                   Créer un compte
