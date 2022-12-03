@@ -1,5 +1,9 @@
-import { Link } from '@remix-run/react'
-import type { ActionArgs, MetaFunction } from '@remix-run/server-runtime'
+import { Link, useLoaderData } from '@remix-run/react'
+import type {
+  ActionArgs,
+  LoaderArgs,
+  MetaFunction,
+} from '@remix-run/server-runtime'
 import { FirebaseError } from 'firebase/app'
 import { z } from 'zod'
 import { authenticate } from '~/services/firebase.server'
@@ -66,12 +70,28 @@ export async function action({ request }: ActionArgs) {
   }
 }
 
+export function loader({ request }: LoaderArgs) {
+  let from = new URL(request.url).searchParams.get('from')
+  return { fromForgotPassword: from == 'forgot-password' }
+}
+
 export default function LoginRoute() {
+  let { fromForgotPassword } = useLoaderData<typeof loader>()
   return (
     <BottomCardLayout>
       <div className="flex justify-between mb-5 card-title">
         <h1 className="text-xl">Connexion</h1>
       </div>
+
+      {fromForgotPassword ? (
+        <p>
+          Un email de réinitialisation de mot de passe a été envoyé à votre
+          adresse email. <br />
+          <br />
+          Une fois que vous aurez réinitialisé votre mot de passe, vous pourrez
+          vous connecter.
+        </p>
+      ) : null}
 
       <ValidatedForm validator={validator} method="post">
         <Input name="email" label="Email" />
@@ -84,6 +104,13 @@ export default function LoginRoute() {
             S'inscrire
           </Link>
         </div>
+        {!fromForgotPassword ? (
+          <div className="w-full mt-5 form-control">
+            <Link to="/forgot-password" className="btn btn-ghost">
+              Mot de passe oublié ?
+            </Link>
+          </div>
+        ) : null}
       </ValidatedForm>
     </BottomCardLayout>
   )
