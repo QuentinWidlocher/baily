@@ -3,6 +3,7 @@ import type { App as AdminApp } from 'firebase-admin/app'
 import { initializeApp as initializeAdmin } from 'firebase-admin/app'
 import type { Auth } from 'firebase-admin/auth';
 import { getAuth as getAdminAuth } from 'firebase-admin/auth'
+import { sendPasswordResetEmail as sendPasswordResetEmailFirebase } from 'firebase/auth'
 import type { DocumentSnapshot } from 'firebase-admin/firestore'
 import { getFirestore } from 'firebase-admin/firestore'
 import type { FirebaseApp } from 'firebase/app';
@@ -106,4 +107,8 @@ export async function createUser(email: string, password: string) {
   )
 
   return user
+}
+
+export function sendPasswordResetEmail(email: string) {
+  return sendPasswordResetEmailFirebase(getAuth(), email)
 }
