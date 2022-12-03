@@ -62,7 +62,9 @@ export default function App() {
             <script async src="/sw-launcher.js" />
           </>
         ) : (
-          <LiveReload />
+          <>
+            <LiveReload />
+          </>
         )}
       </body>
     </html>
@@ -81,7 +83,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
       </head>
       <body>
         <div className="flex flex-col items-center justify-center h-screen">
-          <div className="text-center text-xl">
+          <div className="text-xl text-center">
             <p>Une erreur est survenue</p>
             <p>
               <Link className="link" to="/">
