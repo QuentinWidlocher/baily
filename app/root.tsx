@@ -33,24 +33,28 @@ export default function App() {
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/apple-touch-icon.png"
+          href="/apple-touch-icon.png?v=2"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicon-32x32.png"
+          href="/favicon-32x32.png?v=2"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicon-16x16.png"
+          href="/favicon-16x16.png?v=2"
         />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#9333ea" />
+        <link
+          rel="mask-icon"
+          href="/safari-pinned-tab.svg?v=2"
+          color="#96357a"
+        />
         <meta name="apple-mobile-web-app-title" content="Baily" />
         <meta name="application-name" content="Baily" />
-        <meta name="msapplication-TileColor" content="#9333ea" />
+        <meta name="msapplication-TileColor" content="#96357a" />
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body>
