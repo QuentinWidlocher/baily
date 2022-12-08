@@ -15,6 +15,9 @@ module.exports = {
         'desktop': '768px',
       },
     },
+    fontFamily: {
+      sans: ['Nunito', 'sans-serif'],
+    }
   },
   daisyui: {
     themes: [

@@ -52,6 +52,16 @@ export default function App() {
           href="/safari-pinned-tab.svg?v=2"
           color="#96357a"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="true"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap"
+          rel="stylesheet"
+        />
         <meta name="apple-mobile-web-app-title" content="Baily" />
         <meta name="application-name" content="Baily" />
         <meta name="msapplication-TileColor" content="#96357a" />
