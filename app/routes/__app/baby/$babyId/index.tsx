@@ -132,11 +132,11 @@ export default function Index() {
           <Fragment key={i}>
             {i % 3 == 0 ? (
               <li className="flex flex-row justify-between mx-4 mt-16 first-of-type:mt-0">
-                <span className="p-1 bg-base-200 dark:bg-base-100 animate-pulse h-6 w-24 rounded"></span>
-                <span className="p-1 bg-base-200 dark:bg-base-100 animate-pulse h-6 w-24 rounded"></span>
+                <span className="w-24 h-6 p-1 rounded bg-base-200 dark:bg-base-100 animate-pulse"></span>
+                <span className="w-24 h-6 p-1 rounded bg-base-200 dark:bg-base-100 animate-pulse"></span>
               </li>
             ) : null}
-            <li className="rounded-lg h-24 bg-base-200 dark:bg-base-100 animate-pulse" />
+            <li className="h-24 rounded-lg bg-base-200 dark:bg-base-100 animate-pulse" />
           </Fragment>
         ))}
       </ul>
@@ -234,7 +234,9 @@ export default function Index() {
       <div className="relative mt-1 btm-nav desktop:btm-nav-sm bg-base-200">
         <Link
           className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
-            data.tab == 'bottles' ? 'active !text-primary !bg-base-300' : ''
+            data.tab == 'bottles'
+              ? 'active !text-primary dark:!text-primary-content !bg-base-300'
+              : ''
           }`}
           to="?tab=bottles"
         >
@@ -242,7 +244,9 @@ export default function Index() {
         </Link>
         <Link
           className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
-            data.tab == 'diapers' ? 'active !text-primary !bg-base-300' : ''
+            data.tab == 'diapers'
+              ? 'active !text-primary dark:!text-primary-content !bg-base-300'
+              : ''
           }`}
           to="?tab=diapers"
         >
@@ -250,7 +254,9 @@ export default function Index() {
         </Link>
         <Link
           className={`focus:bg-primary focus:text-primary-content hover:bg-base-300 transition-colors ${
-            data.tab == 'sleeps' ? 'active !text-primary !bg-base-300' : ''
+            data.tab == 'sleeps'
+              ? 'active !text-primary dark:!text-primary-content !bg-base-300'
+              : ''
           }`}
           to="?tab=sleeps"
         >

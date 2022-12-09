@@ -9,16 +9,19 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 import styleSheetUrl from './style.css'
+import fontStyleSheetUrl from './fonts.css'
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
   title: 'Baily',
   viewport: 'width=device-width,initial-scale=1',
+  description: 'Notez tout ce qui concerne votre bébé',
 })
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styleSheetUrl },
+    { rel: 'stylesheet', href: fontStyleSheetUrl },
     { rel: 'manifest', href: '/manifest.json' },
   ]
 }
