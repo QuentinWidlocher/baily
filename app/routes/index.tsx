@@ -44,7 +44,7 @@ export default function IndexRoute() {
           <h1 className="mb-5 font-bold text-7xl">Baily</h1>
           <p className="mb-5">
             Gardez une trace des biberons, des couches et des dodos de votre/vos
-            bébé(s) et voyez l'évolution hébdomadaire.
+            bébé(s) et voyez l'évolution hebdomadaire.
             <br />
             <br />
             {installed
