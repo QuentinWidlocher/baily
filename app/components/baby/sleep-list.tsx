@@ -15,6 +15,57 @@ export type SleepListProps = {
   }
 }
 
+function mapSleepToItem(babyId: string) {
+  return function map(sleep: Sleep) {
+    let durationRaw = intervalToDuration({
+      start: sleep.start,
+      end: sleep.end ?? new Date(),
+    })
+
+    let duration
+    if (
+      (!durationRaw.years || durationRaw.years == 0) &&
+      (!durationRaw.months || durationRaw.months == 0) &&
+      (!durationRaw.weeks || durationRaw.weeks == 0) &&
+      (!durationRaw.days || durationRaw.days == 0) &&
+      (!durationRaw.hours || durationRaw.hours == 0) &&
+      (!durationRaw.minutes || durationRaw.minutes <= 0)
+    ) {
+      duration = "Moins d'une minute"
+    } else {
+      duration = formatDuration(durationRaw, {
+        locale: fr,
+        format: ['hours', 'minutes'],
+        delimiter: ' et ',
+      })
+    }
+
+    return (
+      <li key={sleep.id}>
+        <LoadingItem
+          type="link"
+          className="stat"
+          to={`/baby/${babyId}/sleep/${sleep.id}`}
+        >
+          <span className="text-2xl stat-value text-ellipsis">{duration}</span>
+          <span
+            className={`stat-desc text-lg leading-tight w-full flex flex-wrap justify-between`}
+          >
+            <span>
+              {sleep.description || ''} {!sleep.end && ' (en cours)'}
+            </span>
+            <span className="flex">
+              {sleep.end
+                ? `${displayTime(sleep.start)} - ${displayTime(sleep.end)}`
+                : `Depuis ${displayTime(sleep.start)}`}
+            </span>
+          </span>
+        </LoadingItem>
+      </li>
+    )
+  }
+}
+
 export default function SleepList({ babyId, groupedSleeps }: SleepListProps) {
   return (
     <ul className="flex-1 p-2 -mx-8 overflow-x-hidden overflow-y-auto shadow-inner flex-nowrap menu bg-base-300">
@@ -39,58 +90,7 @@ export default function SleepList({ babyId, groupedSleeps }: SleepListProps) {
                 Total : {totalInterval}
               </span>
             </li>
-            {sleeps.items.map((sleep) => {
-              let durationRaw = intervalToDuration({
-                start: sleep.start,
-                end: sleep.end ?? new Date(),
-              })
-
-              let duration
-              if (
-                (!durationRaw.years || durationRaw.years == 0) &&
-                (!durationRaw.months || durationRaw.months == 0) &&
-                (!durationRaw.weeks || durationRaw.weeks == 0) &&
-                (!durationRaw.days || durationRaw.days == 0) &&
-                (!durationRaw.hours || durationRaw.hours == 0) &&
-                (!durationRaw.minutes || durationRaw.minutes <= 0)
-              ) {
-                duration = "Moins d'une minute"
-              } else {
-                duration = formatDuration(durationRaw, {
-                  locale: fr,
-                  format: ['hours', 'minutes'],
-                  delimiter: ' et ',
-                })
-              }
-
-              return (
-                <li key={sleep.id}>
-                  <LoadingItem
-                    type="link"
-                    className="stat"
-                    to={`/baby/${babyId}/sleep/${sleep.id}`}
-                  >
-                    <span className="text-2xl stat-value text-ellipsis">
-                      {duration}
-                    </span>
-                    <span
-                      className={`stat-desc text-lg leading-tight w-full flex flex-wrap justify-between`}
-                    >
-                      <span>
-                        {sleep.description || ''} {!sleep.end && ' (en cours)'}
-                      </span>
-                      <span className="flex">
-                        {sleep.end
-                          ? `${displayTime(sleep.start)} - ${displayTime(
-                              sleep.end,
-                            )}`
-                          : `Depuis ${displayTime(sleep.start)}`}
-                      </span>
-                    </span>
-                  </LoadingItem>
-                </li>
-              )
-            })}
+            {sleeps.items.map(mapSleepToItem(babyId))}
           </Fragment>
         )
       })}

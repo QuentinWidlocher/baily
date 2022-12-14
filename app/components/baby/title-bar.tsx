@@ -10,8 +10,7 @@ import {
   StatsSquareUp,
 } from 'iconoir-react'
 import type { FormEvent } from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Baby } from '~/services/babies.server'
 import LoadingItem from '../loading-item'
 

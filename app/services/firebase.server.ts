@@ -1,17 +1,17 @@
 import { credential } from 'firebase-admin'
 import type { App as AdminApp } from 'firebase-admin/app'
 import { initializeApp as initializeAdmin } from 'firebase-admin/app'
-import type { Auth } from 'firebase-admin/auth';
+import type { Auth } from 'firebase-admin/auth'
 import { getAuth as getAdminAuth } from 'firebase-admin/auth'
-import { sendPasswordResetEmail as sendPasswordResetEmailFirebase } from 'firebase/auth'
 import type { DocumentSnapshot } from 'firebase-admin/firestore'
 import { getFirestore } from 'firebase-admin/firestore'
-import type { FirebaseApp } from 'firebase/app';
+import type { FirebaseApp } from 'firebase/app'
 import { initializeApp } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail as sendPasswordResetEmailFirebase,
 } from 'firebase/auth'
 
 export let firebaseAdmin: AdminApp
@@ -85,7 +85,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export function getDataAndId<T extends { id: string }>(
-  doc: DocumentSnapshot
+  doc: DocumentSnapshot,
 ): T {
   return {
     id: doc.id,
@@ -103,7 +103,7 @@ export async function createUser(email: string, password: string) {
   let { user } = await createUserWithEmailAndPassword(
     getAuth(),
     email,
-    password
+    password,
   )
 
   return user
